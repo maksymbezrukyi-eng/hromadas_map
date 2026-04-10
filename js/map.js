@@ -137,7 +137,7 @@ function toggleBounds(show){
   if(show) boundaryLayer.addTo(map);
   else map.removeLayer(boundaryLayer);
 }
-function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);e.value=''});document.getElementById('hcard').classList.remove('on');applyF()}
+function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF()}
 function upMS(v){
   document.getElementById('ms-n').textContent=v.length;
   document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString('uk-UA');
