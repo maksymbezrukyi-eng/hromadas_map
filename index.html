@@ -292,7 +292,7 @@ function loadBoundaries(){
           try {
             const id = feat.properties.id;
             const h = H.find(x=>x.id===id) || H.find(x=>x.id===Number(id));
-            const col = h ? statusColor(h) : '#6B6961';
+            const col = h ? statusMarkerColor(h) : '#6B6961';
             return {fillColor:col, fillOpacity:0.25, color:col, weight:1.5, opacity:0.8};
           } catch(e) {
             return {fillColor:'#6B6961', fillOpacity:0.2, color:'#444', weight:1};
@@ -302,7 +302,7 @@ function loadBoundaries(){
           const p = feat.properties;
           layer.on('mouseover', e => {
             const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
-            const col = h ? statusColor(h) : '#6B6961';
+            const col = h ? statusMarkerColor(h) : '#6B6961';
             e.target.setStyle({fillOpacity:0.5, weight:2.5});
             showHCard(p);
           });
