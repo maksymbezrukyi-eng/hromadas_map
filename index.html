@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Інструмент відбору громад v0.2</title>
+<title>Інструмент відбору громад v0.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
@@ -135,7 +135,7 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
   <div class="hl">
     <div class="hlogo">UNICEF Ukraine</div>
     <div class="htitle">Відбір громад</div>
-    <div class="hver">v0.2</div>
+    <div class="hver">v0.4</div>
   </div>
   <div class="hr">
     <div class="hstat"><div class="hstat-val">68</div><div class="hstat-lbl">Громад</div></div>
@@ -161,14 +161,25 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
         <div class="sb-sec">
           <div class="sb-lbl">Фільтри</div>
           <select id="f-obl" onchange="applyF()"><option value="">Всі області</option></select>
-          <select id="f-kfw" onchange="applyF()">
-            <option value="">Всі типи KfW</option>
-            <option value="KfW 1">KfW 1</option>
-            <option value="KfW 2">KfW 2</option>
-            <option value="KfW 2+">KfW 2+</option>
-          </select>
+
           <input type="text" id="f-q" placeholder="Пошук громади..." oninput="applyF()">
           <button class="btn-r" onclick="resetF()">Скинути</button>
+        </div>
+        <div class="sb-sec">
+          <div class="sb-lbl">Google Sheets</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <button class="btn-r" onclick="syncFromSheets()" style="flex:1">⟳ Оновити дані</button>
+          </div>
+          <div id="sync-status" style="font-size:11px;color:#AEACA4">Не синхронізовано</div>
+          <div style="margin-top:8px">
+            <div class="sb-lbl" style="margin-bottom:4px">Легенда — Статус</div>
+            <div class="legend">
+              <div class="leg"><span class="ldot" style="background:#1A6B3C"></span>Short-list / Відібрано</div>
+              <div class="leg"><span class="ldot" style="background:#E08A1E"></span>Резерв</div>
+              <div class="leg"><span class="ldot" style="background:#B71C1C"></span>Виключено</div>
+              <div class="leg"><span class="ldot" style="background:#6B6961"></span>Очікує</div>
+            </div>
+          </div>
         </div>
         <div class="sb-sec">
           <div class="sb-lbl">Показники</div>
@@ -180,12 +191,6 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
           </div>
         </div>
         <div class="sb-sec">
-          <div class="sb-lbl">Легенда</div>
-          <div class="legend">
-            <div class="leg"><span class="ldot" style="background:#1a6fc4"></span>KfW 1 — великі міські</div>
-            <div class="leg"><span class="ldot" style="background:#2ea06b"></span>KfW 2 — середні</div>
-            <div class="leg"><span class="ldot" style="background:#e08a1e"></span>KfW 2+ — менші</div>
-          </div>
           <div style="margin-top:10px">
             <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g4);cursor:pointer">
               <input type="checkbox" id="toggle-bounds" checked onchange="toggleBounds(this.checked)" style="width:auto;margin-bottom:0"> Показувати межі громад
@@ -209,22 +214,67 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
 
   <!-- DASHBOARD -->
   <div class="pane" id="pane-dash">
-    <div class="dash">
-      <div class="kpi-row">
-        <div class="kpi"><div class="kpi-val">68</div><div class="kpi-lbl">Громад у вибірці</div><div class="kpi-sub">Загальний список KfW</div></div>
-        <div class="kpi"><div class="kpi-val">56</div><div class="kpi-lbl">До оцінки</div><div class="kpi-sub">12 не рекомендовані UNICEF</div></div>
-        <div class="kpi"><div class="kpi-val">40</div><div class="kpi-lbl">Short-list</div><div class="kpi-sub">Ціль для інтерв'ю</div></div>
-        <div class="kpi"><div class="kpi-val">15</div><div class="kpi-lbl">Областей</div><div class="kpi-sub">Географічне покриття</div></div>
+    <div class="dash" id="dash-content">
+      <!-- KPI row -->
+      <div class="kpi-row" id="kpi-row">
+        <div class="kpi"><div class="kpi-val" id="kpi-total">68</div><div class="kpi-lbl">Громад у вибірці</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-assess">56</div><div class="kpi-lbl">До оцінки</div><div class="kpi-sub">12 виключені UNICEF</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-short">—</div><div class="kpi-lbl">Short-list</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-selected">—</div><div class="kpi-lbl">Відібрано</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-oblasts">15</div><div class="kpi-lbl">Областей</div></div>
       </div>
+
+      <!-- Funnel + Oblast -->
       <div class="chart-row">
-        <div class="cc"><div class="cc-title">Розподіл за типом KfW</div><canvas id="ch-kfw" height="180"></canvas></div>
-        <div class="cc"><div class="cc-title">Статус UNICEF</div><div class="sbars" id="sbars"></div></div>
+        <div class="cc">
+          <div class="cc-title">Воронка відбору</div>
+          <div class="sbars" id="funnel-bars"></div>
+        </div>
+        <div class="cc">
+          <div class="cc-title">Статус по областях</div>
+          <canvas id="ch-oblast-status" height="200"></canvas>
+        </div>
       </div>
-      <div class="chart-row">
-        <div class="cc"><div class="cc-title">Топ-10 областей — дітей до 1р.</div><canvas id="ch-obl" height="200"></canvas></div>
-        <div class="cc"><div class="cc-title">Розмір громад за населенням</div><canvas id="ch-pop" height="200"></canvas></div>
+
+      <!-- Scores row — shown when data available -->
+      <div class="chart-row" id="scores-row" style="display:none">
+        <div class="cc">
+          <div class="cc-title">Топ-20 громад за зваженим балом</div>
+          <canvas id="ch-top20" height="260"></canvas>
+        </div>
+        <div class="cc">
+          <div class="cc-title">Середні бали по доменах (вибірка)</div>
+          <canvas id="ch-domains" height="260"></canvas>
+        </div>
       </div>
-      <div class="cc"><div class="cc-title">Зведення по областях</div><table class="obl-tbl"><thead><tr><th>Область</th><th>Громад</th><th style="text-align:right">Дітей до 1р.</th><th>KfW</th></tr></thead><tbody id="otbl"></tbody></table></div>
+
+      <!-- Score distribution — when data available -->
+      <div class="chart-row" id="dist-row" style="display:none">
+        <div class="cc">
+          <div class="cc-title">Розподіл зважених балів опитування</div>
+          <canvas id="ch-dist" height="180"></canvas>
+        </div>
+        <div class="cc">
+          <div class="cc-title">Бали по доменах — радар (середнє по вибірці)</div>
+          <canvas id="ch-radar" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Oblast table -->
+      <div class="cc">
+        <div class="cc-title">Зведення по областях</div>
+        <table class="obl-tbl">
+          <thead><tr>
+            <th>Область</th>
+            <th style="text-align:right">Громад</th>
+            <th style="text-align:right">Дітей до 1р.</th>
+            <th style="text-align:right">Short-list</th>
+            <th style="text-align:right">Відібрано</th>
+            <th style="text-align:right">Сер. бал</th>
+          </tr></thead>
+          <tbody id="otbl"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -234,7 +284,7 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
       <div class="tbar">
         <input type="text" id="t-q" placeholder="Пошук..." oninput="ftbl()" style="margin-bottom:0">
         <select id="t-obl" onchange="ftbl()" style="margin-bottom:0"><option value="">Всі області</option></select>
-        <select id="t-kfw" onchange="ftbl()" style="margin-bottom:0"><option value="">Всі KfW</option><option value="KfW 1">KfW 1</option><option value="KfW 2">KfW 2</option><option value="KfW 2+">KfW 2+</option></select>
+
         <button class="btn-r" onclick="resetT()">Скинути</button>
         <div class="tbar-sp"></div>
         <div class="tcnt" id="tcnt">68 з 68</div>
@@ -251,6 +301,8 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
             <th onclick="st(6)">Частка %</th>
             <th onclick="st(7)">UNICEF статус</th>
             <th onclick="st(8)">Short-list</th>
+            <th onclick="st(9)">Інтерв'ю</th>
+            <th onclick="st(10)">Фінальний статус</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table>
@@ -261,7 +313,7 @@ footer{background:var(--g5);color:var(--g3);font-family:var(--mono);font-size:10
 
 <footer>
   <div class="fl"><span id="fd">—</span></div>
-  <div>v0.2 · статичні дані · Google Sheets API у v0.3</div>
+  <div>v0.4 · статичні дані · Google Sheets API у v0.4</div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -338,6 +390,167 @@ const H=[
   {id:68,n:"Новоград-Волинська",o:"Житомирська",g:"KfW 2",pop:48781,ch:9599,lat:50.594,lng:27.617,us:"recommended",sl:"pending"},
 ];
 
+const SHEETS = {
+  status: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=1397593365&single=true&output=csv',
+  scoring: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=672236927&single=true&output=csv',
+  ranking: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=2079674827&single=true&output=csv',
+};
+const INDICATOR_NAMES = {
+  'Д1.1':'К-сть дітей до 1 року','Д1.2':'Частка дітей від населення',
+  'Д1.3':'Частка вразливих груп','Д1.4':'К-сть дітей до 18 років',
+  'Д1 РАЗОМ (макс 10)':'Домен 1: Демографічна потреба',
+  'Д2.1':'Діти без декларації ПМД','Д2.2':'Частка домашніх візитів',
+  'Д2.3':'Вакансії лікарів ПМД','Д2.4':'Вакансії медсестер ПМД',
+  'Д2 РАЗОМ (макс 10)':'Домен 2: Стан системи ПМД',
+  'Д3.1':'Бюджетна програма ПМД','Д3.2':'Частка бюджету на ПМД',
+  'Д3.3':'Кошти понад капітаційну ставку',
+  'Д3 РАЗОМ (макс 10)':'Домен 3: Фінансова спроможність',
+  'Д4.1':'К-сть населених пунктів','Д4.2':'Макс. відстань до ПМД',
+  'Д4.3':'Сер. відстань до ПМД',
+  'Д4 РАЗОМ (макс 10)':'Домен 4: Географічний',
+  'Д5.1':'Візити до вразливих сімей','Д5.2':'Частка вразливих серед охоплених',
+  'Д5 РАЗОМ (макс 10)':'Домен 5: Соціальний',
+  'Д6.1':'Охоплення АКДП-3','Д6.2':'Охоплення КПК-1',
+  'Д6.3':'Постнатальні огляди 7 днів','Д6.4':'Грудне вигодовування',
+  'Д6 РАЗОМ (макс 10)':'Домен 6: Громадське здоров\'я',
+  'Д4А.1':'Досвід програм МТД','Д4А.2':'Структура підрозділу ОЗ',
+  'Д4А.3':'Якість мотиваційного листа',
+  'Д4А РАЗОМ (макс 10)':'Домен 4А: Інституційний профіль',
+  'ЗВАЖЕНИЙ БАЛ ОПИТ. (макс 8,0)':'Зважений бал опитування (макс 8.0)',
+};
+let SCORING_DATA = [];
+let RANKING_DATA = [];
+const LAST_SYNC = {time: null, status: 'idle'};
+
+// Parse CSV row handling quoted fields
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line => {
+    const vals = []; let cur = ''; let inQ = false;
+    for(let i=0;i<line.length;i++) {
+      if(line[i]==='"') inQ=!inQ;
+      else if(line[i]===',' && !inQ) { vals.push(cur.trim()); cur=''; }
+      else cur+=line[i];
+    }
+    vals.push(cur.trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=vals[i]||'');
+    return obj;
+  });
+}
+
+// Sync all sheets
+function syncFromSheets(silent=false) {
+  if(!silent) showSyncStatus('loading');
+  const t = '&t=' + Date.now();
+  Promise.all([
+    fetch(SHEETS.status + t).then(r=>r.text()),
+    fetch(SHEETS.scoring + t).then(r=>r.text()),
+    fetch(SHEETS.ranking + t).then(r=>r.text()),
+  ]).then(([csv1, csv2, csv3]) => {
+    // Status sheet
+    const statusRows = parseCSV(csv1);
+    statusRows.forEach(row=>{
+      const id = parseInt(row['hromada_id']);
+      if(!id) return;
+      const h = H.find(x=>x.id===id);
+      if(!h) return;
+      if(row['UNICEF статус']) h.us = row['UNICEF статус'];
+      if(row['Short-list']) h.sl = row['Short-list'];
+      if(row["Статус інтерв'ю"]) h.interview = row["Статус інтерв'ю"];
+      if(row['Фінальний статус']) h.final = row['Фінальний статус'];
+    });
+    // Scoring sheet — store globally
+    SCORING_DATA = parseCSV(csv2).filter(r=>parseInt(r['hromada_id'])>0);
+    // Ranking sheet — store globally
+    RANKING_DATA = parseCSV(csv3).filter(r=>parseInt(r['hromada_id'])>0);
+    // Attach scores to H
+    SCORING_DATA.forEach(row=>{
+      const h = H.find(x=>x.id===parseInt(row['hromada_id']));
+      if(!h) return;
+      h.score_survey = parseFloat(row['ЗВАЖЕНИЙ БАЛ ОПИТ. (макс 8,0)'])||0;
+      h.d1 = parseFloat(row['Д1 РАЗОМ (макс 10)'])||0;
+      h.d2 = parseFloat(row['Д2 РАЗОМ (макс 10)'])||0;
+      h.d3 = parseFloat(row['Д3 РАЗОМ (макс 10)'])||0;
+      h.d4 = parseFloat(row['Д4 РАЗОМ (макс 10)'])||0;
+      h.d5 = parseFloat(row['Д5 РАЗОМ (макс 10)'])||0;
+      h.d6 = parseFloat(row['Д6 РАЗОМ (макс 10)'])||0;
+      h.d4a = parseFloat(row['Д4А РАЗОМ (макс 10)'])||0;
+    });
+    RANKING_DATA.forEach(row=>{
+      const h = H.find(x=>x.id===parseInt(row['hromada_id']));
+      if(!h) return;
+      h.final_score = parseFloat(row['final_score (макс 10,0)'])||0;
+      h.rank = parseInt(row['rank_auto'])||0;
+      h.final = row['final_decision']||h.final||'pending';
+    });
+    LAST_SYNC.time = new Date();
+    LAST_SYNC.status = 'ok';
+    refreshMarkers();
+    rebuildDashboard();
+    if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
+    if(!silent) showSyncStatus('ok');
+    updateSyncLabel();
+  }).catch(e=>{
+    LAST_SYNC.status = 'error';
+    if(!silent) showSyncStatus('error');
+    console.warn('Sheets sync failed:', e);
+  });
+}
+
+function showSyncStatus(state, count) {
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  if(state==='loading') { el.textContent='⟳ Синхронізація...'; el.style.color='#6B6961'; }
+  else if(state==='ok') { el.textContent='✓ Дані оновлено'; el.style.color='#1A6B3C'; setTimeout(()=>updateSyncLabel(),3000); }
+  else { el.textContent='✗ Помилка з\'єднання'; el.style.color='#B71C1C'; }
+}
+
+function updateSyncLabel() {
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  if(LAST_SYNC.time) {
+    const mins = Math.round((new Date()-LAST_SYNC.time)/60000);
+    el.textContent = mins < 1 ? 'Щойно оновлено' : `Оновлено ${mins} хв тому`;
+    el.style.color='#6B6961';
+  } else {
+    el.textContent='Не синхронізовано';
+    el.style.color='#AEACA4';
+  }
+}
+
+// Refresh marker colors based on updated statuses
+function refreshMarkers() {
+  MKS.forEach(m=>{
+    const h=m.h;
+    const color = statusMarkerColor(h);
+    m.setStyle({fillColor:color});
+  });
+  if(boundaryLayer) {
+    boundaryLayer.eachLayer(layer=>{
+      const p = layer.feature.properties;
+      const h = H.find(x=>x.id===p.id);
+      if(h) layer.setStyle({fillColor:grantFill(h.g),fillOpacity:0.15});
+    });
+  }
+}
+
+function statusMarkerColor(h) {
+  // If has final status — color by it
+  if(h.final && h.final!=='pending' && h.final!=='') {
+    if(h.final==='selected') return '#1A6B3C';
+    if(h.final==='reserve') return '#7D4E00';
+    if(h.final==='excluded') return '#B71C1C';
+  }
+  // Otherwise by shortlist
+  if(h.sl==='shortlisted') return '#1A6B3C';
+  if(h.sl==='reserve') return '#E08A1E';
+  if(h.sl==='excluded') return '#B71C1C';
+  // Default — by KfW
+  return GC[h.g];
+}
+
 const GC={"KfW 1":"#1a6fc4","KfW 2":"#2ea06b","KfW 2+":"#e08a1e"};
 const SUA={recommended:"Рекомендовано",not_recommended:"Не рекомендовано",pending:"Очікує",shortlisted:"Short-list",reserve:"Резерв",excluded:"Виключено",invited:"Запрошено",completed:"Заповнено",partial:"Частково",no_response:"Без відповіді"};
 const SBC={recommended:"b-rec",not_recommended:"b-notrec",pending:"b-pend",shortlisted:"b-short",reserve:"b-res",excluded:"b-excl",invited:"b-inv"};
@@ -355,6 +568,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     obs.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;s.appendChild(op)});
   });
   initMap(); initDash(); initTbl();
+  // Auto-sync from Sheets on load
+  setTimeout(()=>syncFromSheets(true), 1000);
+  // Auto-refresh every 5 minutes
+  setInterval(()=>syncFromSheets(true), 300000);
 });
 
 function showTab(id){
@@ -370,7 +587,7 @@ function initMap(){
   map=L.map('map',{center:[49.2,31.5],zoom:6});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
   H.forEach(h=>{
-    const m=L.circleMarker([h.lat,h.lng],{radius:rp(h.pop),fillColor:GC[h.g],color:'#fff',weight:1.5,fillOpacity:.88});
+    const m=L.circleMarker([h.lat,h.lng],{radius:rp(h.pop),fillColor:statusMarkerColor(h),color:'#fff',weight:1.5,fillOpacity:.88});
     m.bindPopup(`<div class="pp-name">${h.n}</div><div class="pp-obl">${h.o}</div><div class="pp-grid"><div><div class="pp-lbl">KfW</div><div class="pp-val">${h.g}</div></div><div><div class="pp-lbl">Населення</div><div class="pp-val">${h.pop.toLocaleString('uk-UA')}</div></div><div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">${h.ch.toLocaleString('uk-UA')}</div></div><div><div class="pp-lbl">Частка</div><div class="pp-val">${(h.ch/h.pop*100).toFixed(1)}%</div></div></div>`);
     m.on('click',()=>showHCard(h));
     m.h=h; m.addTo(map); MKS.push(m);
@@ -431,10 +648,9 @@ function showHCard(p){
 
 function applyF(){
   const ob=document.getElementById('f-obl').value;
-  const kf=document.getElementById('f-kfw').value;
   const q=document.getElementById('f-q').value.toLowerCase().trim();
   const vis=[];
-  MKS.forEach(m=>{const h=m.h;const ok=(!ob||h.o===ob)&&(!kf||h.g===kf)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));if(ok){m.addTo(map);vis.push(h)}else m.remove()});
+  MKS.forEach(m=>{const h=m.h;const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));if(ok){m.addTo(map);vis.push(h)}else m.remove()});
   upMS(vis);
 }
 function toggleBounds(show){
@@ -450,31 +666,199 @@ function upMS(v){
   document.getElementById('ms-o').textContent=new Set(v.map(h=>h.o)).size;
 }
 
-// DASHBOARD
-function initDash(){
-  const kc={};H.forEach(h=>kc[h.g]=(kc[h.g]||0)+1);
-  new Chart(document.getElementById('ch-kfw'),{type:'doughnut',data:{labels:Object.keys(kc),datasets:[{data:Object.values(kc),backgroundColor:['#1a6fc4','#2ea06b','#e08a1e'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{family:'IBM Plex Mono',size:11},boxWidth:12}}}}});
+// DASHBOARD — chart instances cache
+const _charts = {};
+function mkChart(id, cfg) {
+  if(_charts[id]) _charts[id].destroy();
+  const el = document.getElementById(id);
+  if(!el) return;
+  _charts[id] = new Chart(el, cfg);
+}
 
-  const sc={};H.forEach(h=>sc[h.us]=(sc[h.us]||0)+1);
-  const states=[{k:'recommended',l:'Рекомендовано',c:'#1A6B3C'},{k:'not_recommended',l:'Не рекомендовано',c:'#B71C1C'},{k:'pending',l:'Очікує оцінки',c:'#6B6961'}];
-  const sb=document.getElementById('sbars');
-  states.forEach(s=>{const cnt=sc[s.k]||0;const pct=Math.round(cnt/H.length*100);sb.innerHTML+=`<div class="sbar"><div class="sbar-lbl">${s.l}</div><div class="sbar-track"><div class="sbar-fill" style="width:${pct}%;background:${s.c}"></div></div><div class="sbar-cnt">${cnt}</div></div>`});
+const CHART_FONT = {family:'IBM Plex Mono',size:9};
+const CHART_OPTS = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{display:false}},
+    y:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
+  }
+};
 
-  const od={};H.forEach(h=>{if(!od[h.o])od[h.o]={ch:0,cnt:0};od[h.o].ch+=h.ch;od[h.o].cnt++});
-  const srt=Object.entries(od).sort((a,b)=>b[1].ch-a[1].ch).slice(0,10);
-  new Chart(document.getElementById('ch-obl'),{type:'bar',data:{labels:srt.map(([o])=>o.replace(/ \(місто\)/,'').slice(0,12)),datasets:[{data:srt.map(([,d])=>d.ch),backgroundColor:'#006EB6',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'IBM Plex Mono',size:9},color:'#6B6961'},grid:{display:false}},y:{ticks:{font:{family:'IBM Plex Mono',size:9},color:'#6B6961'},grid:{color:'#F2F1EE'}}}}});
+function initDash(){ rebuildDashboard(); }
 
-  const bk=['<10к','10-25к','25-50к','50-100к','100-500к','>500к'];
-  const bc=[0,0,0,0,0,0];
-  H.forEach(h=>{if(h.pop<10000)bc[0]++;else if(h.pop<25000)bc[1]++;else if(h.pop<50000)bc[2]++;else if(h.pop<100000)bc[3]++;else if(h.pop<500000)bc[4]++;else bc[5]++});
-  new Chart(document.getElementById('ch-pop'),{type:'bar',data:{labels:bk,datasets:[{data:bc,backgroundColor:'#0D5E5E',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'IBM Plex Mono',size:9},color:'#6B6961'},grid:{display:false}},y:{ticks:{font:{family:'IBM Plex Mono',size:9},color:'#6B6961'},grid:{color:'#F2F1EE'}}}}});
+function rebuildDashboard(){
+  // KPIs
+  const shortlisted = H.filter(h=>h.sl==='shortlisted'||h.sl==='invited'||h.sl==='completed').length;
+  const selected = H.filter(h=>h.final==='selected').length;
+  document.getElementById('kpi-short').textContent = shortlisted||'—';
+  document.getElementById('kpi-selected').textContent = selected||'—';
 
-  const mx=Math.max(...Object.values(od).map(d=>d.ch));
-  const tb=document.getElementById('otbl');
+  // Funnel
+  const funnel = [
+    {l:'Загальний список',cnt:68,c:'#006EB6'},
+    {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='recommended').length,c:'#1A6B3C'},
+    {l:'До опитування',cnt:56,c:'#0D5E5E'},
+    {l:'Short-list (ціль 40)',cnt:shortlisted||0,c:'#5C3A7A'},
+    {l:'Відібрано (ціль 40)',cnt:selected||0,c:'#1A6B3C'},
+  ];
+  const fb = document.getElementById('funnel-bars');
+  fb.innerHTML='';
+  funnel.forEach(f=>{
+    const pct = Math.round(f.cnt/68*100);
+    fb.innerHTML+=`<div class="sbar">
+      <div class="sbar-lbl" style="width:180px">${f.l}</div>
+      <div class="sbar-track"><div class="sbar-fill" style="width:${pct}%;background:${f.c}"></div></div>
+      <div class="sbar-cnt" style="width:30px">${f.cnt}</div>
+    </div>`;
+  });
+
+  // Oblast status chart
+  const oblasts = [...new Set(H.map(h=>h.o))].sort();
+  const oblShort = oblasts.map(o=>H.filter(h=>h.o===o&&(h.sl==='shortlisted'||h.sl==='invited')).length);
+  const oblTotal = oblasts.map(o=>H.filter(h=>h.o===o).length);
+  mkChart('ch-oblast-status',{
+    type:'bar',
+    data:{
+      labels:oblasts.map(o=>o.replace(/ область/,'').replace(/ \(місто\)/,'').slice(0,14)),
+      datasets:[
+        {label:'Short-list',data:oblShort,backgroundColor:'#1A6B3C',borderRadius:2},
+        {label:'Всього',data:oblTotal.map((t,i)=>t-oblShort[i]),backgroundColor:'#E0DED8',borderRadius:2},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{font:{family:'IBM Plex Mono',size:9},boxWidth:10}}},
+      scales:{
+        x:{stacked:true,ticks:{font:CHART_FONT,color:'#6B6961'},grid:{display:false}},
+        y:{stacked:true,ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
+      }
+    }
+  });
+
+  // Scores — only if data available
+  const hasScores = SCORING_DATA.length > 0 && H.some(h=>h.score_survey>0);
+  document.getElementById('scores-row').style.display = hasScores ? '' : 'none';
+  document.getElementById('dist-row').style.display = hasScores ? '' : 'none';
+
+  if(hasScores) {
+    // Top 20 by survey score
+    const ranked = [...H].filter(h=>h.score_survey>0).sort((a,b)=>b.score_survey-a.score_survey).slice(0,20);
+    mkChart('ch-top20',{
+      type:'bar',
+      data:{
+        labels:ranked.map(h=>h.n.slice(0,14)),
+        datasets:[{
+          data:ranked.map(h=>h.score_survey),
+          backgroundColor:ranked.map(h=>{
+            if(h.final==='selected') return '#1A6B3C';
+            if(h.sl==='shortlisted') return '#006EB6';
+            if(h.sl==='reserve') return '#E08A1E';
+            return '#AEACA4';
+          }),
+          borderRadius:2
+        }]
+      },
+      options:{...CHART_OPTS,indexAxis:'y',scales:{
+        y:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
+        x:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'},max:8}
+      }}
+    });
+
+    // Domain averages
+    const doms = [
+      {k:'d1',l:'Демографічна
+потреба',w:'20%'},
+      {k:'d2',l:'Стан
+ПМД',w:'10%'},
+      {k:'d3',l:'Фінансова
+спромо-
+жність',w:'15%'},
+      {k:'d4',l:'Географіч-
+ний',w:'10%'},
+      {k:'d5',l:'Соціаль-
+ний',w:'5%'},
+      {k:'d6',l:'Громадське
+здоров\'я',w:'10%'},
+      {k:'d4a',l:'Інститу-
+ційний',w:'10%'},
+    ];
+    const scored = H.filter(h=>h.score_survey>0);
+    const domAvg = doms.map(d=>scored.length ? (scored.reduce((s,h)=>s+(h[d.k]||0),0)/scored.length).toFixed(1) : 0);
+    mkChart('ch-domains',{
+      type:'bar',
+      data:{
+        labels:doms.map(d=>d.l+' ('+d.w+')'),
+        datasets:[{
+          data:domAvg,
+          backgroundColor:['#1A6B3C','#0D5E5E','#7D4E00','#5C3A7A','#2E7D32','#00695C','#1A237E'],
+          borderRadius:2
+        }]
+      },
+      options:{...CHART_OPTS,scales:{
+        x:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
+        y:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'},max:10,
+          title:{display:true,text:'Середній бал (макс 10)',font:CHART_FONT,color:'#6B6961'}}
+      }}
+    });
+
+    // Distribution
+    const buckets = [0,1,2,3,4,5,6,7,8].map(i=>({min:i,max:i+1,cnt:0}));
+    H.filter(h=>h.score_survey>0).forEach(h=>{
+      const b = buckets.find(b=>h.score_survey>=b.min&&h.score_survey<b.max);
+      if(b) b.cnt++;
+    });
+    mkChart('ch-dist',{
+      type:'bar',
+      data:{
+        labels:buckets.map(b=>`${b.min}–${b.max}`),
+        datasets:[{data:buckets.map(b=>b.cnt),backgroundColor:'#006EB6',borderRadius:2}]
+      },
+      options:{...CHART_OPTS}
+    });
+
+    // Radar
+    mkChart('ch-radar',{
+      type:'radar',
+      data:{
+        labels:doms.map(d=>d.k.toUpperCase()),
+        datasets:[{
+          label:'Середнє',
+          data:domAvg,
+          borderColor:'#006EB6',backgroundColor:'rgba(0,110,182,0.1)',
+          pointBackgroundColor:'#006EB6',borderWidth:2
+        }]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        scales:{r:{min:0,max:10,ticks:{font:CHART_FONT,color:'#6B6961',stepSize:2},
+          pointLabels:{font:{family:'IBM Plex Mono',size:9}}}},
+        plugins:{legend:{display:false}}
+      }
+    });
+  }
+
+  // Oblast summary table
+  const tb = document.getElementById('otbl');
+  tb.innerHTML='';
+  const od={};
+  H.forEach(h=>{
+    if(!od[h.o])od[h.o]={ch:0,cnt:0,short:0,sel:0,scores:[]};
+    od[h.o].ch+=h.ch; od[h.o].cnt++;
+    if(h.sl==='shortlisted'||h.sl==='invited') od[h.o].short++;
+    if(h.final==='selected') od[h.o].sel++;
+    if(h.score_survey>0) od[h.o].scores.push(h.score_survey);
+  });
   Object.entries(od).sort((a,b)=>b[1].ch-a[1].ch).forEach(([o,d])=>{
-    const kfws=[...new Set(H.filter(h=>h.o===o).map(h=>h.g))].sort().join(', ');
-    const bw=Math.round(d.ch/mx*70);
-    tb.innerHTML+=`<tr><td>${o}</td><td style="text-align:right;font-family:var(--mono)">${d.cnt}</td><td style="text-align:right;font-family:var(--mono)">${d.ch.toLocaleString('uk-UA')}<span class="mbar" style="width:${bw}px"></span></td><td style="font-size:10px;color:#888">${kfws}</td></tr>`;
+    const avg = d.scores.length ? (d.scores.reduce((s,v)=>s+v,0)/d.scores.length).toFixed(1) : '—';
+    tb.innerHTML+=`<tr>
+      <td>${o}</td>
+      <td style="text-align:right;font-family:var(--mono)">${d.cnt}</td>
+      <td style="text-align:right;font-family:var(--mono)">${d.ch.toLocaleString('uk-UA')}</td>
+      <td style="text-align:right;font-family:var(--mono)">${d.short||'—'}</td>
+      <td style="text-align:right;font-family:var(--mono)">${d.sel||'—'}</td>
+      <td style="text-align:right;font-family:var(--mono)">${avg}</td>
+    </tr>`;
   });
 }
 
@@ -493,17 +877,16 @@ function renderT(){
 function ftbl(){
   const q=document.getElementById('t-q').value.toLowerCase();
   const ob=document.getElementById('t-obl').value;
-  const kf=document.getElementById('t-kfw').value;
-  FR=H.filter(h=>(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q))&&(!ob||h.o===ob)&&(!kf||h.g===kf));
+  FR=H.filter(h=>(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q))&&(!ob||h.o===ob));
   renderT();
 }
-function resetT(){['t-q','t-obl','t-kfw'].forEach(id=>{document.getElementById(id).value=''});FR=[...H];renderT()}
+function resetT(){['t-q','t-obl'].forEach(id=>{document.getElementById(id).value=''});FR=[...H];renderT()}
 function st(c){
   const ths=document.querySelectorAll('.dt th');
   ths.forEach(t=>t.classList.remove('asc','desc'));
   if(SC===c)SD*=-1;else{SC=c;SD=1};
   ths[c].classList.add(SD===1?'asc':'desc');
-  const K=['id','n','o','g','pop','ch',null,'us','sl'];
+  const K=['id','n','o','g','pop','ch',null,'us','sl','interview','final'];
   const k=K[c];if(!k)return;
   FR.sort((a,b)=>{let av=a[k],bv=b[k];if(typeof av==='number')return(av-bv)*SD;return String(av).localeCompare(String(bv),'uk')*SD});
   renderT();
