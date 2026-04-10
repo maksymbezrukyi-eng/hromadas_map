@@ -585,16 +585,11 @@ function showTab(id){
 
 // MAP
 let map,MKS=[];
-function rp(p){return p>1000000?18:p>500000?14:p>200000?11:p>100000?9:p>50000?7:p>20000?6:5}
+
 function initMap(){
   map=L.map('map',{center:[49.2,31.5],zoom:6});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
-  H.forEach(h=>{
-    const m=L.circleMarker([h.lat,h.lng],{radius:rp(h.pop),fillColor:statusMarkerColor(h),color:'#fff',weight:1.5,fillOpacity:.88});
-    m.bindPopup(`<div class="pp-name">${h.n}</div><div class="pp-obl">${h.o}</div><div class="pp-grid"><div><div class="pp-lbl">KfW</div><div class="pp-val">${h.g}</div></div><div><div class="pp-lbl">Населення</div><div class="pp-val">${h.pop.toLocaleString('uk-UA')}</div></div><div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">${h.ch.toLocaleString('uk-UA')}</div></div><div><div class="pp-lbl">Частка</div><div class="pp-val">${(h.ch/h.pop*100).toFixed(1)}%</div></div></div>`);
-    m.on('click',()=>showHCard(h));
-    m.h=h; m.addTo(map); MKS.push(m);
-  });
+  // Markers removed — boundaries only
   upMS(H);
   loadBoundaries();
 }
@@ -608,23 +603,50 @@ function loadBoundaries(){
     .then(r=>r.json())
     .then(data=>{
       boundaryLayer = L.geoJSON(data, {
-        style: feat => ({
-          fillColor: grantFill(feat.properties.grant),
-          fillOpacity: 0.15,
-          color: grantStroke(feat.properties.grant),
-          weight: 1.5,
-          opacity: 0.7
-        }),
+        style: feat => {
+          const h = H.find(x=>x.id===feat.properties.id);
+          const col = h ? statusColor(h) : '#6B6961';
+          return {
+            fillColor: col,
+            fillOpacity: 0.25,
+            color: col,
+            weight: 1.5,
+            opacity: 0.8,
+            interactive: true
+          };
+        },
         onEachFeature: (feat, layer) => {
           const p = feat.properties;
           layer.on('mouseover', e => {
-            e.target.setStyle({fillOpacity:0.35, weight:2.5});
+            const h = H.find(x=>x.id===p.id);
+            const col = h ? statusColor(h) : '#6B6961';
+            e.target.setStyle({fillColor:col, fillOpacity:0.45, weight:2.5, color:col});
             showHCard(p);
           });
           layer.on('mouseout', e => {
             boundaryLayer.resetStyle(e.target);
           });
-          layer.on('click', () => showHCard(p));
+          layer.on('click', e => {
+            L.DomEvent.stopPropagation(e);
+            showHCard(p);
+            // Open popup on this polygon
+            const name = p.name || p.n;
+            const oblast = p.oblast || p.o;
+            const pop = p.pop || 0;
+            const ch = p.children || p.ch || 0;
+            const share = pop ? (ch/pop*100).toFixed(1) : '—';
+            const h = H.find(x=>x.id===p.id);
+            const status = h ? (SUA[h.sl]||SUA[h.us]||'Очікує') : '—';
+            layer.bindPopup(`
+              <div class="pp-name">${name}</div>
+              <div class="pp-obl">${oblast}</div>
+              <div class="pp-grid">
+                <div><div class="pp-lbl">Населення</div><div class="pp-val">${pop.toLocaleString('uk-UA')}</div></div>
+                <div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">${ch.toLocaleString('uk-UA')}</div></div>
+                <div><div class="pp-lbl">Частка</div><div class="pp-val">${share}%</div></div>
+                <div><div class="pp-lbl">Статус</div><div class="pp-val">${status}</div></div>
+              </div>`).openPopup();
+          });
         }
       }).addTo(map);
     })
@@ -653,7 +675,21 @@ function applyF(){
   const ob=document.getElementById('f-obl').value;
   const q=document.getElementById('f-q').value.toLowerCase().trim();
   const vis=[];
-  MKS.forEach(m=>{const h=m.h;const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));if(ok){m.addTo(map);vis.push(h)}else m.remove()});
+  if(boundaryLayer){
+    boundaryLayer.eachLayer(layer=>{
+      const p=layer.feature.properties;
+      const h=H.find(x=>x.id===p.id);
+      if(!h) return;
+      const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));
+      layer.setStyle({fillOpacity: ok?0.25:0, opacity: ok?0.8:0});
+      if(ok) vis.push(h);
+    });
+  } else {
+    H.forEach(h=>{
+      const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));
+      if(ok) vis.push(h);
+    });
+  }
   upMS(vis);
 }
 function toggleBounds(show){
