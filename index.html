@@ -600,27 +600,29 @@ let boundaryVisible = true;
 
 function loadBoundaries(){
   fetch('data/hromadas_68.geojson')
-    .then(r=>r.json())
+    .then(r=>{
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(data=>{
+      console.log('GeoJSON loaded:', data.features.length, 'features');
       boundaryLayer = L.geoJSON(data, {
         style: feat => {
-          const h = H.find(x=>x.id===feat.properties.id);
-          const col = h ? statusColor(h) : '#6B6961';
-          return {
-            fillColor: col,
-            fillOpacity: 0.25,
-            color: col,
-            weight: 1.5,
-            opacity: 0.8,
-            interactive: true
-          };
+          try {
+            const id = feat.properties.id;
+            const h = H.find(x=>x.id===id) || H.find(x=>x.id===Number(id));
+            const col = h ? statusColor(h) : '#6B6961';
+            return {fillColor:col, fillOpacity:0.25, color:col, weight:1.5, opacity:0.8};
+          } catch(e) {
+            return {fillColor:'#6B6961', fillOpacity:0.2, color:'#444', weight:1};
+          }
         },
         onEachFeature: (feat, layer) => {
           const p = feat.properties;
           layer.on('mouseover', e => {
-            const h = H.find(x=>x.id===p.id);
+            const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
             const col = h ? statusColor(h) : '#6B6961';
-            e.target.setStyle({fillColor:col, fillOpacity:0.45, weight:2.5, color:col});
+            e.target.setStyle({fillOpacity:0.5, weight:2.5});
             showHCard(p);
           });
           layer.on('mouseout', e => {
@@ -629,28 +631,30 @@ function loadBoundaries(){
           layer.on('click', e => {
             L.DomEvent.stopPropagation(e);
             showHCard(p);
-            // Open popup on this polygon
-            const name = p.name || p.n;
-            const oblast = p.oblast || p.o;
-            const pop = p.pop || 0;
-            const ch = p.children || p.ch || 0;
+            const pop = Number(p.pop)||0;
+            const ch = Number(p.children||p.ch)||0;
             const share = pop ? (ch/pop*100).toFixed(1) : '—';
-            const h = H.find(x=>x.id===p.id);
-            const status = h ? (SUA[h.sl]||SUA[h.us]||'Очікує') : '—';
-            layer.bindPopup(`
-              <div class="pp-name">${name}</div>
-              <div class="pp-obl">${oblast}</div>
-              <div class="pp-grid">
-                <div><div class="pp-lbl">Населення</div><div class="pp-val">${pop.toLocaleString('uk-UA')}</div></div>
-                <div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">${ch.toLocaleString('uk-UA')}</div></div>
-                <div><div class="pp-lbl">Частка</div><div class="pp-val">${share}%</div></div>
-                <div><div class="pp-lbl">Статус</div><div class="pp-val">${status}</div></div>
-              </div>`).openPopup();
+            const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
+            const status = h ? (SUA[h.final]||SUA[h.sl]||SUA[h.us]||'Очікує') : '—';
+            layer.bindPopup(
+              '<div class="pp-name">'+(p.name||p.n||'')+'</div>'+
+              '<div class="pp-obl">'+(p.oblast||p.o||'')+'</div>'+
+              '<div class="pp-grid">'+
+              '<div><div class="pp-lbl">Населення</div><div class="pp-val">'+pop.toLocaleString('uk-UA')+'</div></div>'+
+              '<div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">'+ch.toLocaleString('uk-UA')+'</div></div>'+
+              '<div><div class="pp-lbl">Частка</div><div class="pp-val">'+share+'%</div></div>'+
+              '<div><div class="pp-lbl">Статус</div><div class="pp-val">'+status+'</div></div>'+
+              '</div>'
+            ).openPopup();
           });
         }
       }).addTo(map);
+      console.log('BoundaryLayer added to map');
+      upMS(H);
     })
-    .catch(()=>console.log('GeoJSON not found — using markers only'));
+    .catch(e=>{
+      console.error('GeoJSON load failed:', e);
+    });
 }
 
 function grantFill(g){
