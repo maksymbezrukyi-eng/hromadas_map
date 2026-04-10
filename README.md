@@ -1,4 +1,4 @@
-# Турбота з народження — Інструмент відбору громад
+# Інструмент відбору громад
 
 Уніфікований веб-інструмент для відбору та моніторингу громад у програмі «Delivery of universal Early Childhood Development services in primary health care» (UNICEF Ukraine × KfW).
 
