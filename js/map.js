@@ -8,8 +8,11 @@ function refreshMarkers() {
   if(boundaryLayer) {
     boundaryLayer.eachLayer(layer=>{
       const p = layer.feature.properties;
-      const h = H.find(x=>x.id===p.id);
-      if(h) layer.setStyle({fillColor:grantFill(h.g),fillOpacity:0.15});
+      const h = H.find(x=>x.id===p.id) || H.find(x=>x.id===Number(p.id));
+      if(h) {
+        const color = statusMarkerColor(h);
+        layer.setStyle({fillColor:color,color:color,fillOpacity:0.15});
+      }
     });
   }
 }
