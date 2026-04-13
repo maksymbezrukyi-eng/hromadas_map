@@ -10,3 +10,4 @@
 * Виправлено runtime bug з повторним оголошенням `H` у split `index.html`.
 * Стратегічно погоджено рух від selection tool до monitoring tool.
 * Нова тимчасова таблиця проаналізована; пряма міграція ще не починалась.
+* Переключено GitHub Pages на Deploy from a branch для refactor/v0.5-safe-split.
