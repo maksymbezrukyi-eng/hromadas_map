@@ -19,7 +19,7 @@ function rebuildDashboard(){
   // Funnel
   const funnel = [
     {l:'Загальний список',cnt:68,c:'#006EB6'},
-    {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='recommended').length,c:'#1A6B3C'},
+    {l:'Рекомендовані до оцінки',cnt:H.filter(h=>h.us==='recommended').length,c:'#1A6B3C'},
     {l:'До опитування',cnt:56,c:'#0D5E5E'},
     {l:'Short-list (ціль 40)',cnt:shortlisted||0,c:'#5C3A7A'},
     {l:'Відібрано (ціль 40)',cnt:selected||0,c:'#1A6B3C'},
