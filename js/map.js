@@ -28,8 +28,8 @@ function statusMarkerColor(h) {
   if(h.sl==='shortlisted') return '#1A6B3C';
   if(h.sl==='reserve') return '#E08A1E';
   if(h.sl==='excluded') return '#B71C1C';
-  // Default — by KfW
-  return GC[h.g];
+  // Default — pending / missing status
+  return '#6B6961';
 }
 
 function initMap(){
