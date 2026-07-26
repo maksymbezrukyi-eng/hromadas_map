@@ -107,7 +107,6 @@ function showHCard(p){
   document.getElementById('hc-c').textContent = (p.children||p.ch||0).toLocaleString('uk-UA');
   const pop = p.pop||1; const ch = p.children||p.ch||0;
   document.getElementById('hc-s').textContent = (ch/pop*100).toFixed(1)+'%';
-  document.getElementById('hc-k').textContent = p.grant||p.g;
   document.getElementById('hcard').classList.add('on');
 }
 
