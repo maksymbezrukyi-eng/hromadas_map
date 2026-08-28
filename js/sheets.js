@@ -155,6 +155,12 @@ function loadFromLocal(silent=false) {
         h.d4a = row.d4a||0;
         h.final_score = row.final_score||0;
         h.rank = row.rank||0;
+        // Real, questionnaire-reported figures — only set once a hromada's
+        // anketa is accepted, kept separate from h.ch/h.pop (the pre-survey
+        // KfW-file estimate still shown everywhere) until the display layer
+        // is reworked to use these. See Крок 5 in the project plan.
+        if(row.children_u1>0) h.children_u1_confirmed = row.children_u1;
+        if(row.population_survey>0) h.population_survey = row.population_survey;
       });
       LAST_SYNC.time = new Date();
       LAST_SYNC.status = missing.length ? 'schema-warning' : 'ok';

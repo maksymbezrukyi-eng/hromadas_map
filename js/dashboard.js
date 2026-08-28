@@ -13,16 +13,22 @@ function rebuildDashboard(){
   // KPIs
   const shortlisted = H.filter(h=>h.sl==='shortlisted'||h.sl==='invited'||h.sl==='completed').length;
   const selected = H.filter(h=>h.final==='selected').length;
+  const reserve = H.filter(h=>h.sl==='reserve').length;
+  const excluded = H.filter(h=>h.us==='excluded').length;
   document.getElementById('kpi-short').textContent = shortlisted||'—';
   document.getElementById('kpi-selected').textContent = selected||'—';
+  // Опитування йде серед усіх 68 громад — статус UNICEF не підстава для
+  // технічного виключення (методологія, липень 2026)
+  document.getElementById('kpi-assess').textContent = H.length;
+  document.getElementById('kpi-assess-sub').textContent = excluded ? `${excluded} виключені UNICEF` : '';
 
   // Funnel
   const funnel = [
     {l:'Загальний список',cnt:68,c:'#006EB6'},
     {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='recommended').length,c:'#1A6B3C'},
-    {l:'До опитування',cnt:56,c:'#0D5E5E'},
-    {l:'Short-list (ціль 40)',cnt:shortlisted||0,c:'#5C3A7A'},
-    {l:'Відібрано (ціль 40)',cnt:selected||0,c:'#1A6B3C'},
+    {l:'До опитування',cnt:H.length,c:'#0D5E5E'},
+    {l:'Short-list (ціль 45)',cnt:shortlisted||0,c:'#5C3A7A'},
+    {l:'Резерв (ціль 5)',cnt:reserve||0,c:'#E08A1E'},
   ];
   const fb = document.getElementById('funnel-bars');
   fb.innerHTML='';
@@ -89,13 +95,13 @@ function rebuildDashboard(){
 
     // Domain averages
     const doms = [
-      {k:'d1',l:'Демографічна потреба',w:'20%'},
-      {k:'d2',l:'Стан ПМД',w:'10%'},
-      {k:'d3',l:'Фінансова спроможність',w:'15%'},
-      {k:'d4',l:'Географічний',w:'10%'},
-      {k:'d5',l:'Соціальний',w:'5%'},
-      {k:'d6',l:'Громадське здоров-я',w:'10%'},
-      {k:'d4a',l:'Інституційний',w:'10%'},
+      {k:'d1',dl:'D1',l:'Демографічна потреба',w:'20%'},
+      {k:'d2',dl:'D2',l:'Стан ПМД',w:'10%'},
+      {k:'d3',dl:'D3',l:'Фінансова спроможність',w:'15%'},
+      {k:'d4',dl:'D4',l:'Географічний',w:'10%'},
+      {k:'d5',dl:'D5',l:'Соціальний',w:'5%'},
+      {k:'d6',dl:'D6',l:'Громадське здоров-я',w:'10%'},
+      {k:'d4a',dl:'D7',l:'Інституційний профіль',w:'10%'},
     ];
     const scored = H.filter(h=>h.score_survey>0);
     const domAvg = doms.map(d=>scored.length ? (scored.reduce((s,h)=>s+(h[d.k]||0),0)/scored.length).toFixed(1) : 0);
@@ -135,7 +141,7 @@ function rebuildDashboard(){
     mkChart('ch-radar',{
       type:'radar',
       data:{
-        labels:doms.map(d=>d.k.toUpperCase()),
+        labels:doms.map(d=>d.dl),
         datasets:[{
           label:'Середнє',
           data:domAvg,

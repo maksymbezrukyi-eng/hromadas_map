@@ -15,7 +15,7 @@ const EXPECTED_COLUMNS = {
   local: {
     // data/hromadas_survey.json — one object per hromada with a real
     // score, keyed by field name (see scripts/convert_workbook.ps1).
-    survey: ['id','us','sl','interview','final','score_survey','d1','d2','d3','d4','d5','d6','d4a','final_score','rank'],
+    survey: ['id','us','sl','interview','final','score_survey','d1','d2','d3','d4','d5','d6','d4a','final_score','rank','children_u1','population_survey'],
   },
 };
 
@@ -46,7 +46,7 @@ const INDICATOR_NAMES = {
   "Д6 РАЗОМ (макс 10)":"Домен 6 — Громадське здоров-я",
   'Д4А.1':'Досвід програм МТД','Д4А.2':'Структура підрозділу ОЗ',
   'Д4А.3':'Якість мотиваційного листа',
-  'Д4А РАЗОМ (макс 10)':'Домен 4А: Інституційний профіль',
+  'Д4А РАЗОМ (макс 10)':'Домен 7: Інституційний профіль',
   'ЗВАЖЕНИЙ БАЛ ОПИТ. (макс 8,0)':'Зважений бал опитування (макс 8.0)',
 };
 
