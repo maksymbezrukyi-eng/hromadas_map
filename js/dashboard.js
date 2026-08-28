@@ -33,44 +33,30 @@ function populateIndicatorPicker(){
   });
 }
 
-// Які громади зараз враховуються в графіку показника — за замовчуванням усі,
-// користувач може зняти галочки в переліку зліва від графіка.
-let IND_SELECTED = new Set(H.map(h=>h.id));
-
-function populateIndicatorList(){
-  const wrap = document.getElementById('ind-list');
-  if(!wrap || wrap.children.length) return; // once
+// Список громад (мультивибір) — за замовчуванням усі обрані. Натуральний
+// <select multiple> замість власного переліку з чекбоксами: компактніший,
+// має вбудований скрол, ctrl/shift-клік і пошук літерами з коробки.
+function populateHromadaSelect(){
+  const sel = document.getElementById('ind-hromadas');
+  if(!sel || sel.options.length) return; // once — не скидати вибір користувача
   [...H].sort((a,b)=>a.n.localeCompare(b.n,'uk')).forEach(h=>{
-    const lbl = document.createElement('label');
-    lbl.dataset.name = (h.n+' '+h.o).toLowerCase();
-    lbl.innerHTML = `<input type="checkbox" checked onchange="toggleIndHromada(${h.id},this.checked)">${h.n}`;
-    wrap.appendChild(lbl);
-  });
-}
-function toggleIndHromada(id,checked){
-  if(checked) IND_SELECTED.add(id); else IND_SELECTED.delete(id);
-  renderIndicatorChart();
-}
-function indListSetAll(checked){
-  document.querySelectorAll('#ind-list input[type=checkbox]').forEach(cb=>cb.checked=checked);
-  IND_SELECTED = checked ? new Set(H.map(h=>h.id)) : new Set();
-  renderIndicatorChart();
-}
-function filterIndList(){
-  const q = document.getElementById('ind-list-q').value.toLowerCase().trim();
-  document.querySelectorAll('#ind-list label').forEach(lbl=>{
-    lbl.style.display = (!q || lbl.dataset.name.includes(q)) ? '' : 'none';
+    const op = document.createElement('option');
+    op.value = h.id; op.textContent = `${h.n} (${h.o})`; op.selected = true;
+    sel.appendChild(op);
   });
 }
 
 function renderIndicatorChart(){
   const field = document.getElementById('ind-picker').value;
+  const selectedIds = new Set(Array.from(document.getElementById('ind-hromadas').selectedOptions).map(o=>Number(o.value)));
   const pick = INDICATOR_PICKS.find(d=>d.k===field) || INDICATOR_PICKS[0];
-  const ranked = H.filter(h=>IND_SELECTED.has(h.id) && h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
+  const ranked = H.filter(h=>selectedIds.has(h.id) && h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
   document.getElementById('ind-empty').style.display = ranked.length ? 'none' : '';
-  const el = document.getElementById('ch-indicator');
   if(!ranked.length){ if(_charts['ch-indicator']){_charts['ch-indicator'].destroy(); delete _charts['ch-indicator'];} return; }
-  el.height = Math.max(180, ranked.length*18);
+  // Висоту задаємо контейнеру, не самому canvas — інакше Chart.js
+  // (responsive:true) підганяє контейнер під canvas, а canvas під
+  // контейнер по колу, і за кілька перерендерів висота "втікає" в нескінченність.
+  document.getElementById('ind-chart-wrap').style.height = Math.max(180, ranked.length*18) + 'px';
   mkChart('ch-indicator',{
     type:'bar',
     data:{
@@ -87,26 +73,49 @@ function renderIndicatorChart(){
 }
 
 // Два донати замість старої текстової воронки — скільки подали опитувальник
-// і скільки пройшли інтерв'ю, з 68.
+// і скільки пройшли інтерв'ю, з 68. Легенда показує саме й абсолютне число, і
+// відсоток — без плагіна datalabels (його нема серед дозволених залежностей),
+// суто через стандартний generateLabels у Chart.js.
+function donutLegend(){
+  return {
+    position:'bottom',
+    labels:{
+      font:CHART_FONT, color:'#6B6961', boxWidth:10, padding:12,
+      generateLabels(chart){
+        const d = chart.data;
+        const total = d.datasets[0].data.reduce((s,v)=>s+v,0) || 1;
+        return d.labels.map((l,i)=>{
+          const v = d.datasets[0].data[i];
+          const pct = Math.round(v/total*100);
+          return {
+            text:`${l}: ${v} (${pct}%)`,
+            fillStyle:d.datasets[0].backgroundColor[i],
+            strokeStyle:d.datasets[0].backgroundColor[i],
+            index:i
+          };
+        });
+      }
+    }
+  };
+}
 function renderSubmissionDonuts(){
   const submitted = H.filter(h=>h.score_survey>0).length;
   const interviewed = H.filter(h=>h.interview && h.interview!=='pending').length;
   document.getElementById('donut-submit-title').textContent = `Подали опитувальник — ${submitted} з 68`;
   document.getElementById('donut-interview-title').textContent = `Пройшли інтерв'ю — ${interviewed} з 68`;
-  const legendOpt = {position:'bottom',labels:{font:CHART_FONT,color:'#6B6961',boxWidth:10,padding:12}};
   mkChart('ch-submit-donut',{
     type:'doughnut',
     data:{labels:['Подали','Не подали'],datasets:[{data:[submitted,68-submitted],backgroundColor:['#006EB6','#E0DED8'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendOpt}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:donutLegend()}}
   });
   mkChart('ch-interview-donut',{
     type:'doughnut',
-    data:{labels:["Пройшли інтерв'ю",'Ще ні'],datasets:[{data:[interviewed,68-interviewed],backgroundColor:['#1A6B3C','#E0DED8'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendOpt}}
+    data:{labels:["Пройшли",'Ще ні'],datasets:[{data:[interviewed,68-interviewed],backgroundColor:['#1A6B3C','#E0DED8'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:donutLegend()}}
   });
 }
 
-function initDash(){ populateIndicatorPicker(); populateIndicatorList(); rebuildDashboard(); }
+function initDash(){ populateIndicatorPicker(); populateHromadaSelect(); rebuildDashboard(); }
 
 function rebuildDashboard(){
   // KPIs

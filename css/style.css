@@ -68,13 +68,19 @@ select:focus,input:focus{border-color:var(--blue)}
 .obl-tbl tr:last-child td{border-bottom:none}
 .mbar{display:inline-block;height:3px;background:var(--blue);border-radius:1px;vertical-align:middle;margin-left:6px;opacity:.6}
 
-.ind-layout{display:flex;gap:14px}
-.ind-list-wrap{width:210px;flex-shrink:0;display:flex;flex-direction:column}
-.ind-list{max-height:340px;overflow-y:auto;border:1px solid var(--g2);border-radius:4px;background:var(--g0)}
-.ind-list label{display:flex;align-items:center;gap:6px;padding:4px 8px;font-size:12px;color:var(--g5);cursor:pointer;white-space:nowrap}
-.ind-list label:hover{background:var(--blue-light)}
-.ind-list input[type=checkbox]{margin:0;width:auto}
-.ind-chart-wrap{flex:1;min-width:0}
+.donut-wrap{position:relative;height:220px;max-width:100%}
+.donut-wrap canvas{max-width:100%}
+.ind-chart-wrap{position:relative;height:180px;max-width:100%}
+.ind-chart-wrap canvas{max-width:100%}
+.chart-wrap-260{position:relative;height:260px;max-width:100%}
+.chart-wrap-180{position:relative;height:180px;max-width:100%}
+.chart-wrap-260 canvas,.chart-wrap-180 canvas{max-width:100%}
+
+.ind-form{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.ind-col{flex:1;min-width:180px;max-width:320px}
+.ind-col-lbl{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g3);margin-bottom:6px}
+.ind-col select[multiple]{height:220px;padding:4px}
+.ind-col select[multiple] option{padding:3px 6px;font-size:12px}
 
 /* TABLE */
 .tbl-layout{flex:1;display:flex;flex-direction:column;overflow:hidden}
