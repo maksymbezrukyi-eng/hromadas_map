@@ -113,6 +113,16 @@
         </div>
       </div>
 
+      <!-- Indicator picker — pick any indicator, see all 68 hromadas ranked by it -->
+      <div class="cc">
+        <div class="cc-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <span>Аналітика за показником</span>
+          <select id="ind-picker" style="margin-bottom:0;width:auto;min-width:220px" onchange="renderIndicatorChart(this.value)"></select>
+        </div>
+        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0">Немає громад із даними по цьому показнику ще.</div>
+        <canvas id="ch-indicator" height="320"></canvas>
+      </div>
+
       <!-- Scores row — shown when data available -->
       <div class="chart-row" id="scores-row" style="display:none">
         <div class="cc">
@@ -169,16 +179,17 @@
       <div class="tbl-wrap">
         <table class="dt">
           <thead><tr>
-            <th onclick="st(0)">ID</th>
-            <th onclick="st(1)">Громада</th>
-            <th onclick="st(2)">Область</th>
-            <th onclick="st(3)">Населення</th>
-            <th onclick="st(4)">Дітей до 1р.</th>
-            <th onclick="st(5)">Частка %</th>
-            <th onclick="st(6)">UNICEF статус</th>
-            <th onclick="st(7)">Short-list</th>
-            <th onclick="st(8)">Інтерв'ю</th>
-            <th onclick="st(9)">Фінальний статус</th>
+            <th></th>
+            <th onclick="st(1)">ID</th>
+            <th onclick="st(2)">Громада</th>
+            <th onclick="st(3)">Область</th>
+            <th onclick="st(4)">Населення</th>
+            <th onclick="st(5)">Дітей до 1р.</th>
+            <th onclick="st(6)">Частка %</th>
+            <th onclick="st(7)">UNICEF статус</th>
+            <th onclick="st(8)">Short-list</th>
+            <th onclick="st(9)">Інтерв'ю</th>
+            <th onclick="st(10)">Фінальний статус</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table>

@@ -7,7 +7,55 @@ function mkChart(id, cfg) {
   _charts[id] = new Chart(el, cfg);
 }
 
-function initDash(){ rebuildDashboard(); }
+// Indicator picker — обраний показник → горизонтальний барчарт усіх громад,
+// де він відомий, відсортованих за спаданням. Той самий тип графіка, що й
+// раніше був тільки для "Топ-20 за балом", тепер під будь-який показник.
+const INDICATOR_PICKS = [
+  {k:'score_survey', l:'Бал опитування (макс 8)'},
+  {k:'d1', l:'Домен 1: Демографічна потреба'},
+  {k:'d2', l:'Домен 2: Стан ПМД'},
+  {k:'d3', l:'Домен 3: Фінансова спроможність'},
+  {k:'d4', l:'Домен 4: Географічний'},
+  {k:'d5', l:'Домен 5: Соціальний'},
+  {k:'d6', l:'Домен 6: Громадське здоров-я'},
+  {k:'d4a', l:'Домен 7: Інституційний профіль'},
+  {k:'children_u1_confirmed', l:'Дітей до 1 року (за анкетою)'},
+  {k:'population_survey', l:'Населення (за анкетою)'},
+];
+
+function populateIndicatorPicker(){
+  const sel = document.getElementById('ind-picker');
+  if(!sel || sel.options.length) return; // once — не скидати вибір користувача
+  INDICATOR_PICKS.forEach(d=>{
+    const op = document.createElement('option');
+    op.value = d.k; op.textContent = d.l;
+    sel.appendChild(op);
+  });
+}
+
+function renderIndicatorChart(field){
+  const pick = INDICATOR_PICKS.find(d=>d.k===field) || INDICATOR_PICKS[0];
+  const ranked = H.filter(h=>h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
+  document.getElementById('ind-empty').style.display = ranked.length ? 'none' : '';
+  const el = document.getElementById('ch-indicator');
+  if(!ranked.length){ if(_charts['ch-indicator']){_charts['ch-indicator'].destroy(); delete _charts['ch-indicator'];} return; }
+  el.height = Math.max(180, ranked.length*18);
+  mkChart('ch-indicator',{
+    type:'bar',
+    data:{
+      labels: ranked.map(h=>h.n.slice(0,18)),
+      datasets:[{ data: ranked.map(h=>h[pick.k]), backgroundColor:'#006EB6', borderRadius:2 }]
+    },
+    options:{...CHART_OPTS, indexAxis:'y',
+      scales:{
+        y:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
+        x:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
+      }
+    }
+  });
+}
+
+function initDash(){ populateIndicatorPicker(); rebuildDashboard(); }
 
 function rebuildDashboard(){
   // KPIs
@@ -17,6 +65,7 @@ function rebuildDashboard(){
   const submitted = H.filter(h=>h.score_survey>0).length;
   document.getElementById('kpi-short').textContent = shortlisted||'—';
   document.getElementById('kpi-selected').textContent = selected||'—';
+  renderIndicatorChart(document.getElementById('ind-picker').value);
 
   // Funnel
   const funnel = [

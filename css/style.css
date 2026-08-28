@@ -90,6 +90,12 @@ table.dt{width:100%;border-collapse:collapse;font-size:12px}
 .dt th.desc::after{content:' ↓'}
 .dt td{padding:8px 12px;border-bottom:1px solid var(--g1);white-space:nowrap}
 .dt tr:hover td{background:var(--blue-light)}
+.expand-btn{cursor:pointer;color:var(--g3);text-align:center;width:22px;user-select:none}
+.expand-btn:hover{color:var(--blue)}
+.dt-expand td{background:var(--g0);padding:12px 16px;white-space:normal}
+.dtl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.dtl-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g3);margin-bottom:2px}
+.dtl-val{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--g5)}
 .mono{font-family:var(--mono)}
 .num{font-family:var(--mono);text-align:right}
 .badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:2px 6px;border-radius:2px}

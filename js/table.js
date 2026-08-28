@@ -1,12 +1,43 @@
 function initTbl(){FR=[...H];renderT()}
 function badge(s,cls){return`<span class="badge ${cls||SBC[s]||'b-pend'}">${SUA[s]||s}</span>`}
+
+// Розгорнуті рядки — id громад, для яких зараз показано повні дані
+// (домени, бали, населення за анкетою), а не тільки курований набір
+// колонок. Скидається при повторному рендері з нуля — це нормально,
+// список громад однаково стабільний.
+let EXP = new Set();
+function toggleRow(id){
+  if(EXP.has(id)) EXP.delete(id); else EXP.add(id);
+  renderT();
+}
+function dtlCell(l,v){return`<div><div class="dtl-lbl">${l}</div><div class="dtl-val">${v}</div></div>`}
+function detailRow(h){
+  const num=(v,d)=>v>0?(d?v.toFixed(d):v.toLocaleString('uk-UA')):'—';
+  const cells=[
+    dtlCell('Домен 1: Демографічна потреба',num(h.d1)),
+    dtlCell('Домен 2: Стан ПМД',num(h.d2)),
+    dtlCell('Домен 3: Фінансова спроможність',num(h.d3)),
+    dtlCell('Домен 4: Географічний',num(h.d4)),
+    dtlCell('Домен 5: Соціальний',num(h.d5)),
+    dtlCell('Домен 6: Громадське здоров-я',num(h.d6)),
+    dtlCell('Домен 7: Інституційний профіль',num(h.d4a)),
+    dtlCell('Бал опитування (макс 8)',num(h.score_survey,2)),
+    dtlCell('Фінальний бал (макс 10)',num(h.final_score,2)),
+    dtlCell('Позиція в рейтингу',num(h.rank)),
+    dtlCell('Населення (за анкетою)',num(h.population_survey)),
+  ].join('');
+  return `<tr class="dt-expand"><td colspan="11"><div class="dtl-grid">${cells}</div></td></tr>`;
+}
+
 function renderT(){
   const tb=document.getElementById('tbody');tb.innerHTML='';
   FR.forEach(h=>{
     const confirmed = h.children_u1_confirmed>0;
     const chTxt = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
     const sh = confirmed ? (h.children_u1_confirmed/h.pop*100).toFixed(1)+'%' : '—';
-    tb.innerHTML+=`<tr><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString('uk-UA')}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td></tr>`;
+    const arrow = EXP.has(h.id) ? '▾' : '▸';
+    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString('uk-UA')}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td></tr>`;
+    if(EXP.has(h.id)) tb.innerHTML+=detailRow(h);
   });
   document.getElementById('tcnt').textContent=`${FR.length} з ${H.length}`;
 }
@@ -22,7 +53,7 @@ function st(c){
   ths.forEach(t=>t.classList.remove('asc','desc'));
   if(SC===c)SD*=-1;else{SC=c;SD=1};
   ths[c].classList.add(SD===1?'asc':'desc');
-  const K=['id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final'];
+  const K=[null,'id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final'];
   const k=K[c];if(!k)return;
   FR.sort((a,b)=>{let av=a[k],bv=b[k];if(typeof av==='number')return(av-bv)*SD;return String(av).localeCompare(String(bv),'uk')*SD});
   renderT();
