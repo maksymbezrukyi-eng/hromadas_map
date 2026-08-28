@@ -1,3 +1,26 @@
+// Where live sync pulls data from.
+// 'sheets' — Google Sheets CSV (current, live behaviour).
+// 'local'  — data/hromadas_survey.json, a snapshot exported from the
+//            selection workbook. Not switched on yet — see README.
+const DATA_SOURCE = 'sheets';
+
+// Columns/fields each source is expected to provide. Checked on every
+// load; a missing one is reported instead of silently producing blanks.
+const EXPECTED_COLUMNS = {
+  sheets: {
+    status: ['hromada_id','UNICEF статус','Short-list',"Статус інтерв'ю",'Фінальний статус'],
+    scoring: ['hromada_id','ЗВАЖЕНИЙ БАЛ ОПИТ. (макс 8,0)','Д1 РАЗОМ (макс 10)','Д2 РАЗОМ (макс 10)','Д3 РАЗОМ (макс 10)','Д4 РАЗОМ (макс 10)','Д5 РАЗОМ (макс 10)','Д6 РАЗОМ (макс 10)','Д4А РАЗОМ (макс 10)'],
+    ranking: ['hromada_id','final_score (макс 10,0)','rank_auto','final_decision'],
+  },
+  local: {
+    // data/hromadas_survey.json — one object per hromada with a real
+    // score, keyed by field name (see scripts/convert_workbook.ps1).
+    survey: ['id','us','sl','interview','final','score_survey','d1','d2','d3','d4','d5','d6','d4a','final_score','rank'],
+  },
+};
+
+const LOCAL_DATA_URL = 'data/hromadas_survey.json';
+
 const SHEETS = {
   status: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=1397593365&single=true&output=csv',
   scoring: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=672236927&single=true&output=csv',
@@ -42,6 +65,9 @@ const CHART_OPTS = {
   }
 };
 
+window.DATA_SOURCE = DATA_SOURCE;
+window.EXPECTED_COLUMNS = EXPECTED_COLUMNS;
+window.LOCAL_DATA_URL = LOCAL_DATA_URL;
 window.SHEETS = SHEETS;
 window.INDICATOR_NAMES = INDICATOR_NAMES;
 window.GC = GC;

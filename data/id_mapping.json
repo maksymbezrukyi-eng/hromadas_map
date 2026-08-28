@@ -1,0 +1,566 @@
+[
+    {
+        "tool_id":  1,
+        "tool_name":  "Чернігівська",
+        "workbook_id":  68,
+        "workbook_name":  "Чернігівська",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  2,
+        "tool_name":  "Бахматська",
+        "workbook_id":  63,
+        "workbook_name":  "Бахматська",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  3,
+        "tool_name":  "Бобровицька",
+        "workbook_id":  64,
+        "workbook_name":  "Бобровицька",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  4,
+        "tool_name":  "Куликівська",
+        "workbook_id":  65,
+        "workbook_name":  "Куликівська",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  5,
+        "tool_name":  "Менська",
+        "workbook_id":  66,
+        "workbook_name":  "Менська",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  6,
+        "tool_name":  "Ніжинська",
+        "workbook_id":  67,
+        "workbook_name":  "Ніжинська",
+        "oblast":  "Чернігівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  7,
+        "tool_name":  "Криворізька",
+        "workbook_id":  4,
+        "workbook_name":  "Криворізька",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  8,
+        "tool_name":  "Новомосковська",
+        "workbook_id":  5,
+        "workbook_name":  "Новомосковська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  9,
+        "tool_name":  "Жовтоводська",
+        "workbook_id":  3,
+        "workbook_name":  "Жовтоводська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  10,
+        "tool_name":  "Верхньодніпровська",
+        "workbook_id":  2,
+        "workbook_name":  "Верхньодніпровська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  11,
+        "tool_name":  "Підгороднєнська",
+        "workbook_id":  7,
+        "workbook_name":  "Підгороднєнська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  12,
+        "tool_name":  "Перещепинська",
+        "workbook_id":  6,
+        "workbook_name":  "Перещепинська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  13,
+        "tool_name":  "Царичанська",
+        "workbook_id":  8,
+        "workbook_name":  "Царичанська",
+        "oblast":  "Дніпропетровська",
+        "matched":  true
+    },
+    {
+        "tool_id":  14,
+        "tool_name":  "Харківська",
+        "workbook_id":  61,
+        "workbook_name":  "Харківська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  15,
+        "tool_name":  "Балаклійська",
+        "workbook_id":  51,
+        "workbook_name":  "Балаклійська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  16,
+        "tool_name":  "Чугуївська",
+        "workbook_id":  62,
+        "workbook_name":  "Чугуївська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  17,
+        "tool_name":  "Кегичівська",
+        "workbook_id":  57,
+        "workbook_name":  "Кегичівська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  18,
+        "tool_name":  "Пісочинська",
+        "workbook_id":  60,
+        "workbook_name":  "Пісочинська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  19,
+        "tool_name":  "Валківська",
+        "workbook_id":  53,
+        "workbook_name":  "Валківська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  20,
+        "tool_name":  "Лозівська",
+        "workbook_id":  58,
+        "workbook_name":  "Лозівська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  21,
+        "tool_name":  "Зміївська",
+        "workbook_id":  56,
+        "workbook_name":  "Зміївська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  22,
+        "tool_name":  "Височанська",
+        "workbook_id":  54,
+        "workbook_name":  "Височанська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  23,
+        "tool_name":  "Мерефянська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Харківська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  24,
+        "tool_name":  "Люботинська",
+        "workbook_id":  59,
+        "workbook_name":  "Люботинська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  25,
+        "tool_name":  "Первомайська",
+        "workbook_id":  55,
+        "workbook_name":  "Златопільська (кол. Первомайська)",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  26,
+        "tool_name":  "Кропивницький",
+        "workbook_id":  29,
+        "workbook_name":  "Кропивницький",
+        "oblast":  "Кіровоградська",
+        "matched":  true
+    },
+    {
+        "tool_id":  27,
+        "tool_name":  "Новоукраїнська",
+        "workbook_id":  30,
+        "workbook_name":  "Новоукраїнська",
+        "oblast":  "Кіровоградська",
+        "matched":  true
+    },
+    {
+        "tool_id":  28,
+        "tool_name":  "Олександрійська",
+        "workbook_id":  31,
+        "workbook_name":  "Олександрійська",
+        "oblast":  "Кіровоградська",
+        "matched":  true
+    },
+    {
+        "tool_id":  29,
+        "tool_name":  "Ірпінська",
+        "workbook_id":  20,
+        "workbook_name":  "Ірпінська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  30,
+        "tool_name":  "Бородянська",
+        "workbook_id":  21,
+        "workbook_name":  "Бородянська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  31,
+        "tool_name":  "Бучанська",
+        "workbook_id":  22,
+        "workbook_name":  "Бучанська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  32,
+        "tool_name":  "Димерська",
+        "workbook_id":  26,
+        "workbook_name":  "Димерська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  33,
+        "tool_name":  "Гостомельська",
+        "workbook_id":  25,
+        "workbook_name":  "Гостомельська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  34,
+        "tool_name":  "Іванківська",
+        "workbook_id":  19,
+        "workbook_name":  "Іванківська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  35,
+        "tool_name":  "Макарівська",
+        "workbook_id":  27,
+        "workbook_name":  "Макарівська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  36,
+        "tool_name":  "Великодимерська",
+        "workbook_id":  23,
+        "workbook_name":  "Великодимерська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  37,
+        "tool_name":  "Вишгородська",
+        "workbook_id":  24,
+        "workbook_name":  "Вишгородська",
+        "oblast":  "Київська",
+        "matched":  true
+    },
+    {
+        "tool_id":  38,
+        "tool_name":  "Київ",
+        "workbook_id":  28,
+        "workbook_name":  "Київ",
+        "oblast":  "Київська (місто)",
+        "matched":  true
+    },
+    {
+        "tool_id":  39,
+        "tool_name":  "Ходорівська",
+        "workbook_id":  39,
+        "workbook_name":  "Ходорівська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  40,
+        "tool_name":  "Львів (місто)",
+        "workbook_id":  32,
+        "workbook_name":  "Львів (місто)",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  41,
+        "tool_name":  "Миколаївська",
+        "workbook_id":  33,
+        "workbook_name":  "Миколаївська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  42,
+        "tool_name":  "Новороздільська",
+        "workbook_id":  34,
+        "workbook_name":  "Новороздільська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  43,
+        "tool_name":  "Рудківська",
+        "workbook_id":  35,
+        "workbook_name":  "Рудківська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  44,
+        "tool_name":  "Самбірська",
+        "workbook_id":  36,
+        "workbook_name":  "Самбірська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  45,
+        "tool_name":  "Славська",
+        "workbook_id":  37,
+        "workbook_name":  "Славська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  46,
+        "tool_name":  "Стрийська",
+        "workbook_id":  38,
+        "workbook_name":  "Стрийська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  47,
+        "tool_name":  "Баштанська",
+        "workbook_id":  40,
+        "workbook_name":  "Баштанська",
+        "oblast":  "Миколаївська",
+        "matched":  true
+    },
+    {
+        "tool_id":  48,
+        "tool_name":  "Миколаївська",
+        "workbook_id":  42,
+        "workbook_name":  "Миколаївська",
+        "oblast":  "Миколаївська",
+        "matched":  true
+    },
+    {
+        "tool_id":  49,
+        "tool_name":  "Вознесенська",
+        "workbook_id":  41,
+        "workbook_name":  "Вознесенська",
+        "oblast":  "Миколаївська",
+        "matched":  true
+    },
+    {
+        "tool_id":  50,
+        "tool_name":  "Новоодеська",
+        "workbook_id":  43,
+        "workbook_name":  "Новоодеська",
+        "oblast":  "Миколаївська",
+        "matched":  true
+    },
+    {
+        "tool_id":  51,
+        "tool_name":  "Одеська",
+        "workbook_id":  47,
+        "workbook_name":  "Одеська",
+        "oblast":  "Одеська",
+        "matched":  true
+    },
+    {
+        "tool_id":  52,
+        "tool_name":  "Кілійська",
+        "workbook_id":  46,
+        "workbook_name":  "Кілійська",
+        "oblast":  "Одеська",
+        "matched":  true
+    },
+    {
+        "tool_id":  53,
+        "tool_name":  "Болградська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Одеська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  54,
+        "tool_name":  "Подільська",
+        "workbook_id":  48,
+        "workbook_name":  "Подільська",
+        "oblast":  "Одеська",
+        "matched":  true
+    },
+    {
+        "tool_id":  55,
+        "tool_name":  "Балта",
+        "workbook_id":  44,
+        "workbook_name":  "Балта",
+        "oblast":  "Одеська",
+        "matched":  true
+    },
+    {
+        "tool_id":  56,
+        "tool_name":  "Полтава (місто)",
+        "workbook_id":  49,
+        "workbook_name":  "Полтава (місто)",
+        "oblast":  "Полтавська",
+        "matched":  true
+    },
+    {
+        "tool_id":  57,
+        "tool_name":  "Роменська",
+        "workbook_id":  50,
+        "workbook_name":  "Роменська",
+        "oblast":  "Сумська",
+        "matched":  true
+    },
+    {
+        "tool_id":  58,
+        "tool_name":  "Луцька",
+        "workbook_id":  1,
+        "workbook_name":  "Луцька",
+        "oblast":  "Волинська",
+        "matched":  true
+    },
+    {
+        "tool_id":  59,
+        "tool_name":  "Мукачівська",
+        "workbook_id":  15,
+        "workbook_name":  "Мукачівська",
+        "oblast":  "Закарпатська",
+        "matched":  true
+    },
+    {
+        "tool_id":  60,
+        "tool_name":  "Ужгородська",
+        "workbook_id":  16,
+        "workbook_name":  "Ужгородська",
+        "oblast":  "Закарпатська",
+        "matched":  true
+    },
+    {
+        "tool_id":  61,
+        "tool_name":  "Запорізька",
+        "workbook_id":  17,
+        "workbook_name":  "Запорізька",
+        "oblast":  "Запорізька",
+        "matched":  true
+    },
+    {
+        "tool_id":  62,
+        "tool_name":  "Широківська",
+        "workbook_id":  18,
+        "workbook_name":  "Широківська",
+        "oblast":  "Запорізька",
+        "matched":  true
+    },
+    {
+        "tool_id":  63,
+        "tool_name":  "Андрушівська",
+        "workbook_id":  9,
+        "workbook_name":  "Андрушівська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  64,
+        "tool_name":  "Хорошівська",
+        "workbook_id":  14,
+        "workbook_name":  "Хорошівська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  65,
+        "tool_name":  "Коростенська",
+        "workbook_id":  11,
+        "workbook_name":  "Коростенська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  66,
+        "tool_name":  "Олевська",
+        "workbook_id":  13,
+        "workbook_name":  "Олевська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  67,
+        "tool_name":  "Житомирська",
+        "workbook_id":  10,
+        "workbook_name":  "Житомирська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  68,
+        "tool_name":  "Новоград-Волинська",
+        "workbook_id":  12,
+        "workbook_name":  "Новоград-Волинська",
+        "oblast":  "Житомирська",
+        "matched":  true
+    },
+    {
+        "tool_id":  null,
+        "tool_name":  null,
+        "workbook_id":  45,
+        "workbook_name":  "Березівська",
+        "oblast":  "Одеська",
+        "matched":  false,
+        "note":  "Є у воркбуку, немає в H[] інструмента"
+    },
+    {
+        "tool_id":  null,
+        "tool_name":  null,
+        "workbook_id":  52,
+        "workbook_name":  "Близнюківська",
+        "oblast":  "Харківська",
+        "matched":  false,
+        "note":  "Є у воркбуку, немає в H[] інструмента"
+    }
+]
