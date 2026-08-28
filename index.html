@@ -101,26 +101,38 @@
         <div class="kpi"><div class="kpi-val" id="kpi-oblasts">15</div><div class="kpi-lbl">Областей</div></div>
       </div>
 
-      <!-- Funnel + Oblast -->
+      <!-- Submission progress — two donuts instead of the old bar-style funnel -->
       <div class="chart-row">
         <div class="cc">
-          <div class="cc-title">Воронка відбору</div>
-          <div class="sbars" id="funnel-bars"></div>
+          <div class="cc-title" id="donut-submit-title">Подали опитувальник</div>
+          <canvas id="ch-submit-donut" height="200"></canvas>
         </div>
         <div class="cc">
-          <div class="cc-title">Статус по областях</div>
-          <canvas id="ch-oblast-status" height="200"></canvas>
+          <div class="cc-title" id="donut-interview-title">Пройшли інтерв'ю</div>
+          <canvas id="ch-interview-donut" height="200"></canvas>
         </div>
       </div>
 
-      <!-- Indicator picker — pick any indicator, see all 68 hromadas ranked by it -->
+      <!-- Indicator picker — pick an indicator and which hromadas to include -->
       <div class="cc">
-        <div class="cc-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div class="cc-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
           <span>Аналітика за показником</span>
-          <select id="ind-picker" style="margin-bottom:0;width:auto;min-width:220px" onchange="renderIndicatorChart(this.value)"></select>
+          <select id="ind-picker" style="margin-bottom:0;width:auto;min-width:220px" onchange="renderIndicatorChart()"></select>
         </div>
-        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0">Немає громад із даними по цьому показнику ще.</div>
-        <canvas id="ch-indicator" height="320"></canvas>
+        <div class="ind-layout">
+          <div class="ind-list-wrap">
+            <input type="text" id="ind-list-q" placeholder="Пошук громади..." oninput="filterIndList()" style="margin-bottom:6px">
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(true)">Усі</button>
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(false)">Жодної</button>
+            </div>
+            <div id="ind-list" class="ind-list"></div>
+          </div>
+          <div class="ind-chart-wrap">
+            <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0">Немає обраних громад із даними по цьому показнику.</div>
+            <canvas id="ch-indicator" height="320"></canvas>
+          </div>
+        </div>
       </div>
 
       <!-- Scores row — shown when data available -->

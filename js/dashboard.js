@@ -33,9 +33,40 @@ function populateIndicatorPicker(){
   });
 }
 
-function renderIndicatorChart(field){
+// Які громади зараз враховуються в графіку показника — за замовчуванням усі,
+// користувач може зняти галочки в переліку зліва від графіка.
+let IND_SELECTED = new Set(H.map(h=>h.id));
+
+function populateIndicatorList(){
+  const wrap = document.getElementById('ind-list');
+  if(!wrap || wrap.children.length) return; // once
+  [...H].sort((a,b)=>a.n.localeCompare(b.n,'uk')).forEach(h=>{
+    const lbl = document.createElement('label');
+    lbl.dataset.name = (h.n+' '+h.o).toLowerCase();
+    lbl.innerHTML = `<input type="checkbox" checked onchange="toggleIndHromada(${h.id},this.checked)">${h.n}`;
+    wrap.appendChild(lbl);
+  });
+}
+function toggleIndHromada(id,checked){
+  if(checked) IND_SELECTED.add(id); else IND_SELECTED.delete(id);
+  renderIndicatorChart();
+}
+function indListSetAll(checked){
+  document.querySelectorAll('#ind-list input[type=checkbox]').forEach(cb=>cb.checked=checked);
+  IND_SELECTED = checked ? new Set(H.map(h=>h.id)) : new Set();
+  renderIndicatorChart();
+}
+function filterIndList(){
+  const q = document.getElementById('ind-list-q').value.toLowerCase().trim();
+  document.querySelectorAll('#ind-list label').forEach(lbl=>{
+    lbl.style.display = (!q || lbl.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+
+function renderIndicatorChart(){
+  const field = document.getElementById('ind-picker').value;
   const pick = INDICATOR_PICKS.find(d=>d.k===field) || INDICATOR_PICKS[0];
-  const ranked = H.filter(h=>h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
+  const ranked = H.filter(h=>IND_SELECTED.has(h.id) && h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
   document.getElementById('ind-empty').style.display = ranked.length ? 'none' : '';
   const el = document.getElementById('ch-indicator');
   if(!ranked.length){ if(_charts['ch-indicator']){_charts['ch-indicator'].destroy(); delete _charts['ch-indicator'];} return; }
@@ -55,58 +86,36 @@ function renderIndicatorChart(field){
   });
 }
 
-function initDash(){ populateIndicatorPicker(); rebuildDashboard(); }
+// Два донати замість старої текстової воронки — скільки подали опитувальник
+// і скільки пройшли інтерв'ю, з 68.
+function renderSubmissionDonuts(){
+  const submitted = H.filter(h=>h.score_survey>0).length;
+  const interviewed = H.filter(h=>h.interview && h.interview!=='pending').length;
+  document.getElementById('donut-submit-title').textContent = `Подали опитувальник — ${submitted} з 68`;
+  document.getElementById('donut-interview-title').textContent = `Пройшли інтерв'ю — ${interviewed} з 68`;
+  const legendOpt = {position:'bottom',labels:{font:CHART_FONT,color:'#6B6961',boxWidth:10,padding:12}};
+  mkChart('ch-submit-donut',{
+    type:'doughnut',
+    data:{labels:['Подали','Не подали'],datasets:[{data:[submitted,68-submitted],backgroundColor:['#006EB6','#E0DED8'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendOpt}}
+  });
+  mkChart('ch-interview-donut',{
+    type:'doughnut',
+    data:{labels:["Пройшли інтерв'ю",'Ще ні'],datasets:[{data:[interviewed,68-interviewed],backgroundColor:['#1A6B3C','#E0DED8'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendOpt}}
+  });
+}
+
+function initDash(){ populateIndicatorPicker(); populateIndicatorList(); rebuildDashboard(); }
 
 function rebuildDashboard(){
   // KPIs
   const shortlisted = H.filter(h=>h.sl==='shortlisted'||h.sl==='invited'||h.sl==='completed').length;
   const selected = H.filter(h=>h.final==='selected').length;
-  const reserve = H.filter(h=>h.sl==='reserve').length;
-  const submitted = H.filter(h=>h.score_survey>0).length;
   document.getElementById('kpi-short').textContent = shortlisted||'—';
   document.getElementById('kpi-selected').textContent = selected||'—';
-  renderIndicatorChart(document.getElementById('ind-picker').value);
-
-  // Funnel
-  const funnel = [
-    {l:'Загальний список',cnt:68,c:'#006EB6'},
-    {l:'Подали опитувальник',cnt:submitted,c:'#0D5E5E'},
-    {l:'Short-list (ціль 45)',cnt:shortlisted||0,c:'#5C3A7A'},
-    {l:'Резерв (ціль 5)',cnt:reserve||0,c:'#E08A1E'},
-  ];
-  const fb = document.getElementById('funnel-bars');
-  fb.innerHTML='';
-  funnel.forEach(f=>{
-    const pct = Math.round(f.cnt/68*100);
-    fb.innerHTML+=`<div class="sbar">
-      <div class="sbar-lbl" style="width:180px">${f.l}</div>
-      <div class="sbar-track"><div class="sbar-fill" style="width:${pct}%;background:${f.c}"></div></div>
-      <div class="sbar-cnt" style="width:30px">${f.cnt}</div>
-    </div>`;
-  });
-
-  // Oblast status chart
-  const oblasts = [...new Set(H.map(h=>h.o))].sort();
-  const oblShort = oblasts.map(o=>H.filter(h=>h.o===o&&(h.sl==='shortlisted'||h.sl==='invited')).length);
-  const oblTotal = oblasts.map(o=>H.filter(h=>h.o===o).length);
-  mkChart('ch-oblast-status',{
-    type:'bar',
-    data:{
-      labels:oblasts.map(o=>o.replace(/ область/,'').replace(/ \(місто\)/,'').slice(0,14)),
-      datasets:[
-        {label:'Short-list',data:oblShort,backgroundColor:'#1A6B3C',borderRadius:2},
-        {label:'Всього',data:oblTotal.map((t,i)=>t-oblShort[i]),backgroundColor:'#E0DED8',borderRadius:2},
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{font:{family:'IBM Plex Mono',size:9},boxWidth:10}}},
-      scales:{
-        x:{stacked:true,ticks:{font:CHART_FONT,color:'#6B6961'},grid:{display:false}},
-        y:{stacked:true,ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
-      }
-    }
-  });
+  renderSubmissionDonuts();
+  renderIndicatorChart();
 
   // Scores — only if data available
   const hasScores = SCORING_DATA.length > 0 && H.some(h=>h.score_survey>0);
