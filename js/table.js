@@ -3,8 +3,10 @@ function badge(s,cls){return`<span class="badge ${cls||SBC[s]||'b-pend'}">${SUA[
 function renderT(){
   const tb=document.getElementById('tbody');tb.innerHTML='';
   FR.forEach(h=>{
-    const sh=(h.ch/h.pop*100).toFixed(1);
-    tb.innerHTML+=`<tr><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString('uk-UA')}</td><td class="num">${h.ch.toLocaleString('uk-UA')}</td><td class="num">${sh}%</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td></tr>`;
+    const confirmed = h.children_u1_confirmed>0;
+    const chTxt = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
+    const sh = confirmed ? (h.children_u1_confirmed/h.pop*100).toFixed(1)+'%' : '—';
+    tb.innerHTML+=`<tr><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString('uk-UA')}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td></tr>`;
   });
   document.getElementById('tcnt').textContent=`${FR.length} з ${H.length}`;
 }
@@ -20,7 +22,7 @@ function st(c){
   ths.forEach(t=>t.classList.remove('asc','desc'));
   if(SC===c)SD*=-1;else{SC=c;SD=1};
   ths[c].classList.add(SD===1?'asc':'desc');
-  const K=['id','n','o','pop','ch',null,'us','sl','interview','final'];
+  const K=['id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final'];
   const k=K[c];if(!k)return;
   FR.sort((a,b)=>{let av=a[k],bv=b[k];if(typeof av==='number')return(av-bv)*SD;return String(av).localeCompare(String(bv),'uk')*SD});
   renderT();

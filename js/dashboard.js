@@ -21,7 +21,6 @@ function rebuildDashboard(){
   // Funnel
   const funnel = [
     {l:'Загальний список',cnt:68,c:'#006EB6'},
-    {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='ok'||h.us==='recommended').length,c:'#1A6B3C'},
     {l:'Подали опитувальник',cnt:submitted,c:'#0D5E5E'},
     {l:'Short-list (ціль 45)',cnt:shortlisted||0,c:'#5C3A7A'},
     {l:'Резерв (ціль 5)',cnt:reserve||0,c:'#E08A1E'},
@@ -159,18 +158,20 @@ function rebuildDashboard(){
   tb.innerHTML='';
   const od={};
   H.forEach(h=>{
-    if(!od[h.o])od[h.o]={ch:0,cnt:0,short:0,sel:0,scores:[]};
-    od[h.o].ch+=h.ch; od[h.o].cnt++;
+    if(!od[h.o])od[h.o]={ch:0,chConfirmed:0,cnt:0,short:0,sel:0,scores:[]};
+    if(h.children_u1_confirmed>0){od[h.o].ch+=h.children_u1_confirmed; od[h.o].chConfirmed++;}
+    od[h.o].cnt++;
     if(h.sl==='shortlisted'||h.sl==='invited') od[h.o].short++;
     if(h.final==='selected') od[h.o].sel++;
     if(h.score_survey>0) od[h.o].scores.push(h.score_survey);
   });
-  Object.entries(od).sort((a,b)=>b[1].ch-a[1].ch).forEach(([o,d])=>{
+  Object.entries(od).sort((a,b)=>b[1].cnt-a[1].cnt).forEach(([o,d])=>{
     const avg = d.scores.length ? (d.scores.reduce((s,v)=>s+v,0)/d.scores.length).toFixed(1) : '—';
+    const chTxt = d.chConfirmed ? d.ch.toLocaleString('uk-UA') : '—';
     tb.innerHTML+=`<tr>
       <td>${o}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.cnt}</td>
-      <td style="text-align:right;font-family:var(--mono)">${d.ch.toLocaleString('uk-UA')}</td>
+      <td style="text-align:right;font-family:var(--mono)">${chTxt}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.short||'—'}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.sel||'—'}</td>
       <td style="text-align:right;font-family:var(--mono)">${avg}</td>

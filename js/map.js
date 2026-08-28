@@ -1,32 +1,28 @@
-// Refresh marker colors based on updated statuses
+// Тристанова модель, яку показує карта: не подали опитувальник / подали /
+// пройшли інтерв'ю. Замінює стару логіку за short-list/фінальним статусом
+// і фолбеком на колір KfW-групи (Крок 5) — KfW ніде більше не впливає на
+// те, що бачить користувач.
+function submissionState(h){
+  if(h.interview && h.interview!=='pending') return 'interviewed';
+  if(h.score_survey>0) return 'submitted';
+  return 'not_submitted';
+}
+const SUBMISSION_COLOR = {not_submitted:'#AEACA4', submitted:'#006EB6', interviewed:'#1A6B3C'};
+const SUBMISSION_LABEL = {not_submitted:'Не подали опитувальник', submitted:'Подали опитувальник', interviewed:"Пройшли інтерв'ю"};
+function statusMarkerColor(h) { return SUBMISSION_COLOR[submissionState(h)]; }
+
+// Refresh marker/boundary colors based on updated statuses
 function refreshMarkers() {
   MKS.forEach(m=>{
-    const h=m.h;
-    const color = statusMarkerColor(h);
-    m.setStyle({fillColor:color});
+    m.setStyle({fillColor:statusMarkerColor(m.h)});
   });
   if(boundaryLayer) {
     boundaryLayer.eachLayer(layer=>{
       const p = layer.feature.properties;
       const h = H.find(x=>x.id===p.id);
-      if(h) layer.setStyle({fillColor:grantFill(h.g),fillOpacity:0.15});
+      if(h) { const col=statusMarkerColor(h); layer.setStyle({fillColor:col,color:col}); }
     });
   }
-}
-
-function statusMarkerColor(h) {
-  // If has final status — color by it
-  if(h.final && h.final!=='pending' && h.final!=='') {
-    if(h.final==='selected') return '#1A6B3C';
-    if(h.final==='reserve') return '#7D4E00';
-    if(h.final==='excluded') return '#B71C1C';
-  }
-  // Otherwise by shortlist
-  if(h.sl==='shortlisted') return '#1A6B3C';
-  if(h.sl==='reserve') return '#E08A1E';
-  if(h.sl==='excluded') return '#B71C1C';
-  // Default — by KfW
-  return GC[h.g];
 }
 
 function initMap(){
@@ -71,17 +67,18 @@ function loadBoundaries(){
             L.DomEvent.stopPropagation(e);
             showHCard(p);
             const pop = Number(p.pop)||0;
-            const ch = Number(p.children||p.ch)||0;
-            const share = pop ? (ch/pop*100).toFixed(1) : '—';
             const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
-            const status = h ? (SUA[h.final]||SUA[h.sl]||SUA[h.us]||'Очікує') : '—';
+            const confirmed = h && h.children_u1_confirmed>0;
+            const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
+            const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
+            const status = h ? SUBMISSION_LABEL[submissionState(h)] : '—';
             layer.bindPopup(
               '<div class="pp-name">'+(p.name||p.n||'')+'</div>'+
               '<div class="pp-obl">'+(p.oblast||p.o||'')+'</div>'+
               '<div class="pp-grid">'+
               '<div><div class="pp-lbl">Населення</div><div class="pp-val">'+pop.toLocaleString('uk-UA')+'</div></div>'+
-              '<div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">'+ch.toLocaleString('uk-UA')+'</div></div>'+
-              '<div><div class="pp-lbl">Частка</div><div class="pp-val">'+share+'%</div></div>'+
+              '<div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">'+childrenTxt+'</div></div>'+
+              '<div><div class="pp-lbl">Частка</div><div class="pp-val">'+share+'</div></div>'+
               '<div><div class="pp-lbl">Статус</div><div class="pp-val">'+status+'</div></div>'+
               '</div>'
             ).openPopup();
@@ -101,12 +98,14 @@ function grantFill(g){
 }
 
 function showHCard(p){
+  const h = H.find(x=>x.id===p.id) || H.find(x=>x.id===Number(p.id));
+  const confirmed = h && h.children_u1_confirmed>0;
   document.getElementById('hc-n').textContent = p.name || p.n;
   document.getElementById('hc-o').textContent = p.oblast || p.o;
   document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString('uk-UA');
-  document.getElementById('hc-c').textContent = (p.children||p.ch||0).toLocaleString('uk-UA');
-  const pop = p.pop||1; const ch = p.children||p.ch||0;
-  document.getElementById('hc-s').textContent = (ch/pop*100).toFixed(1)+'%';
+  document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
+  const pop = p.pop||1;
+  document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
   document.getElementById('hcard').classList.add('on');
 }
 
@@ -140,6 +139,9 @@ function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getEleme
 function upMS(v){
   document.getElementById('ms-n').textContent=v.length;
   document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString('uk-UA');
-  document.getElementById('ms-c').textContent=v.reduce((s,h)=>s+h.ch,0).toLocaleString('uk-UA');
+  const confirmed = v.filter(h=>h.children_u1_confirmed>0);
+  document.getElementById('ms-c').textContent = confirmed.length
+    ? confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0).toLocaleString('uk-UA')
+    : '—';
   document.getElementById('ms-o').textContent=new Set(v.map(h=>h.o)).size;
 }

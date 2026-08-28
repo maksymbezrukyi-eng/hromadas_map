@@ -18,11 +18,11 @@
     <div class="hver">v0.5</div>
   </div>
   <div class="hr">
-    <div class="hstat"><div class="hstat-val">68</div><div class="hstat-lbl">Громад</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-submitted">—</div><div class="hstat-lbl">з 68 подали опитувальник</div></div>
     <div class="hdiv"></div>
-    <div class="hstat"><div class="hstat-val" id="h-pop">—</div><div class="hstat-lbl">Населення (тис)</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-interviewed">—</div><div class="hstat-lbl">з 68 пройшли інтерв'ю</div></div>
     <div class="hdiv"></div>
-    <div class="hstat"><div class="hstat-val" id="h-ch">—</div><div class="hstat-lbl">Дітей до 1р.</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-ch">—</div><div class="hstat-lbl" id="h-ch-lbl">Дітей до 1 року</div></div>
   </div>
 </header>
 
@@ -46,18 +46,17 @@
           <button class="btn-r" onclick="resetF()">Скинути</button>
         </div>
         <div class="sb-sec">
-          <div class="sb-lbl">Google Sheets</div>
+          <div class="sb-lbl">Дані</div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
             <button class="btn-r" onclick="syncFromSheets()" style="flex:1">⟳ Оновити дані</button>
           </div>
           <div id="sync-status" style="font-size:11px;color:#AEACA4">Не синхронізовано</div>
           <div style="margin-top:8px">
-            <div class="sb-lbl" style="margin-bottom:4px">Легенда — Статус</div>
+            <div class="sb-lbl" style="margin-bottom:4px">Легенда — Статус подачі</div>
             <div class="legend">
-              <div class="leg"><span class="ldot" style="background:#1A6B3C"></span>Short-list / Відібрано</div>
-              <div class="leg"><span class="ldot" style="background:#E08A1E"></span>Резерв</div>
-              <div class="leg"><span class="ldot" style="background:#B71C1C"></span>Виключено</div>
-              <div class="leg"><span class="ldot" style="background:#6B6961"></span>Очікує</div>
+              <div class="leg"><span class="ldot" style="background:#1A6B3C"></span>Пройшли інтерв'ю</div>
+              <div class="leg"><span class="ldot" style="background:#006EB6"></span>Подали опитувальник</div>
+              <div class="leg"><span class="ldot" style="background:#AEACA4"></span>Не подали опитувальник</div>
             </div>
           </div>
         </div>
@@ -190,7 +189,7 @@
 
 <footer>
   <div class="fl"><span id="fd">—</span></div>
-  <div>v0.5 · живі дані Google Sheets</div>
+  <div>v0.5 · дані з воркбука відбору</div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

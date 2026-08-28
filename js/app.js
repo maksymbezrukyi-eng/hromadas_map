@@ -2,11 +2,25 @@ let SCORING_DATA = [];
 let RANKING_DATA = [];
 const LAST_SYNC = {time: null, status: 'idle'};
 
+// "Подали"/"пройшли інтерв'ю" — рахуються від реальних синхронізованих полів,
+// не від застарілої KfW-оцінки. Викликається один раз при завантаженні і
+// повторно після кожної синхронізації (sheets.js), бо ці числа міняються
+// лише коли приходять нові дані.
+function updateHeaderStats(){
+  const submitted = H.filter(h=>h.score_survey>0).length;
+  const interviewed = H.filter(h=>h.interview && h.interview!=='pending').length;
+  const confirmed = H.filter(h=>h.children_u1_confirmed>0);
+  const childrenSum = confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0);
+  document.getElementById('h-submitted').textContent = submitted;
+  document.getElementById('h-interviewed').textContent = interviewed;
+  document.getElementById('h-ch').textContent = confirmed.length ? childrenSum.toLocaleString('uk-UA') : '—';
+  document.getElementById('h-ch-lbl').textContent = confirmed.length
+    ? `Дітей до 1 року (${confirmed.length} з 68 підтв.)`
+    : 'Дітей до 1 року (даних ще нема)';
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
-  const tp=H.reduce((s,h)=>s+h.pop,0);
-  const tc=H.reduce((s,h)=>s+h.ch,0);
-  document.getElementById('h-pop').textContent=Math.round(tp/1000).toLocaleString('uk-UA');
-  document.getElementById('h-ch').textContent=tc.toLocaleString('uk-UA');
+  updateHeaderStats();
   document.getElementById('fd').textContent=new Date().toLocaleDateString('uk-UA');
   const obs=[...new Set(H.map(h=>h.o))].sort();
   ['f-obl','t-obl'].forEach(id=>{
@@ -14,7 +28,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     obs.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;s.appendChild(op)});
   });
   initMap(); initDash(); initTbl();
-  // Auto-sync from Sheets on load
+  // Auto-sync on load
   setTimeout(()=>syncFromSheets(true), 1000);
   // Auto-refresh every 5 minutes
   setInterval(()=>syncFromSheets(true), 300000);
