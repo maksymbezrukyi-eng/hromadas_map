@@ -17,11 +17,33 @@ const EXPECTED_COLUMNS = {
   local: {
     // data/hromadas_survey.json — one object per hromada with a real
     // score, keyed by field name (see scripts/convert_workbook.ps1).
-    survey: ['id','us','sl','interview','final','score_survey','d1','d2','d3','d4','d5','d6','d4a','final_score','rank','children_u1','population_survey'],
+    survey: ['id','us','sl','interview','final','score_survey',
+      'd1','d1_1','d1_2','d1_3','d1_4',
+      'd2','d2_1','d2_2','d2_3','d2_4',
+      'd3','d3_1','d3_2','d3_3',
+      'd4','d4_1','d4_2','d4_3',
+      'd5','d5_1','d5_2',
+      'd6','d6_1','d6_2','d6_3','d6_4','d6_5',
+      'd4a','d7_1','d7_2','d7_3',
+      'final_score','rank','children_u1','population_survey'],
   },
 };
 
 const LOCAL_DATA_URL = 'data/hromadas_survey.json';
+
+// Домен-складові (Д1.1..Д7.3) з data/hromadas_survey.json — сирі значення,
+// з яких складаються сім підсумкових доменних балів (h.d1..h.d4a). Окремий
+// список, бо його потрібно і sheets.js (щоб знати, що зливати на H), і
+// dashboard.js (щоб побудувати підменю показників по доменах).
+const SUB_INDICATOR_FIELDS = [
+  'd1_1','d1_2','d1_3','d1_4',
+  'd2_1','d2_2','d2_3','d2_4',
+  'd3_1','d3_2','d3_3',
+  'd4_1','d4_2','d4_3',
+  'd5_1','d5_2',
+  'd6_1','d6_2','d6_3','d6_4','d6_5',
+  'd7_1','d7_2','d7_3',
+];
 
 const SHEETS = {
   status: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDCuFGnAQaSspoRNdHZ3xXrfmz942eMZzpyHoSs3oilu5yvU0Q7nmwQlqLTiVCd50j7-do-J82ICaD/pub?gid=1397593365&single=true&output=csv',
@@ -88,6 +110,7 @@ const CHART_OPTS = {
 window.DATA_SOURCE = DATA_SOURCE;
 window.EXPECTED_COLUMNS = EXPECTED_COLUMNS;
 window.LOCAL_DATA_URL = LOCAL_DATA_URL;
+window.SUB_INDICATOR_FIELDS = SUB_INDICATOR_FIELDS;
 window.SHEETS = SHEETS;
 window.INDICATOR_NAMES = INDICATOR_NAMES;
 window.GC = GC;

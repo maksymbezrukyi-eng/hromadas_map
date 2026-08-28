@@ -7,50 +7,114 @@ function mkChart(id, cfg) {
   _charts[id] = new Chart(el, cfg);
 }
 
-// Indicator picker — обраний показник → горизонтальний барчарт усіх громад,
-// де він відомий, відсортованих за спаданням. Той самий тип графіка, що й
-// раніше був тільки для "Топ-20 за балом", тепер під будь-який показник.
-const INDICATOR_PICKS = [
-  {k:'score_survey', l:'Бал опитування (макс 8)'},
-  {k:'d1', l:'Домен 1: Демографічна потреба'},
-  {k:'d2', l:'Домен 2: Стан ПМД'},
-  {k:'d3', l:'Домен 3: Фінансова спроможність'},
-  {k:'d4', l:'Домен 4: Географічний'},
-  {k:'d5', l:'Домен 5: Соціальний'},
-  {k:'d6', l:'Домен 6: Громадське здоров-я'},
-  {k:'d4a', l:'Домен 7: Інституційний профіль'},
-  {k:'children_u1_confirmed', l:'Дітей до 1 року (за анкетою)'},
-  {k:'population_survey', l:'Населення (за анкетою)'},
+// Indicator picker — обраний показник → горизонтальний барчарт усіх обраних
+// громад, де він відомий, відсортованих за спаданням. Той самий тип
+// графіка, що й раніше був тільки для "Топ-20 за балом", тепер під
+// будь-який показник — згрупований по доменах: спершу підсумковий бал
+// домену, потім його складові (Д1.1, Д1.2, ...).
+const INDICATOR_GROUPS = [
+  {group:'Загальне', items:[
+    {k:'score_survey', l:'Бал опитування (макс 8)'},
+    {k:'children_u1_confirmed', l:'Дітей до 1 року (за анкетою)'},
+    {k:'population_survey', l:'Населення (за анкетою)'},
+  ]},
+  {group:'Домен 1: Демографічна потреба', items:[
+    {k:'d1', l:'Домен 1 — загальний бал'},
+    {k:'d1_1', l:'Д1.1 Діти до 1 року'},
+    {k:'d1_2', l:'Д1.2 Частка дітей до 1 року'},
+    {k:'d1_3', l:'Д1.3 Частка вразливих до 1 року'},
+    {k:'d1_4', l:'Д1.4 Діти до 18 років'},
+  ]},
+  {group:'Домен 2: Стан ПМД', items:[
+    {k:'d2', l:'Домен 2 — загальний бал'},
+    {k:'d2_1', l:'Д2.1 Діти без декларації'},
+    {k:'d2_2', l:'Д2.2 Домашні візити'},
+    {k:'d2_3', l:'Д2.3 Вакансії лікарів'},
+    {k:'d2_4', l:'Д2.4 Медсестри / лікарі'},
+  ]},
+  {group:'Домен 3: Фінансова спроможність', items:[
+    {k:'d3', l:'Домен 3 — загальний бал'},
+    {k:'d3_1', l:'Д3.1 Бюджетна програма ПМД'},
+    {k:'d3_2', l:'Д3.2 Частка ПМД у видатках ОЗ'},
+    {k:'d3_3', l:'Д3.3 Видатки ПМД на 1 мешканця'},
+  ]},
+  {group:'Домен 4: Географічний', items:[
+    {k:'d4', l:'Домен 4 — загальний бал'},
+    {k:'d4_1', l:'Д4.1 Населені пункти'},
+    {k:'d4_2', l:'Д4.2 Максимальна відстань'},
+    {k:'d4_3', l:'Д4.3 Середня відстань'},
+  ]},
+  {group:'Домен 5: Соціальний', items:[
+    {k:'d5', l:'Домен 5 — загальний бал'},
+    {k:'d5_1', l:'Д5.1 Домашні візити до вразливих'},
+    {k:'d5_2', l:'Д5.2 Частка вразливих у домашніх візитах'},
+  ]},
+  {group:'Домен 6: Громадське здоров-я', items:[
+    {k:'d6', l:'Домен 6 — загальний бал'},
+    {k:'d6_1', l:'Д6.1 АКДП-3'},
+    {k:'d6_2', l:'Д6.2 КПК-1'},
+    {k:'d6_3', l:'Д6.3 4+ огляди до 1 року'},
+    {k:'d6_4', l:'Д6.4 Планові огляди 0–3'},
+    {k:'d6_5', l:'Д6.5 Грудне вигодовування'},
+  ]},
+  {group:'Домен 7: Інституційний профіль', items:[
+    {k:'d4a', l:'Домен 7 — загальний бал'},
+    {k:'d7_1', l:'Д7.1 Досвід МТД'},
+    {k:'d7_2', l:'Д7.2 Підрозділ ОЗ'},
+    {k:'d7_3', l:'Д7.3 Якість відповідей'},
+  ]},
 ];
+function indicatorLabel(k){
+  for(const g of INDICATOR_GROUPS){ const it = g.items.find(i=>i.k===k); if(it) return it.l; }
+  return k;
+}
 
 function populateIndicatorPicker(){
   const sel = document.getElementById('ind-picker');
   if(!sel || sel.options.length) return; // once — не скидати вибір користувача
-  INDICATOR_PICKS.forEach(d=>{
-    const op = document.createElement('option');
-    op.value = d.k; op.textContent = d.l;
-    sel.appendChild(op);
+  INDICATOR_GROUPS.forEach(g=>{
+    const og = document.createElement('optgroup');
+    og.label = g.group;
+    g.items.forEach(d=>{
+      const op = document.createElement('option');
+      op.value = d.k; op.textContent = d.l;
+      og.appendChild(op);
+    });
+    sel.appendChild(og);
   });
 }
 
-// Список громад (мультивибір) — за замовчуванням усі обрані. Натуральний
-// <select multiple> замість власного переліку з чекбоксами: компактніший,
-// має вбудований скрол, ctrl/shift-клік і пошук літерами з коробки.
-function populateHromadaSelect(){
-  const sel = document.getElementById('ind-hromadas');
-  if(!sel || sel.options.length) return; // once — не скидати вибір користувача
+// Перелік громад — чекбокси (не <select multiple>): звичайний клік
+// вмикає/вимикає одну громаду, без Ctrl/Shift, зрозуміліше для порівняння
+// кількох конкретних громад. Висота списку фіксована в CSS (.ind-list),
+// тож він не впливає на "розповзання" картки.
+function populateHromadaList(){
+  const wrap = document.getElementById('ind-hromadas');
+  if(!wrap || wrap.children.length) return; // once — не скидати вибір користувача
   [...H].sort((a,b)=>a.n.localeCompare(b.n,'uk')).forEach(h=>{
-    const op = document.createElement('option');
-    op.value = h.id; op.textContent = `${h.n} (${h.o})`; op.selected = true;
-    sel.appendChild(op);
+    const lbl = document.createElement('label');
+    lbl.dataset.name = (h.n+' '+h.o).toLowerCase();
+    lbl.innerHTML = `<input type="checkbox" checked value="${h.id}">${h.n} (${h.o})`;
+    wrap.appendChild(lbl);
   });
+}
+function indListSetAll(checked){
+  document.querySelectorAll('#ind-hromadas input[type=checkbox]').forEach(cb=>cb.checked=checked);
+}
+function filterIndList(){
+  const q = document.getElementById('ind-list-q').value.toLowerCase().trim();
+  document.querySelectorAll('#ind-hromadas label').forEach(lbl=>{
+    lbl.style.display = (!q || lbl.dataset.name.includes(q)) ? '' : 'none';
+  });
+}
+function selectedHromadaIds(){
+  return new Set(Array.from(document.querySelectorAll('#ind-hromadas input:checked')).map(cb=>Number(cb.value)));
 }
 
 function renderIndicatorChart(){
   const field = document.getElementById('ind-picker').value;
-  const selectedIds = new Set(Array.from(document.getElementById('ind-hromadas').selectedOptions).map(o=>Number(o.value)));
-  const pick = INDICATOR_PICKS.find(d=>d.k===field) || INDICATOR_PICKS[0];
-  const ranked = H.filter(h=>selectedIds.has(h.id) && h[pick.k]>0).sort((a,b)=>b[pick.k]-a[pick.k]);
+  const selectedIds = selectedHromadaIds();
+  const ranked = H.filter(h=>selectedIds.has(h.id) && h[field]>0).sort((a,b)=>b[field]-a[field]);
   document.getElementById('ind-empty').style.display = ranked.length ? 'none' : '';
   if(!ranked.length){ if(_charts['ch-indicator']){_charts['ch-indicator'].destroy(); delete _charts['ch-indicator'];} return; }
   // Висоту задаємо контейнеру, не самому canvas — інакше Chart.js
@@ -61,7 +125,7 @@ function renderIndicatorChart(){
     type:'bar',
     data:{
       labels: ranked.map(h=>h.n.slice(0,18)),
-      datasets:[{ data: ranked.map(h=>h[pick.k]), backgroundColor:'#006EB6', borderRadius:2 }]
+      datasets:[{ data: ranked.map(h=>h[field]), backgroundColor:'#006EB6', borderRadius:2 }]
     },
     options:{...CHART_OPTS, indexAxis:'y',
       scales:{
@@ -115,7 +179,7 @@ function renderSubmissionDonuts(){
   });
 }
 
-function initDash(){ populateIndicatorPicker(); populateHromadaSelect(); rebuildDashboard(); }
+function initDash(){ populateIndicatorPicker(); populateHromadaList(); rebuildDashboard(); }
 
 function rebuildDashboard(){
   // KPIs

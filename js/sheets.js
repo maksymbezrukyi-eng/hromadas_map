@@ -154,6 +154,9 @@ function loadFromLocal(silent=false) {
         h.d1 = row.d1||0; h.d2 = row.d2||0; h.d3 = row.d3||0;
         h.d4 = row.d4||0; h.d5 = row.d5||0; h.d6 = row.d6||0;
         h.d4a = row.d4a||0;
+        // Домен-складові (Д1.1..Д7.3) — для випадаючого списку показників
+        // у дашборді, поза сімома підсумковими балами вище.
+        SUB_INDICATOR_FIELDS.forEach(k=>{ h[k] = row[k]||0; });
         h.final_score = row.final_score||0;
         h.rank = row.rank||0;
         // Real, questionnaire-reported figures — only set once a hromada's

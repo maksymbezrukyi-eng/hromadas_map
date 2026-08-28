@@ -119,7 +119,12 @@
         <div class="ind-form">
           <div class="ind-col">
             <div class="ind-col-lbl">Громада</div>
-            <select id="ind-hromadas" multiple size="10"></select>
+            <input type="text" id="ind-list-q" placeholder="Пошук громади..." oninput="filterIndList()" style="margin-bottom:6px">
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(true)">Усі</button>
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(false)">Жодної</button>
+            </div>
+            <div id="ind-hromadas" class="ind-list"></div>
           </div>
           <div class="ind-col">
             <div class="ind-col-lbl">Показник</div>
