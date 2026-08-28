@@ -1,8 +1,10 @@
 // Where live sync pulls data from.
-// 'sheets' — Google Sheets CSV (current, live behaviour).
+// 'sheets' — Google Sheets CSV. Kept in the codebase but not used —
+//            the team decided the selection workbook is the source of
+//            truth (Крок 5 of the project plan).
 // 'local'  — data/hromadas_survey.json, a snapshot exported from the
-//            selection workbook. Not switched on yet — see README.
-const DATA_SOURCE = 'sheets';
+//            selection workbook via scripts/convert_workbook.ps1.
+const DATA_SOURCE = 'local';
 
 // Columns/fields each source is expected to provide. Checked on every
 // load; a missing one is reported instead of silently producing blanks.
@@ -51,8 +53,26 @@ const INDICATOR_NAMES = {
 };
 
 const GC={"KfW 1":"#1a6fc4","KfW 2":"#2ea06b","KfW 2+":"#e08a1e"};
-const SUA={recommended:"Рекомендовано",not_recommended:"Не рекомендовано",pending:"Очікує",shortlisted:"Short-list",reserve:"Резерв",excluded:"Виключено",invited:"Запрошено",completed:"Заповнено",partial:"Частково",no_response:"Без відповіді"};
-const SBC={recommended:"b-rec",not_recommended:"b-notrec",pending:"b-pend",shortlisted:"b-short",reserve:"b-res",excluded:"b-excl",invited:"b-inv"};
+// us/sl/interview/final badge vocabulary. recommended/not_recommended/
+// shortlisted/invited/completed/partial/no_response are the values the old
+// Google Sheets columns used; ok/exclude/separate/"have programme" and the
+// "final" registry-status strings are what the workbook itself actually
+// contains (confirmed against data/hromadas_survey.json) — kept side by
+// side rather than replacing, since either source can still populate H.
+const SUA={
+  recommended:"Рекомендовано",not_recommended:"Не рекомендовано",pending:"Очікує",
+  shortlisted:"Short-list",reserve:"Резерв",excluded:"Виключено",invited:"Запрошено",
+  completed:"Заповнено",partial:"Частково",no_response:"Без відповіді",
+  ok:"Ок",exclude:"Виключено",separate:"Окремо","have programme":"Має іншу програму",
+  "НЕ ПОДАНО":"Не подано","не рекомендовано":"Не рекомендовано",
+  "потребує рішення UNICEF":"Потребує рішення UNICEF","потребує даних":"Потребує даних",
+  "ДООПРАЦЮВАННЯ АНКЕТИ":"Доопрацювання анкети",
+};
+const SBC={
+  recommended:"b-rec",not_recommended:"b-notrec",pending:"b-pend",shortlisted:"b-short",
+  reserve:"b-res",excluded:"b-excl",invited:"b-inv",
+  ok:"b-rec",exclude:"b-excl",separate:"b-pend","have programme":"b-pend",
+};
 const KC={"KfW 1":"kfw1","KfW 2":"kfw2","KfW 2+":"kfw2p"};
 
 const CHART_FONT = {family:'IBM Plex Mono',size:9};

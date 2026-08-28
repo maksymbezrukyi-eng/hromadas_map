@@ -24,6 +24,10 @@ function showTab(id){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['map','dash','tbl'][i]===id));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
   if(id==='map')setTimeout(()=>map.invalidateSize(),50);
+  // FR holds the same hromada objects as H, but the HTML was last built
+  // whenever renderT() last ran — re-render on every switch to the tab so
+  // a sync that completed while this pane was hidden isn't shown stale.
+  if(id==='tbl')renderT();
 }
 
 // MAP

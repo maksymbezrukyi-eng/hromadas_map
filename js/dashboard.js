@@ -14,19 +14,15 @@ function rebuildDashboard(){
   const shortlisted = H.filter(h=>h.sl==='shortlisted'||h.sl==='invited'||h.sl==='completed').length;
   const selected = H.filter(h=>h.final==='selected').length;
   const reserve = H.filter(h=>h.sl==='reserve').length;
-  const excluded = H.filter(h=>h.us==='excluded').length;
+  const submitted = H.filter(h=>h.score_survey>0).length;
   document.getElementById('kpi-short').textContent = shortlisted||'—';
   document.getElementById('kpi-selected').textContent = selected||'—';
-  // Опитування йде серед усіх 68 громад — статус UNICEF не підстава для
-  // технічного виключення (методологія, липень 2026)
-  document.getElementById('kpi-assess').textContent = H.length;
-  document.getElementById('kpi-assess-sub').textContent = excluded ? `${excluded} виключені UNICEF` : '';
 
   // Funnel
   const funnel = [
     {l:'Загальний список',cnt:68,c:'#006EB6'},
-    {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='recommended').length,c:'#1A6B3C'},
-    {l:'До опитування',cnt:H.length,c:'#0D5E5E'},
+    {l:'Рекомендовані UNICEF',cnt:H.filter(h=>h.us==='ok'||h.us==='recommended').length,c:'#1A6B3C'},
+    {l:'Подали опитувальник',cnt:submitted,c:'#0D5E5E'},
     {l:'Short-list (ціль 45)',cnt:shortlisted||0,c:'#5C3A7A'},
     {l:'Резерв (ціль 5)',cnt:reserve||0,c:'#E08A1E'},
   ];
