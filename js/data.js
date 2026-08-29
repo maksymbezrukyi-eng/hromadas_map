@@ -67,12 +67,13 @@ const H=[
   {id:66,n:"Олевська",o:"Житомирська",g:"KfW 1",pop:30924,ch:5525,lat:51.208,lng:27.649,us:"pending",sl:"pending"},
   {id:67,n:"Житомирська",o:"Житомирська",g:"KfW 1",pop:258239,ch:47452,lat:50.255,lng:28.659,us:"pending",sl:"pending"},
   {id:68,n:"Новоград-Волинська",o:"Житомирська",g:"KfW 2",pop:48781,ch:9599,lat:50.594,lng:27.617,us:"pending",sl:"pending"},
-  // Додана 2026-08-29, після рефакторингу v0.5 (68->69 громад). pop/ch=0 —
-  // населення ще не відоме, чекає на оновлений воркбук. lat/lng — центроїд
-  // полігону з github.com/slawomirmatuszak/ukrainian_geodata (hromady.geojson,
+  // Додана 2026-08-29, після рефакторингу v0.5 (68->69 громад). pop — з
+  // прийнятої анкети (population_survey у data/hromadas_survey.json), ch=0
+  // (застаріле KfW-поле, не використовується). lat/lng — центроїд полігону
+  // з github.com/slawomirmatuszak/ukrainian_geodata (hromady.geojson,
   // id 962, Самбірський район), не з data/hromadas_68.geojson — там цієї
   // громади немає (боундарі на карті поки не буде).
-  {id:69,n:"Бісковицька",o:"Львівська",g:"KfW 1",pop:0,ch:0,lat:49.587,lng:23.124,us:"pending",sl:"pending"},
+  {id:69,n:"Бісковицька",o:"Львівська",g:"KfW 1",pop:16504,ch:0,lat:49.587,lng:23.124,us:"pending",sl:"pending"},
 ];
 
 window.H = H;
