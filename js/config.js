@@ -97,6 +97,90 @@ const SBC={
 };
 const KC={"KfW 1":"kfw1","KfW 2":"kfw2","KfW 2+":"kfw2p"};
 
+// Домени й показники — {uk, en} для кожного. Спільне джерело для
+// dashboard.js (випадаючий список "Показник") і table.js (розгорнутий
+// рядок таблиці) — щоб та сама назва не перекладалась двічі по-різному.
+const DOMAIN_GROUPS = [
+  {key:'general', name:{uk:'Загальне', en:'General'}},
+  {key:'d1', name:{uk:'Домен 1: Демографічна потреба', en:'Domain 1: Demographic need'}},
+  {key:'d2', name:{uk:'Домен 2: Стан ПМД', en:'Domain 2: PHC system status'}},
+  {key:'d3', name:{uk:'Домен 3: Фінансова спроможність', en:'Domain 3: Financial capacity'}},
+  {key:'d4', name:{uk:'Домен 4: Географічний', en:'Domain 4: Geographic'}},
+  {key:'d5', name:{uk:'Домен 5: Соціальний', en:'Domain 5: Social'}},
+  {key:'d6', name:{uk:"Домен 6: Громадське здоров'я", en:'Domain 6: Public health'}},
+  {key:'d7', name:{uk:'Домен 7: Інституційний профіль', en:'Domain 7: Institutional profile'}},
+];
+const INDICATOR_LABELS = {
+  score_survey: {uk:'Бал опитування (макс 8)', en:'Survey score (max 8)'},
+  children_u1_confirmed: {uk:'Дітей до 1 року (за анкетою)', en:'Children under 1 (from survey)'},
+  population_survey: {uk:'Населення (за анкетою)', en:'Population (from survey)'},
+  final_score: {uk:'Фінальний бал (макс 10)', en:'Final score (max 10)'},
+  rank: {uk:'Позиція в рейтингу', en:'Rank'},
+
+  d1: {uk:'Домен 1 — загальний бал', en:'Domain 1 — total score'},
+  d1_1: {uk:'Д1.1 Діти до 1 року', en:'D1.1 Children under 1'},
+  d1_2: {uk:'Д1.2 Частка дітей до 1 року', en:'D1.2 Share of children under 1'},
+  d1_3: {uk:'Д1.3 Частка вразливих до 1 року', en:'D1.3 Share of vulnerable under 1'},
+  d1_4: {uk:'Д1.4 Діти до 18 років', en:'D1.4 Children under 18'},
+
+  d2: {uk:'Домен 2 — загальний бал', en:'Domain 2 — total score'},
+  d2_1: {uk:'Д2.1 Діти без декларації', en:'D2.1 Children without a PHC declaration'},
+  d2_2: {uk:'Д2.2 Домашні візити', en:'D2.2 Home visits'},
+  d2_3: {uk:'Д2.3 Вакансії лікарів', en:'D2.3 Doctor vacancies'},
+  d2_4: {uk:'Д2.4 Медсестри / лікарі', en:'D2.4 Nurses / doctors'},
+
+  d3: {uk:'Домен 3 — загальний бал', en:'Domain 3 — total score'},
+  d3_1: {uk:'Д3.1 Бюджетна програма ПМД', en:'D3.1 PHC budget programme'},
+  d3_2: {uk:'Д3.2 Частка ПМД у видатках ОЗ', en:'D3.2 PHC share of health spending'},
+  d3_3: {uk:'Д3.3 Видатки ПМД на 1 мешканця', en:'D3.3 PHC spending per capita'},
+
+  d4: {uk:'Домен 4 — загальний бал', en:'Domain 4 — total score'},
+  d4_1: {uk:'Д4.1 Населені пункти', en:'D4.1 Settlements'},
+  d4_2: {uk:'Д4.2 Максимальна відстань', en:'D4.2 Maximum distance'},
+  d4_3: {uk:'Д4.3 Середня відстань', en:'D4.3 Average distance'},
+
+  d5: {uk:'Домен 5 — загальний бал', en:'Domain 5 — total score'},
+  d5_1: {uk:'Д5.1 Домашні візити до вразливих', en:'D5.1 Home visits to vulnerable families'},
+  d5_2: {uk:'Д5.2 Частка вразливих у домашніх візитах', en:'D5.2 Share of vulnerable in home visits'},
+
+  d6: {uk:'Домен 6 — загальний бал', en:'Domain 6 — total score'},
+  d6_1: {uk:'Д6.1 АКДП-3', en:'D6.1 DTP-3 coverage'},
+  d6_2: {uk:'Д6.2 КПК-1', en:'D6.2 MMR-1 coverage'},
+  d6_3: {uk:'Д6.3 4+ огляди до 1 року', en:'D6.3 4+ check-ups under 1'},
+  d6_4: {uk:'Д6.4 Планові огляди 0–3', en:'D6.4 Scheduled check-ups 0–3'},
+  d6_5: {uk:'Д6.5 Грудне вигодовування', en:'D6.5 Breastfeeding'},
+
+  d4a: {uk:'Домен 7 — загальний бал', en:'Domain 7 — total score'},
+  d7_1: {uk:'Д7.1 Досвід МТД', en:'D7.1 International TA experience'},
+  d7_2: {uk:'Д7.2 Підрозділ ОЗ', en:'D7.2 Health unit structure'},
+  d7_3: {uk:'Д7.3 Якість відповідей', en:'D7.3 Response quality'},
+};
+function indicatorLabel(k){
+  const e = INDICATOR_LABELS[k];
+  if(!e) return k;
+  return e[typeof LANG!=='undefined'?LANG:'uk'] || e.uk;
+}
+function domainGroupName(g){
+  return g.name[typeof LANG!=='undefined'?LANG:'uk'] || g.name.uk;
+}
+
+// Короткі назви доменів (без префікса "Домен N:") — для барчарту/радара
+// "Середні бали по доменах", де повна назва + вага і так поруч.
+const DOMAIN_SHORT_NAMES = {
+  d1: {uk:'Демографічна потреба', en:'Demographic need'},
+  d2: {uk:'Стан ПМД', en:'PHC system status'},
+  d3: {uk:'Фінансова спроможність', en:'Financial capacity'},
+  d4: {uk:'Географічний', en:'Geographic'},
+  d5: {uk:'Соціальний', en:'Social'},
+  d6: {uk:"Громадське здоров'я", en:'Public health'},
+  d4a: {uk:'Інституційний профіль', en:'Institutional profile'},
+};
+function domainShortName(k){
+  const e = DOMAIN_SHORT_NAMES[k];
+  if(!e) return k;
+  return e[typeof LANG!=='undefined'?LANG:'uk'] || e.uk;
+}
+
 const CHART_FONT = {family:'IBM Plex Mono',size:9};
 const CHART_OPTS = {
   responsive:true, maintainAspectRatio:false,

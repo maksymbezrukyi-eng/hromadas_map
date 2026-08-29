@@ -14,17 +14,17 @@ function dtlCell(l,v){return`<div><div class="dtl-lbl">${l}</div><div class="dtl
 function detailRow(h){
   const num=(v,d)=>v>0?(d?v.toFixed(d):v.toLocaleString('uk-UA')):'—';
   const cells=[
-    dtlCell('Домен 1: Демографічна потреба',num(h.d1)),
-    dtlCell('Домен 2: Стан ПМД',num(h.d2)),
-    dtlCell('Домен 3: Фінансова спроможність',num(h.d3)),
-    dtlCell('Домен 4: Географічний',num(h.d4)),
-    dtlCell('Домен 5: Соціальний',num(h.d5)),
-    dtlCell('Домен 6: Громадське здоров-я',num(h.d6)),
-    dtlCell('Домен 7: Інституційний профіль',num(h.d4a)),
-    dtlCell('Бал опитування (макс 8)',num(h.score_survey,2)),
-    dtlCell('Фінальний бал (макс 10)',num(h.final_score,2)),
-    dtlCell('Позиція в рейтингу',num(h.rank)),
-    dtlCell('Населення (за анкетою)',num(h.population_survey)),
+    dtlCell(indicatorLabel('d1'),num(h.d1)),
+    dtlCell(indicatorLabel('d2'),num(h.d2)),
+    dtlCell(indicatorLabel('d3'),num(h.d3)),
+    dtlCell(indicatorLabel('d4'),num(h.d4)),
+    dtlCell(indicatorLabel('d5'),num(h.d5)),
+    dtlCell(indicatorLabel('d6'),num(h.d6)),
+    dtlCell(indicatorLabel('d4a'),num(h.d4a)),
+    dtlCell(indicatorLabel('score_survey'),num(h.score_survey,2)),
+    dtlCell(indicatorLabel('final_score'),num(h.final_score,2)),
+    dtlCell(indicatorLabel('rank'),num(h.rank)),
+    dtlCell(indicatorLabel('population_survey'),num(h.population_survey)),
   ].join('');
   return `<tr class="dt-expand"><td colspan="11"><div class="dtl-grid">${cells}</div></td></tr>`;
 }

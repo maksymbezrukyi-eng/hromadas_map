@@ -45,6 +45,7 @@ const I18N = {
     domains_avg_title: 'Середні бали по доменах (вибірка)',
     dist_title: 'Розподіл зважених балів опитування',
     radar_title: "Бали по доменах — радар (середнє по вибірці)",
+    avg_score_axis: 'Середній бал (макс 10)', avg_dataset_label: 'Середнє',
     oblast_summary_title: 'Зведення по областях',
     col_oblast: 'Область', col_count: 'Громад', col_avg_score: 'Сер. бал',
 
@@ -100,6 +101,7 @@ const I18N = {
     domains_avg_title: 'Average domain scores (sample)',
     dist_title: 'Distribution of weighted survey scores',
     radar_title: 'Domain scores — radar (sample average)',
+    avg_score_axis: 'Average score (max 10)', avg_dataset_label: 'Average',
     oblast_summary_title: 'Summary by oblast',
     col_oblast: 'Oblast', col_count: 'Hromadas', col_avg_score: 'Avg. score',
 
@@ -146,6 +148,7 @@ function setLang(lang){
   updateHeaderStats();
   updateSyncLabel();
   refreshMarkers();
+  populateIndicatorPicker();
   rebuildDashboard();
   if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
 }

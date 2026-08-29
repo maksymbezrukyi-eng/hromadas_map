@@ -12,76 +12,40 @@ function mkChart(id, cfg) {
 // графіка, що й раніше був тільки для "Топ-20 за балом", тепер під
 // будь-який показник — згрупований по доменах: спершу підсумковий бал
 // домену, потім його складові (Д1.1, Д1.2, ...).
+// Структура груп/показників — самі назви (uk/en) живуть у config.js
+// (DOMAIN_GROUPS, INDICATOR_LABELS), спільно з table.js, щоб та сама назва
+// не перекладалась двічі по-різному.
 const INDICATOR_GROUPS = [
-  {group:'Загальне', items:[
-    {k:'score_survey', l:'Бал опитування (макс 8)'},
-    {k:'children_u1_confirmed', l:'Дітей до 1 року (за анкетою)'},
-    {k:'population_survey', l:'Населення (за анкетою)'},
-  ]},
-  {group:'Домен 1: Демографічна потреба', items:[
-    {k:'d1', l:'Домен 1 — загальний бал'},
-    {k:'d1_1', l:'Д1.1 Діти до 1 року'},
-    {k:'d1_2', l:'Д1.2 Частка дітей до 1 року'},
-    {k:'d1_3', l:'Д1.3 Частка вразливих до 1 року'},
-    {k:'d1_4', l:'Д1.4 Діти до 18 років'},
-  ]},
-  {group:'Домен 2: Стан ПМД', items:[
-    {k:'d2', l:'Домен 2 — загальний бал'},
-    {k:'d2_1', l:'Д2.1 Діти без декларації'},
-    {k:'d2_2', l:'Д2.2 Домашні візити'},
-    {k:'d2_3', l:'Д2.3 Вакансії лікарів'},
-    {k:'d2_4', l:'Д2.4 Медсестри / лікарі'},
-  ]},
-  {group:'Домен 3: Фінансова спроможність', items:[
-    {k:'d3', l:'Домен 3 — загальний бал'},
-    {k:'d3_1', l:'Д3.1 Бюджетна програма ПМД'},
-    {k:'d3_2', l:'Д3.2 Частка ПМД у видатках ОЗ'},
-    {k:'d3_3', l:'Д3.3 Видатки ПМД на 1 мешканця'},
-  ]},
-  {group:'Домен 4: Географічний', items:[
-    {k:'d4', l:'Домен 4 — загальний бал'},
-    {k:'d4_1', l:'Д4.1 Населені пункти'},
-    {k:'d4_2', l:'Д4.2 Максимальна відстань'},
-    {k:'d4_3', l:'Д4.3 Середня відстань'},
-  ]},
-  {group:'Домен 5: Соціальний', items:[
-    {k:'d5', l:'Домен 5 — загальний бал'},
-    {k:'d5_1', l:'Д5.1 Домашні візити до вразливих'},
-    {k:'d5_2', l:'Д5.2 Частка вразливих у домашніх візитах'},
-  ]},
-  {group:'Домен 6: Громадське здоров-я', items:[
-    {k:'d6', l:'Домен 6 — загальний бал'},
-    {k:'d6_1', l:'Д6.1 АКДП-3'},
-    {k:'d6_2', l:'Д6.2 КПК-1'},
-    {k:'d6_3', l:'Д6.3 4+ огляди до 1 року'},
-    {k:'d6_4', l:'Д6.4 Планові огляди 0–3'},
-    {k:'d6_5', l:'Д6.5 Грудне вигодовування'},
-  ]},
-  {group:'Домен 7: Інституційний профіль', items:[
-    {k:'d4a', l:'Домен 7 — загальний бал'},
-    {k:'d7_1', l:'Д7.1 Досвід МТД'},
-    {k:'d7_2', l:'Д7.2 Підрозділ ОЗ'},
-    {k:'d7_3', l:'Д7.3 Якість відповідей'},
-  ]},
+  {groupKey:'general', items:['score_survey','children_u1_confirmed','population_survey']},
+  {groupKey:'d1', items:['d1','d1_1','d1_2','d1_3','d1_4']},
+  {groupKey:'d2', items:['d2','d2_1','d2_2','d2_3','d2_4']},
+  {groupKey:'d3', items:['d3','d3_1','d3_2','d3_3']},
+  {groupKey:'d4', items:['d4','d4_1','d4_2','d4_3']},
+  {groupKey:'d5', items:['d5','d5_1','d5_2']},
+  {groupKey:'d6', items:['d6','d6_1','d6_2','d6_3','d6_4','d6_5']},
+  {groupKey:'d7', items:['d4a','d7_1','d7_2','d7_3']},
 ];
-function indicatorLabel(k){
-  for(const g of INDICATOR_GROUPS){ const it = g.items.find(i=>i.k===k); if(it) return it.l; }
-  return k;
-}
 
+// Перебудовує список показників — викликається і при старті, і при
+// перемиканні мови (setLang), бо назви груп/показників залежать від LANG.
+// Вибір користувача зберігається через value поточного select.
 function populateIndicatorPicker(){
   const sel = document.getElementById('ind-picker');
-  if(!sel || sel.options.length) return; // once — не скидати вибір користувача
+  if(!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
   INDICATOR_GROUPS.forEach(g=>{
+    const dg = DOMAIN_GROUPS.find(d=>d.key===g.groupKey);
     const og = document.createElement('optgroup');
-    og.label = g.group;
-    g.items.forEach(d=>{
+    og.label = domainGroupName(dg);
+    g.items.forEach(k=>{
       const op = document.createElement('option');
-      op.value = d.k; op.textContent = d.l;
+      op.value = k; op.textContent = indicatorLabel(k);
       og.appendChild(op);
     });
     sel.appendChild(og);
   });
+  if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
 }
 
 // Перелік громад — чекбокси (не <select multiple>): звичайний клік
@@ -221,20 +185,20 @@ function rebuildDashboard(){
 
     // Domain averages
     const doms = [
-      {k:'d1',dl:'D1',l:'Демографічна потреба',w:'20%'},
-      {k:'d2',dl:'D2',l:'Стан ПМД',w:'10%'},
-      {k:'d3',dl:'D3',l:'Фінансова спроможність',w:'15%'},
-      {k:'d4',dl:'D4',l:'Географічний',w:'10%'},
-      {k:'d5',dl:'D5',l:'Соціальний',w:'5%'},
-      {k:'d6',dl:'D6',l:'Громадське здоров-я',w:'10%'},
-      {k:'d4a',dl:'D7',l:'Інституційний профіль',w:'10%'},
+      {k:'d1',dl:'D1',w:'20%'},
+      {k:'d2',dl:'D2',w:'10%'},
+      {k:'d3',dl:'D3',w:'15%'},
+      {k:'d4',dl:'D4',w:'10%'},
+      {k:'d5',dl:'D5',w:'5%'},
+      {k:'d6',dl:'D6',w:'10%'},
+      {k:'d4a',dl:'D7',w:'10%'},
     ];
     const scored = H.filter(h=>h.score_survey>0);
     const domAvg = doms.map(d=>scored.length ? (scored.reduce((s,h)=>s+(h[d.k]||0),0)/scored.length).toFixed(1) : 0);
     mkChart('ch-domains',{
       type:'bar',
       data:{
-        labels:doms.map(d=>d.l+' ('+d.w+')'),
+        labels:doms.map(d=>domainShortName(d.k)+' ('+d.w+')'),
         datasets:[{
           data:domAvg,
           backgroundColor:['#1A6B3C','#0D5E5E','#7D4E00','#5C3A7A','#2E7D32','#00695C','#1A237E'],
@@ -244,7 +208,7 @@ function rebuildDashboard(){
       options:{...CHART_OPTS,scales:{
         x:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
         y:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'},max:10,
-          title:{display:true,text:'Середній бал (макс 10)',font:CHART_FONT,color:'#6B6961'}}
+          title:{display:true,text:t('avg_score_axis'),font:CHART_FONT,color:'#6B6961'}}
       }}
     });
 
@@ -269,7 +233,7 @@ function rebuildDashboard(){
       data:{
         labels:doms.map(d=>d.dl),
         datasets:[{
-          label:'Середнє',
+          label:t('avg_dataset_label'),
           data:domAvg,
           borderColor:'#006EB6',backgroundColor:'rgba(0,110,182,0.1)',
           pointBackgroundColor:'#006EB6',borderWidth:2
