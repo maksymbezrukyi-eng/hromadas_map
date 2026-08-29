@@ -29,10 +29,11 @@ const I18N = {
     kpi_total: 'Громад у вибірці', kpi_shortlist: 'Short-list', kpi_selected: 'Відібрано',
     kpi_oblasts: 'Областей',
 
-    hstat_submitted: 'з 68 подали опитувальник', hstat_interviewed: "з 68 пройшли інтерв'ю",
+    hstat_submitted_lbl: total=>`з ${total} подали опитувальник`,
+    hstat_interviewed_lbl: total=>`з ${total} пройшли інтерв'ю`,
 
-    donut_submitted_title: n=>`Подали опитувальник — ${n} з 68`,
-    donut_interviewed_title: n=>`Пройшли інтерв'ю — ${n} з 68`,
+    donut_submitted_title: (n,total)=>`Подали опитувальник — ${n} з ${total}`,
+    donut_interviewed_title: (n,total)=>`Пройшли інтерв'ю — ${n} з ${total}`,
     donut_submitted: 'Подали', donut_not_submitted: 'Не подали',
     donut_interviewed_short: 'Пройшли', donut_not_yet: 'Ще ні',
 
@@ -54,7 +55,7 @@ const I18N = {
     col_unicef_status: 'UNICEF статус', col_interview: "Інтерв'ю",
     col_final_status: 'Фінальний статус',
 
-    children_u1_confirmed_lbl: n=>`Дітей до 1 року (${n} з 68 підтв.)`,
+    children_u1_confirmed_lbl: (n,total)=>`Дітей до 1 року (${n} з ${total} підтв.)`,
     children_u1_none_lbl: 'Дітей до 1 року (даних ще нема)',
 
     footer: 'v0.5 · дані з воркбука відбору',
@@ -85,10 +86,11 @@ const I18N = {
     kpi_total: 'Hromadas in sample', kpi_shortlist: 'Short-list', kpi_selected: 'Selected',
     kpi_oblasts: 'Oblasts',
 
-    hstat_submitted: 'of 68 submitted survey', hstat_interviewed: 'of 68 interviewed',
+    hstat_submitted_lbl: total=>`of ${total} submitted survey`,
+    hstat_interviewed_lbl: total=>`of ${total} interviewed`,
 
-    donut_submitted_title: n=>`Survey submitted — ${n} of 68`,
-    donut_interviewed_title: n=>`Interviewed — ${n} of 68`,
+    donut_submitted_title: (n,total)=>`Survey submitted — ${n} of ${total}`,
+    donut_interviewed_title: (n,total)=>`Interviewed — ${n} of ${total}`,
     donut_submitted: 'Submitted', donut_not_submitted: 'Not submitted',
     donut_interviewed_short: 'Interviewed', donut_not_yet: 'Not yet',
 
@@ -110,7 +112,7 @@ const I18N = {
     col_unicef_status: 'UNICEF status', col_interview: 'Interview',
     col_final_status: 'Final status',
 
-    children_u1_confirmed_lbl: n=>`Children under 1 (${n} of 68 confirmed)`,
+    children_u1_confirmed_lbl: (n,total)=>`Children under 1 (${n} of ${total} confirmed)`,
     children_u1_none_lbl: 'Children under 1 (no data yet)',
 
     footer: 'v0.5 · data from the selection workbook',

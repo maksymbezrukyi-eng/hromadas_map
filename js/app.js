@@ -13,9 +13,11 @@ function updateHeaderStats(){
   const childrenSum = confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0);
   document.getElementById('h-submitted').textContent = submitted;
   document.getElementById('h-interviewed').textContent = interviewed;
+  document.getElementById('h-submitted-lbl').textContent = t('hstat_submitted_lbl', H.length);
+  document.getElementById('h-interviewed-lbl').textContent = t('hstat_interviewed_lbl', H.length);
   document.getElementById('h-ch').textContent = confirmed.length ? childrenSum.toLocaleString(numLocale()) : '—';
   document.getElementById('h-ch-lbl').textContent = confirmed.length
-    ? t('children_u1_confirmed_lbl', confirmed.length)
+    ? t('children_u1_confirmed_lbl', confirmed.length, H.length)
     : t('children_u1_none_lbl');
 }
 
