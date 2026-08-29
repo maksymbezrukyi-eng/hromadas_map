@@ -8,8 +8,9 @@ function submissionState(h){
   return 'not_submitted';
 }
 const SUBMISSION_COLOR = {not_submitted:'#AEACA4', submitted:'#006EB6', interviewed:'#1A6B3C'};
-const SUBMISSION_LABEL = {not_submitted:'Не подали опитувальник', submitted:'Подали опитувальник', interviewed:"Пройшли інтерв'ю"};
+const SUBMISSION_LABEL_KEY = {not_submitted:'status_not_submitted', submitted:'status_submitted', interviewed:'status_interviewed'};
 function statusMarkerColor(h) { return SUBMISSION_COLOR[submissionState(h)]; }
+function submissionLabel(state) { return t(SUBMISSION_LABEL_KEY[state]); }
 
 // Refresh marker/boundary colors based on updated statuses
 function refreshMarkers() {
@@ -71,15 +72,15 @@ function loadBoundaries(){
             const confirmed = h && h.children_u1_confirmed>0;
             const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
             const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
-            const status = h ? SUBMISSION_LABEL[submissionState(h)] : '—';
+            const status = h ? submissionLabel(submissionState(h)) : '—';
             layer.bindPopup(
               '<div class="pp-name">'+(p.name||p.n||'')+'</div>'+
               '<div class="pp-obl">'+(p.oblast||p.o||'')+'</div>'+
               '<div class="pp-grid">'+
-              '<div><div class="pp-lbl">Населення</div><div class="pp-val">'+pop.toLocaleString('uk-UA')+'</div></div>'+
-              '<div><div class="pp-lbl">Дітей до 1р.</div><div class="pp-val">'+childrenTxt+'</div></div>'+
-              '<div><div class="pp-lbl">Частка</div><div class="pp-val">'+share+'</div></div>'+
-              '<div><div class="pp-lbl">Статус</div><div class="pp-val">'+status+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString('uk-UA')+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('share')+'</div><div class="pp-val">'+share+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('status_lbl')+'</div><div class="pp-val">'+status+'</div></div>'+
               '</div>'
             ).openPopup();
           });

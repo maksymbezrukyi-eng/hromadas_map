@@ -13,6 +13,10 @@ header{background:var(--blue-dark);color:var(--white);display:flex;align-items:c
 .hl{display:flex;align-items:center;gap:12px}
 .htitle{font-size:14px;font-weight:600}
 .hver{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:2px 7px;border-radius:3px;color:rgba(255,255,255,.55)}
+.lang-switch{display:flex;font-family:var(--mono);font-size:10px;border:1px solid rgba(255,255,255,.25);border-radius:3px;overflow:hidden}
+.lang-btn{background:none;border:none;color:rgba(255,255,255,.55);padding:3px 8px;cursor:pointer;font-family:inherit;font-size:inherit;letter-spacing:.05em}
+.lang-btn.active{background:rgba(255,255,255,.15);color:var(--white)}
+.lang-btn:not(.active):hover{color:var(--white)}
 .hr{display:flex;align-items:center;gap:16px}
 .hstat{text-align:right}
 .hstat-val{font-family:var(--mono);font-size:18px;font-weight:600;line-height:1}

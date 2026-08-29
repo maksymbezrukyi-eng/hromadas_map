@@ -13,22 +13,26 @@
 
 <header>
   <div class="hl">
-    <div class="htitle">Відбір громад</div>
+    <div class="htitle" data-i18n="app_title">Відбір громад</div>
     <div class="hver">v0.5</div>
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="uk" onclick="setLang('uk')">UA</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
   </div>
   <div class="hr">
-    <div class="hstat"><div class="hstat-val" id="h-submitted">—</div><div class="hstat-lbl">з 68 подали опитувальник</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-submitted">—</div><div class="hstat-lbl" data-i18n="hstat_submitted">з 68 подали опитувальник</div></div>
     <div class="hdiv"></div>
-    <div class="hstat"><div class="hstat-val" id="h-interviewed">—</div><div class="hstat-lbl">з 68 пройшли інтерв'ю</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-interviewed">—</div><div class="hstat-lbl" data-i18n="hstat_interviewed">з 68 пройшли інтерв'ю</div></div>
     <div class="hdiv"></div>
     <div class="hstat"><div class="hstat-val" id="h-ch">—</div><div class="hstat-lbl" id="h-ch-lbl">Дітей до 1 року</div></div>
   </div>
 </header>
 
 <div class="tabs">
-  <div class="tab active" onclick="showTab('map')">◉ Карта</div>
-  <div class="tab" onclick="showTab('dash')">▦ Дашборд</div>
-  <div class="tab" onclick="showTab('tbl')">≡ Таблиця</div>
+  <div class="tab active" onclick="showTab('map')" data-i18n="tab_map">◉ Карта</div>
+  <div class="tab" onclick="showTab('dash')" data-i18n="tab_dash">▦ Дашборд</div>
+  <div class="tab" onclick="showTab('tbl')" data-i18n="tab_tbl">≡ Таблиця</div>
 </div>
 
 <div class="content">
@@ -38,40 +42,40 @@
     <div class="map-layout">
       <div class="sidebar">
         <div class="sb-sec">
-          <div class="sb-lbl">Фільтри</div>
-          <select id="f-obl" onchange="applyF()"><option value="">Всі області</option></select>
+          <div class="sb-lbl" data-i18n="filters">Фільтри</div>
+          <select id="f-obl" onchange="applyF()"><option value="" data-i18n="all_oblasts">Всі області</option></select>
 
-          <input type="text" id="f-q" placeholder="Пошук громади..." oninput="applyF()">
-          <button class="btn-r" onclick="resetF()">Скинути</button>
+          <input type="text" id="f-q" placeholder="Пошук громади..." data-i18n-placeholder="search_hromada" oninput="applyF()">
+          <button class="btn-r" onclick="resetF()" data-i18n="reset">Скинути</button>
         </div>
         <div class="sb-sec">
-          <div class="sb-lbl">Дані</div>
+          <div class="sb-lbl" data-i18n="data_section">Дані</div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <button class="btn-r" onclick="syncFromSheets()" style="flex:1">⟳ Оновити дані</button>
+            <button class="btn-r" onclick="syncFromSheets()" style="flex:1" data-i18n="refresh_data">⟳ Оновити дані</button>
           </div>
-          <div id="sync-status" style="font-size:11px;color:#AEACA4">Не синхронізовано</div>
+          <div id="sync-status" style="font-size:11px;color:#AEACA4" data-i18n="not_synced">Не синхронізовано</div>
           <div style="margin-top:8px">
-            <div class="sb-lbl" style="margin-bottom:4px">Легенда — Статус подачі</div>
+            <div class="sb-lbl" style="margin-bottom:4px" data-i18n="legend_title">Легенда — Статус подачі</div>
             <div class="legend">
-              <div class="leg"><span class="ldot" style="background:#1A6B3C"></span>Пройшли інтерв'ю</div>
-              <div class="leg"><span class="ldot" style="background:#006EB6"></span>Подали опитувальник</div>
-              <div class="leg"><span class="ldot" style="background:#AEACA4"></span>Не подали опитувальник</div>
+              <div class="leg"><span class="ldot" style="background:#1A6B3C"></span><span data-i18n="status_interviewed">Пройшли інтерв'ю</span></div>
+              <div class="leg"><span class="ldot" style="background:#006EB6"></span><span data-i18n="status_submitted">Подали опитувальник</span></div>
+              <div class="leg"><span class="ldot" style="background:#AEACA4"></span><span data-i18n="status_not_submitted">Не подали опитувальник</span></div>
             </div>
           </div>
         </div>
         <div class="sb-sec">
-          <div class="sb-lbl">Показники</div>
+          <div class="sb-lbl" data-i18n="indicators_title">Показники</div>
           <div class="map-stats">
-            <div class="ms"><div class="ms-val" id="ms-n">68</div><div class="ms-lbl">Показано</div></div>
-            <div class="ms"><div class="ms-val" id="ms-p">—</div><div class="ms-lbl">Населення (тис)</div></div>
-            <div class="ms"><div class="ms-val" id="ms-c">—</div><div class="ms-lbl">Дітей до 1р.</div></div>
-            <div class="ms"><div class="ms-val" id="ms-o">—</div><div class="ms-lbl">Областей</div></div>
+            <div class="ms"><div class="ms-val" id="ms-n">68</div><div class="ms-lbl" data-i18n="shown">Показано</div></div>
+            <div class="ms"><div class="ms-val" id="ms-p">—</div><div class="ms-lbl" data-i18n="population_k">Населення (тис)</div></div>
+            <div class="ms"><div class="ms-val" id="ms-c">—</div><div class="ms-lbl" data-i18n="children_u1">Дітей до 1р.</div></div>
+            <div class="ms"><div class="ms-val" id="ms-o">—</div><div class="ms-lbl" data-i18n="oblasts">Областей</div></div>
           </div>
         </div>
         <div class="sb-sec">
           <div style="margin-top:10px">
             <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g4);cursor:pointer">
-              <input type="checkbox" id="toggle-bounds" checked onchange="toggleBounds(this.checked)" style="width:auto;margin-bottom:0"> Показувати межі громад
+              <input type="checkbox" id="toggle-bounds" checked onchange="toggleBounds(this.checked)" style="width:auto;margin-bottom:0"> <span data-i18n="show_boundaries">Показувати межі громад</span>
             </label>
           </div>
         </div>
@@ -79,9 +83,9 @@
           <div class="hcard-name" id="hc-n"></div>
           <div class="hcard-obl" id="hc-o"></div>
           <div class="hcard-grid">
-            <div><div class="hci-lbl">Населення</div><div class="hci-val" id="hc-p"></div></div>
-            <div><div class="hci-lbl">Дітей до 1р.</div><div class="hci-val" id="hc-c"></div></div>
-            <div><div class="hci-lbl">Частка</div><div class="hci-val" id="hc-s"></div></div>
+            <div><div class="hci-lbl" data-i18n="population">Населення</div><div class="hci-val" id="hc-p"></div></div>
+            <div><div class="hci-lbl" data-i18n="children_u1">Дітей до 1р.</div><div class="hci-val" id="hc-c"></div></div>
+            <div><div class="hci-lbl" data-i18n="share">Частка</div><div class="hci-val" id="hc-s"></div></div>
           </div>
         </div>
       </div>
@@ -94,10 +98,10 @@
     <div class="dash" id="dash-content">
       <!-- KPI row -->
       <div class="kpi-row" id="kpi-row">
-        <div class="kpi"><div class="kpi-val" id="kpi-total">68</div><div class="kpi-lbl">Громад у вибірці</div></div>
-        <div class="kpi"><div class="kpi-val" id="kpi-short">—</div><div class="kpi-lbl">Short-list</div></div>
-        <div class="kpi"><div class="kpi-val" id="kpi-selected">—</div><div class="kpi-lbl">Відібрано</div></div>
-        <div class="kpi"><div class="kpi-val" id="kpi-oblasts">15</div><div class="kpi-lbl">Областей</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-total">68</div><div class="kpi-lbl" data-i18n="kpi_total">Громад у вибірці</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-short">—</div><div class="kpi-lbl" data-i18n="kpi_shortlist">Short-list</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-selected">—</div><div class="kpi-lbl" data-i18n="kpi_selected">Відібрано</div></div>
+        <div class="kpi"><div class="kpi-val" id="kpi-oblasts">15</div><div class="kpi-lbl" data-i18n="kpi_oblasts">Областей</div></div>
       </div>
 
       <!-- Submission progress — two donuts instead of the old bar-style funnel -->
@@ -114,35 +118,35 @@
 
       <!-- Indicator picker — pick hromadas + an indicator, press "Відобразити" -->
       <div class="cc">
-        <div class="cc-title">Аналітика за показником</div>
+        <div class="cc-title" data-i18n="indicator_analytics_title">Аналітика за показником</div>
         <div class="ind-form">
           <div class="ind-col">
-            <div class="ind-col-lbl">Громада</div>
-            <input type="text" id="ind-list-q" placeholder="Пошук громади..." oninput="filterIndList()" style="margin-bottom:6px">
+            <div class="ind-col-lbl" data-i18n="col_hromada">Громада</div>
+            <input type="text" id="ind-list-q" placeholder="Пошук громади..." data-i18n-placeholder="search_hromada" oninput="filterIndList()" style="margin-bottom:6px">
             <div style="display:flex;gap:6px;margin-bottom:6px">
-              <button class="btn-r" style="flex:1" onclick="indListSetAll(true)">Усі</button>
-              <button class="btn-r" style="flex:1" onclick="indListSetAll(false)">Жодної</button>
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(true)" data-i18n="all">Усі</button>
+              <button class="btn-r" style="flex:1" onclick="indListSetAll(false)" data-i18n="none">Жодної</button>
             </div>
             <div id="ind-hromadas" class="ind-list"></div>
           </div>
           <div class="ind-col">
-            <div class="ind-col-lbl">Показник</div>
+            <div class="ind-col-lbl" data-i18n="col_indicator">Показник</div>
             <select id="ind-picker"></select>
-            <button class="btn-r" style="margin-top:8px" onclick="renderIndicatorChart()">▸ Відобразити</button>
+            <button class="btn-r" style="margin-top:8px" onclick="renderIndicatorChart()" data-i18n="display_btn">▸ Відобразити</button>
           </div>
         </div>
-        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0">Немає обраних громад із даними по цьому показнику.</div>
+        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0" data-i18n="no_indicator_data">Немає обраних громад із даними по цьому показнику.</div>
         <div class="ind-chart-wrap" id="ind-chart-wrap"><canvas id="ch-indicator"></canvas></div>
       </div>
 
       <!-- Scores row — shown when data available -->
       <div class="chart-row" id="scores-row" style="display:none">
         <div class="cc">
-          <div class="cc-title">Топ-20 громад за зваженим балом</div>
+          <div class="cc-title" data-i18n="top20_title">Топ-20 громад за зваженим балом</div>
           <div class="chart-wrap-260"><canvas id="ch-top20"></canvas></div>
         </div>
         <div class="cc">
-          <div class="cc-title">Середні бали по доменах (вибірка)</div>
+          <div class="cc-title" data-i18n="domains_avg_title">Середні бали по доменах (вибірка)</div>
           <div class="chart-wrap-260"><canvas id="ch-domains"></canvas></div>
         </div>
       </div>
@@ -150,26 +154,26 @@
       <!-- Score distribution — when data available -->
       <div class="chart-row" id="dist-row" style="display:none">
         <div class="cc">
-          <div class="cc-title">Розподіл зважених балів опитування</div>
+          <div class="cc-title" data-i18n="dist_title">Розподіл зважених балів опитування</div>
           <div class="chart-wrap-180"><canvas id="ch-dist"></canvas></div>
         </div>
         <div class="cc">
-          <div class="cc-title">Бали по доменах — радар (середнє по вибірці)</div>
+          <div class="cc-title" data-i18n="radar_title">Бали по доменах — радар (середнє по вибірці)</div>
           <div class="chart-wrap-180"><canvas id="ch-radar"></canvas></div>
         </div>
       </div>
 
       <!-- Oblast table -->
       <div class="cc">
-        <div class="cc-title">Зведення по областях</div>
+        <div class="cc-title" data-i18n="oblast_summary_title">Зведення по областях</div>
         <table class="obl-tbl">
           <thead><tr>
-            <th>Область</th>
-            <th style="text-align:right">Громад</th>
-            <th style="text-align:right">Дітей до 1р.</th>
-            <th style="text-align:right">Short-list</th>
-            <th style="text-align:right">Відібрано</th>
-            <th style="text-align:right">Сер. бал</th>
+            <th data-i18n="col_oblast">Область</th>
+            <th style="text-align:right" data-i18n="col_count">Громад</th>
+            <th style="text-align:right" data-i18n="children_u1">Дітей до 1р.</th>
+            <th style="text-align:right" data-i18n="kpi_shortlist">Short-list</th>
+            <th style="text-align:right" data-i18n="kpi_selected">Відібрано</th>
+            <th style="text-align:right" data-i18n="col_avg_score">Сер. бал</th>
           </tr></thead>
           <tbody id="otbl"></tbody>
         </table>
@@ -181,10 +185,10 @@
   <div class="pane" id="pane-tbl">
     <div class="tbl-layout">
       <div class="tbar">
-        <input type="text" id="t-q" placeholder="Пошук..." oninput="ftbl()" style="margin-bottom:0">
-        <select id="t-obl" onchange="ftbl()" style="margin-bottom:0"><option value="">Всі області</option></select>
+        <input type="text" id="t-q" placeholder="Пошук..." data-i18n-placeholder="search_generic" oninput="ftbl()" style="margin-bottom:0">
+        <select id="t-obl" onchange="ftbl()" style="margin-bottom:0"><option value="" data-i18n="all_oblasts">Всі області</option></select>
 
-        <button class="btn-r" onclick="resetT()">Скинути</button>
+        <button class="btn-r" onclick="resetT()" data-i18n="reset">Скинути</button>
         <div class="tbar-sp"></div>
         <div class="tcnt" id="tcnt">68 з 68</div>
       </div>
@@ -192,16 +196,16 @@
         <table class="dt">
           <thead><tr>
             <th></th>
-            <th onclick="st(1)">ID</th>
-            <th onclick="st(2)">Громада</th>
-            <th onclick="st(3)">Область</th>
-            <th onclick="st(4)">Населення</th>
-            <th onclick="st(5)">Дітей до 1р.</th>
-            <th onclick="st(6)">Частка %</th>
-            <th onclick="st(7)">UNICEF статус</th>
-            <th onclick="st(8)">Short-list</th>
-            <th onclick="st(9)">Інтерв'ю</th>
-            <th onclick="st(10)">Фінальний статус</th>
+            <th onclick="st(1)" data-i18n="col_id">ID</th>
+            <th onclick="st(2)" data-i18n="col_hromada">Громада</th>
+            <th onclick="st(3)" data-i18n="col_oblast">Область</th>
+            <th onclick="st(4)" data-i18n="col_pop">Населення</th>
+            <th onclick="st(5)" data-i18n="children_u1">Дітей до 1р.</th>
+            <th onclick="st(6)" data-i18n="col_share">Частка %</th>
+            <th onclick="st(7)" data-i18n="col_unicef_status">UNICEF статус</th>
+            <th onclick="st(8)" data-i18n="kpi_shortlist">Short-list</th>
+            <th onclick="st(9)" data-i18n="col_interview">Інтерв'ю</th>
+            <th onclick="st(10)" data-i18n="col_final_status">Фінальний статус</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table>
@@ -212,12 +216,13 @@
 
 <footer>
   <div class="fl"><span id="fd">—</span></div>
-  <div>v0.5 · дані з воркбука відбору</div>
+  <div data-i18n="footer">v0.5 · дані з воркбука відбору</div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
 <script src="js/sheets.js"></script>
 <script src="js/table.js"></script>

@@ -165,16 +165,16 @@ function donutLegend(){
 function renderSubmissionDonuts(){
   const submitted = H.filter(h=>h.score_survey>0).length;
   const interviewed = H.filter(h=>h.interview && h.interview!=='pending').length;
-  document.getElementById('donut-submit-title').textContent = `Подали опитувальник — ${submitted} з 68`;
-  document.getElementById('donut-interview-title').textContent = `Пройшли інтерв'ю — ${interviewed} з 68`;
+  document.getElementById('donut-submit-title').textContent = t('donut_submitted_title', submitted);
+  document.getElementById('donut-interview-title').textContent = t('donut_interviewed_title', interviewed);
   mkChart('ch-submit-donut',{
     type:'doughnut',
-    data:{labels:['Подали','Не подали'],datasets:[{data:[submitted,68-submitted],backgroundColor:['#006EB6','#E0DED8'],borderWidth:0}]},
+    data:{labels:[t('donut_submitted'),t('donut_not_submitted')],datasets:[{data:[submitted,68-submitted],backgroundColor:['#006EB6','#E0DED8'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:donutLegend()}}
   });
   mkChart('ch-interview-donut',{
     type:'doughnut',
-    data:{labels:["Пройшли",'Ще ні'],datasets:[{data:[interviewed,68-interviewed],backgroundColor:['#1A6B3C','#E0DED8'],borderWidth:0}]},
+    data:{labels:[t('donut_interviewed_short'),t('donut_not_yet')],datasets:[{data:[interviewed,68-interviewed],backgroundColor:['#1A6B3C','#E0DED8'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:donutLegend()}}
   });
 }

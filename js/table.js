@@ -39,7 +39,7 @@ function renderT(){
     tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString('uk-UA')}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td></tr>`;
     if(EXP.has(h.id)) tb.innerHTML+=detailRow(h);
   });
-  document.getElementById('tcnt').textContent=`${FR.length} з ${H.length}`;
+  document.getElementById('tcnt').textContent=t('tcnt',FR.length,H.length);
 }
 function ftbl(){
   const q=document.getElementById('t-q').value.toLowerCase();

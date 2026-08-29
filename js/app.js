@@ -15,11 +15,12 @@ function updateHeaderStats(){
   document.getElementById('h-interviewed').textContent = interviewed;
   document.getElementById('h-ch').textContent = confirmed.length ? childrenSum.toLocaleString('uk-UA') : '—';
   document.getElementById('h-ch-lbl').textContent = confirmed.length
-    ? `Дітей до 1 року (${confirmed.length} з 68 підтв.)`
-    : 'Дітей до 1 року (даних ще нема)';
+    ? t('children_u1_confirmed_lbl', confirmed.length)
+    : t('children_u1_none_lbl');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  applyI18n();
   updateHeaderStats();
   document.getElementById('fd').textContent=new Date().toLocaleDateString('uk-UA');
   const obs=[...new Set(H.map(h=>h.o))].sort();

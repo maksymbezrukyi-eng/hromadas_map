@@ -19,10 +19,10 @@ function parseCSV(text) {
 function showSyncStatus(state, count) {
   const el = document.getElementById('sync-status');
   if(!el) return;
-  if(state==='loading') { el.textContent='⟳ Синхронізація...'; el.style.color='#6B6961'; }
-  else if(state==='ok') { el.textContent='✓ Дані оновлено'; el.style.color='#1A6B3C'; setTimeout(()=>updateSyncLabel(),3000); }
-  else if(state==='schema') { el.textContent='⚠ Відсутні очікувані колонки — див. консоль'; el.style.color='#E08A1E'; }
-  else { el.textContent='✗ Помилка з\'єднання'; el.style.color='#B71C1C'; }
+  if(state==='loading') { el.textContent=t('syncing'); el.style.color='#6B6961'; }
+  else if(state==='ok') { el.textContent=t('synced_ok'); el.style.color='#1A6B3C'; setTimeout(()=>updateSyncLabel(),3000); }
+  else if(state==='schema') { el.textContent=t('sync_schema_warn'); el.style.color='#E08A1E'; }
+  else { el.textContent=t('sync_error'); el.style.color='#B71C1C'; }
 }
 
 // Returns the subset of `expected` that isn't a key on `row` — an empty
@@ -41,10 +41,10 @@ function updateSyncLabel() {
   if(LAST_SYNC.status === 'error') { showSyncStatus('error'); return; }
   if(LAST_SYNC.time) {
     const mins = Math.round((new Date()-LAST_SYNC.time)/60000);
-    el.textContent = mins < 1 ? 'Щойно оновлено' : `Оновлено ${mins} хв тому`;
+    el.textContent = mins < 1 ? t('synced_just_now') : t('synced_mins_ago', mins);
     el.style.color='#6B6961';
   } else {
-    el.textContent='Не синхронізовано';
+    el.textContent=t('not_synced');
     el.style.color='#AEACA4';
   }
 }
