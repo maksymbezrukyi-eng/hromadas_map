@@ -52,13 +52,24 @@ function populateIndicatorPicker(){
 // вмикає/вимикає одну громаду, без Ctrl/Shift, зрозуміліше для порівняння
 // кількох конкретних громад. Висота списку фіксована в CSS (.ind-list),
 // тож він не впливає на "розповзання" картки.
+// Перебудовується і при старті, і при зміні мови (setLang) — назви
+// транслітеруються, тож текст лейблів залежить від LANG; список
+// відмічених id зберігається через рестор після перебудови.
 function populateHromadaList(){
   const wrap = document.getElementById('ind-hromadas');
-  if(!wrap || wrap.children.length) return; // once — не скидати вибір користувача
-  [...H].sort((a,b)=>a.n.localeCompare(b.n,'uk')).forEach(h=>{
+  if(!wrap) return;
+  const prevChecked = wrap.children.length
+    ? new Set(selectedHromadaIds())
+    : null; // null = перший запуск, усе позначено за замовчуванням
+  wrap.innerHTML = '';
+  const collLang = (typeof LANG!=='undefined' && LANG==='en') ? 'en' : 'uk';
+  const sortName = h => trName(h.n);
+  [...H].sort((a,b)=>sortName(a).localeCompare(sortName(b),collLang)).forEach(h=>{
     const lbl = document.createElement('label');
-    lbl.dataset.name = (h.n+' '+h.o).toLowerCase();
-    lbl.innerHTML = `<input type="checkbox" checked value="${h.id}">${h.n} (${h.o})`;
+    const nm = trName(h.n), ob = trName(h.o);
+    lbl.dataset.name = (h.n+' '+h.o+' '+nm+' '+ob).toLowerCase();
+    const checked = prevChecked ? prevChecked.has(h.id) : true;
+    lbl.innerHTML = `<input type="checkbox" ${checked?'checked':''} value="${h.id}">${nm} (${ob})`;
     wrap.appendChild(lbl);
   });
 }
@@ -88,7 +99,7 @@ function renderIndicatorChart(){
   mkChart('ch-indicator',{
     type:'bar',
     data:{
-      labels: ranked.map(h=>h.n.slice(0,18)),
+      labels: ranked.map(h=>trName(h.n).slice(0,18)),
       datasets:[{ data: ranked.map(h=>h[field]), backgroundColor:'#006EB6', borderRadius:2 }]
     },
     options:{...CHART_OPTS, indexAxis:'y',
@@ -165,7 +176,7 @@ function rebuildDashboard(){
     mkChart('ch-top20',{
       type:'bar',
       data:{
-        labels:ranked.map(h=>h.n.slice(0,14)),
+        labels:ranked.map(h=>trName(h.n).slice(0,14)),
         datasets:[{
           data:ranked.map(h=>h.score_survey),
           backgroundColor:ranked.map(h=>{
@@ -264,7 +275,7 @@ function rebuildDashboard(){
     const avg = d.scores.length ? (d.scores.reduce((s,v)=>s+v,0)/d.scores.length).toFixed(1) : '—';
     const chTxt = d.chConfirmed ? d.ch.toLocaleString(numLocale()) : '—';
     tb.innerHTML+=`<tr>
-      <td>${o}</td>
+      <td>${trName(o)}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.cnt}</td>
       <td style="text-align:right;font-family:var(--mono)">${chTxt}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.short||'—'}</td>

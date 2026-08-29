@@ -152,10 +152,13 @@ function setLang(lang){
   updateHeaderStats();
   updateFooterDate();
   updateSyncLabel();
+  populateOblastFilters();
   refreshMarkers();
   populateIndicatorPicker();
+  populateHromadaList();
   rebuildDashboard();
   if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
+  if(lastHCardProps) showHCard(lastHCardProps);
 }
 
 window.I18N = I18N;

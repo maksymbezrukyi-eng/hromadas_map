@@ -36,15 +36,21 @@ function renderT(){
     const chTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
     const sh = confirmed ? (h.children_u1_confirmed/h.pop*100).toFixed(1)+'%' : '—';
     const arrow = EXP.has(h.id) ? '▾' : '▸';
-    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${h.n}</td><td>${h.o}</td><td class="num">${h.pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td></tr>`;
+    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${trName(h.n)}</td><td>${trName(h.o)}</td><td class="num">${h.pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td></tr>`;
     if(EXP.has(h.id)) tb.innerHTML+=detailRow(h);
   });
   document.getElementById('tcnt').textContent=t('tcnt',FR.length,H.length);
 }
+// Пошук матчить і українську назву, і транслітеровану — незалежно від
+// поточної мови інтерфейсу, щоб можна було шукати в обох розкладках.
+function hMatches(h,q){
+  return h.n.toLowerCase().includes(q) || h.o.toLowerCase().includes(q) ||
+    trName(h.n).toLowerCase().includes(q) || trName(h.o).toLowerCase().includes(q);
+}
 function ftbl(){
   const q=document.getElementById('t-q').value.toLowerCase();
   const ob=document.getElementById('t-obl').value;
-  FR=H.filter(h=>(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q))&&(!ob||h.o===ob));
+  FR=H.filter(h=>(!q||hMatches(h,q))&&(!ob||h.o===ob));
   renderT();
 }
 function resetT(){['t-q','t-obl'].forEach(id=>{document.getElementById(id).value=''});FR=[...H];renderT()}
@@ -55,6 +61,14 @@ function st(c){
   ths[c].classList.add(SD===1?'asc':'desc');
   const K=[null,'id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final'];
   const k=K[c];if(!k)return;
-  FR.sort((a,b)=>{let av=a[k],bv=b[k];if(typeof av==='number')return(av-bv)*SD;return String(av).localeCompare(String(bv),'uk')*SD});
+  const isName = k==='n'||k==='o';
+  FR.sort((a,b)=>{
+    let av=a[k],bv=b[k];
+    if(typeof av==='number')return(av-bv)*SD;
+    if(isName && typeof LANG!=='undefined' && LANG==='en'){
+      return trName(av).localeCompare(trName(bv),'en')*SD;
+    }
+    return String(av).localeCompare(String(bv),'uk')*SD;
+  });
   renderT();
 }

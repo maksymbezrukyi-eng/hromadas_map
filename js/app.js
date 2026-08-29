@@ -23,15 +23,27 @@ function updateFooterDate(){
   document.getElementById('fd').textContent=new Date().toLocaleDateString(numLocale());
 }
 
+// Список областей у фільтрах — значення option лишається українською (щоб
+// h.o===ob порівняння в applyF/ftbl не залежали від мови), текст
+// перекладається/транслітерується. Перебудовується заново при зміні мови
+// (setLang), з відновленням поточного вибору.
+function populateOblastFilters(){
+  const obs=[...new Set(H.map(h=>h.o))].sort();
+  ['f-obl','t-obl'].forEach(id=>{
+    const s=document.getElementById(id);
+    if(!s) return;
+    const prev = s.value;
+    s.innerHTML = s.options[0] && !s.options[0].value ? s.options[0].outerHTML : '';
+    obs.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=trName(o);s.appendChild(op)});
+    if(prev && [...s.options].some(o=>o.value===prev)) s.value = prev;
+  });
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   applyI18n();
   updateHeaderStats();
   updateFooterDate();
-  const obs=[...new Set(H.map(h=>h.o))].sort();
-  ['f-obl','t-obl'].forEach(id=>{
-    const s=document.getElementById(id);
-    obs.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;s.appendChild(op)});
-  });
+  populateOblastFilters();
   initMap(); initDash(); initTbl();
   // Auto-sync on load
   setTimeout(()=>syncFromSheets(true), 1000);

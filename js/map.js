@@ -74,8 +74,8 @@ function loadBoundaries(){
             const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
             const status = h ? submissionLabel(submissionState(h)) : '—';
             layer.bindPopup(
-              '<div class="pp-name">'+(p.name||p.n||'')+'</div>'+
-              '<div class="pp-obl">'+(p.oblast||p.o||'')+'</div>'+
+              '<div class="pp-name">'+trName(p.name||p.n||'')+'</div>'+
+              '<div class="pp-obl">'+trName(p.oblast||p.o||'')+'</div>'+
               '<div class="pp-grid">'+
               '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString(numLocale())+'</div></div>'+
               '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
@@ -98,11 +98,16 @@ function grantFill(g){
   return g==='KfW 1'?'#1a6fc4':g==='KfW 2'?'#2ea06b':'#e08a1e';
 }
 
+// Останні показані властивості — щоб перемалювати картку тими самими
+// даними, якщо мову перемкнули, поки вона відкрита (інакше назва/число
+// лишаться в старій мові до наступного ховера).
+let lastHCardProps = null;
 function showHCard(p){
+  lastHCardProps = p;
   const h = H.find(x=>x.id===p.id) || H.find(x=>x.id===Number(p.id));
   const confirmed = h && h.children_u1_confirmed>0;
-  document.getElementById('hc-n').textContent = p.name || p.n;
-  document.getElementById('hc-o').textContent = p.oblast || p.o;
+  document.getElementById('hc-n').textContent = trName(p.name || p.n);
+  document.getElementById('hc-o').textContent = trName(p.oblast || p.o);
   document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString(numLocale());
   document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
   const pop = p.pop||1;
@@ -119,13 +124,13 @@ function applyF(){
       const p=layer.feature.properties;
       const h=H.find(x=>x.id===p.id);
       if(!h) return;
-      const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));
+      const ok=(!ob||h.o===ob)&&(!q||hMatches(h,q));
       layer.setStyle({fillOpacity: ok?0.25:0, opacity: ok?0.8:0});
       if(ok) vis.push(h);
     });
   } else {
     H.forEach(h=>{
-      const ok=(!ob||h.o===ob)&&(!q||h.n.toLowerCase().includes(q)||h.o.toLowerCase().includes(q));
+      const ok=(!ob||h.o===ob)&&(!q||hMatches(h,q));
       if(ok) vis.push(h);
     });
   }
