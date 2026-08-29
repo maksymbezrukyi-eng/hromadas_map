@@ -13,16 +13,20 @@ function updateHeaderStats(){
   const childrenSum = confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0);
   document.getElementById('h-submitted').textContent = submitted;
   document.getElementById('h-interviewed').textContent = interviewed;
-  document.getElementById('h-ch').textContent = confirmed.length ? childrenSum.toLocaleString('uk-UA') : '—';
+  document.getElementById('h-ch').textContent = confirmed.length ? childrenSum.toLocaleString(numLocale()) : '—';
   document.getElementById('h-ch-lbl').textContent = confirmed.length
     ? t('children_u1_confirmed_lbl', confirmed.length)
     : t('children_u1_none_lbl');
 }
 
+function updateFooterDate(){
+  document.getElementById('fd').textContent=new Date().toLocaleDateString(numLocale());
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   applyI18n();
   updateHeaderStats();
-  document.getElementById('fd').textContent=new Date().toLocaleDateString('uk-UA');
+  updateFooterDate();
   const obs=[...new Set(H.map(h=>h.o))].sort();
   ['f-obl','t-obl'].forEach(id=>{
     const s=document.getElementById(id);

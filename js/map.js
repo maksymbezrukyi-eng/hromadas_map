@@ -70,14 +70,14 @@ function loadBoundaries(){
             const pop = Number(p.pop)||0;
             const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
             const confirmed = h && h.children_u1_confirmed>0;
-            const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
+            const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
             const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
             const status = h ? submissionLabel(submissionState(h)) : '—';
             layer.bindPopup(
               '<div class="pp-name">'+(p.name||p.n||'')+'</div>'+
               '<div class="pp-obl">'+(p.oblast||p.o||'')+'</div>'+
               '<div class="pp-grid">'+
-              '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString('uk-UA')+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString(numLocale())+'</div></div>'+
               '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
               '<div><div class="pp-lbl">'+t('share')+'</div><div class="pp-val">'+share+'</div></div>'+
               '<div><div class="pp-lbl">'+t('status_lbl')+'</div><div class="pp-val">'+status+'</div></div>'+
@@ -103,8 +103,8 @@ function showHCard(p){
   const confirmed = h && h.children_u1_confirmed>0;
   document.getElementById('hc-n').textContent = p.name || p.n;
   document.getElementById('hc-o').textContent = p.oblast || p.o;
-  document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString('uk-UA');
-  document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString('uk-UA') : '—';
+  document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString(numLocale());
+  document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
   const pop = p.pop||1;
   document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
   document.getElementById('hcard').classList.add('on');
@@ -139,10 +139,10 @@ function toggleBounds(show){
 function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF()}
 function upMS(v){
   document.getElementById('ms-n').textContent=v.length;
-  document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString('uk-UA');
+  document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString(numLocale());
   const confirmed = v.filter(h=>h.children_u1_confirmed>0);
   document.getElementById('ms-c').textContent = confirmed.length
-    ? confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0).toLocaleString('uk-UA')
+    ? confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0).toLocaleString(numLocale())
     : '—';
   document.getElementById('ms-o').textContent=new Set(v.map(h=>h.o)).size;
 }

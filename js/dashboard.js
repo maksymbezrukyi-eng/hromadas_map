@@ -262,7 +262,7 @@ function rebuildDashboard(){
   });
   Object.entries(od).sort((a,b)=>b[1].cnt-a[1].cnt).forEach(([o,d])=>{
     const avg = d.scores.length ? (d.scores.reduce((s,v)=>s+v,0)/d.scores.length).toFixed(1) : '—';
-    const chTxt = d.chConfirmed ? d.ch.toLocaleString('uk-UA') : '—';
+    const chTxt = d.chConfirmed ? d.ch.toLocaleString(numLocale()) : '—';
     tb.innerHTML+=`<tr>
       <td>${o}</td>
       <td style="text-align:right;font-family:var(--mono)">${d.cnt}</td>

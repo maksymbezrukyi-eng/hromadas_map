@@ -81,15 +81,35 @@ const GC={"KfW 1":"#1a6fc4","KfW 2":"#2ea06b","KfW 2+":"#e08a1e"};
 // "final" registry-status strings are what the workbook itself actually
 // contains (confirmed against data/hromadas_survey.json) — kept side by
 // side rather than replacing, since either source can still populate H.
+// {uk,en} за той самий принцип, що й INDICATOR_LABELS вище — ключі це сирі
+// значення статусів (частина з воркбука напряму, українською), значення —
+// те, що показуємо користувачу залежно від активної мови.
 const SUA={
-  recommended:"Рекомендовано",not_recommended:"Не рекомендовано",pending:"Очікує",
-  shortlisted:"Short-list",reserve:"Резерв",excluded:"Виключено",invited:"Запрошено",
-  completed:"Заповнено",partial:"Частково",no_response:"Без відповіді",
-  ok:"Ок",exclude:"Виключено",separate:"Окремо","have programme":"Має іншу програму",
-  "НЕ ПОДАНО":"Не подано","не рекомендовано":"Не рекомендовано",
-  "потребує рішення UNICEF":"Потребує рішення UNICEF","потребує даних":"Потребує даних",
-  "ДООПРАЦЮВАННЯ АНКЕТИ":"Доопрацювання анкети",
+  recommended:{uk:"Рекомендовано",en:"Recommended"},
+  not_recommended:{uk:"Не рекомендовано",en:"Not recommended"},
+  pending:{uk:"Очікує",en:"Pending"},
+  shortlisted:{uk:"Short-list",en:"Short-list"},
+  reserve:{uk:"Резерв",en:"Reserve"},
+  excluded:{uk:"Виключено",en:"Excluded"},
+  invited:{uk:"Запрошено",en:"Invited"},
+  completed:{uk:"Заповнено",en:"Completed"},
+  partial:{uk:"Частково",en:"Partial"},
+  no_response:{uk:"Без відповіді",en:"No response"},
+  ok:{uk:"Ок",en:"OK"},
+  exclude:{uk:"Виключено",en:"Excluded"},
+  separate:{uk:"Окремо",en:"Separate"},
+  "have programme":{uk:"Має іншу програму",en:"Has another programme"},
+  "НЕ ПОДАНО":{uk:"Не подано",en:"Not submitted"},
+  "не рекомендовано":{uk:"Не рекомендовано",en:"Not recommended"},
+  "потребує рішення UNICEF":{uk:"Потребує рішення UNICEF",en:"Requires UNICEF decision"},
+  "потребує даних":{uk:"Потребує даних",en:"Requires data"},
+  "ДООПРАЦЮВАННЯ АНКЕТИ":{uk:"Доопрацювання анкети",en:"Survey needs revision"},
 };
+function statusLabel(s){
+  const e = SUA[s];
+  if(!e) return s;
+  return e[typeof LANG!=='undefined'?LANG:'uk'] || e.uk;
+}
 const SBC={
   recommended:"b-rec",not_recommended:"b-notrec",pending:"b-pend",shortlisted:"b-short",
   reserve:"b-res",excluded:"b-excl",invited:"b-inv",
@@ -199,6 +219,7 @@ window.SHEETS = SHEETS;
 window.INDICATOR_NAMES = INDICATOR_NAMES;
 window.GC = GC;
 window.SUA = SUA;
+window.statusLabel = statusLabel;
 window.SBC = SBC;
 window.KC = KC;
 window.CHART_FONT = CHART_FONT;

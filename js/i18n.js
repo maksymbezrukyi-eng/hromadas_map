@@ -120,6 +120,10 @@ const I18N = {
 let LANG = 'uk';
 try { LANG = localStorage.getItem('hromadas_lang') || 'uk'; } catch(e) {}
 
+// Формат чисел (розділювачі розрядів) — уся англійська версія переходить
+// на en-US, а не лишається з українськими розділювачами.
+function numLocale(){ return LANG === 'en' ? 'en-US' : 'uk-UA'; }
+
 function t(key, ...args){
   const dict = I18N[LANG] || I18N.uk;
   const entry = key in dict ? dict[key] : I18N.uk[key];
@@ -146,6 +150,7 @@ function setLang(lang){
   // Динамічний текст, який генерує сам JS (не просто статичні підписи),
   // треба перебудувати заново — інакше він лишиться попередньою мовою.
   updateHeaderStats();
+  updateFooterDate();
   updateSyncLabel();
   refreshMarkers();
   populateIndicatorPicker();
@@ -155,5 +160,6 @@ function setLang(lang){
 
 window.I18N = I18N;
 window.t = t;
+window.numLocale = numLocale;
 window.applyI18n = applyI18n;
 window.setLang = setLang;
