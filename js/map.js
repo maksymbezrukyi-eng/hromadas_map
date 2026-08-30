@@ -71,7 +71,7 @@ function loadBoundaries(){
             const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
             const confirmed = h && h.children_u1_confirmed>0;
             const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
-            const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
+            const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
             const status = h ? submissionLabel(submissionState(h)) : '—';
             const security = h ? securityBadgeText(h) : '—';
             layer.bindPopup(
@@ -113,7 +113,7 @@ function showHCard(p){
   document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString(numLocale());
   document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
   const pop = p.pop||1;
-  document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
+  document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
   document.getElementById('hc-sec').textContent = h ? securityBadgeText(h) : '—';
   document.getElementById('hcard').classList.add('on');
 }

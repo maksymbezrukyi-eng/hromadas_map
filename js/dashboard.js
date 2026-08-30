@@ -213,7 +213,7 @@ function renderPercentageDonuts(k, hromadas, container){
     item.appendChild(wrap);
     const val = document.createElement('div');
     val.className = 'ind-donut-val';
-    val.textContent = (Number.isInteger(h[k]) ? h[k] : h[k].toFixed(1)) + '%';
+    val.textContent = h[k].toFixed(2) + '%';
     item.appendChild(val);
     const nm = document.createElement('div');
     nm.className = 'ind-donut-name';
@@ -346,7 +346,7 @@ function donutLegend(){
         const total = d.datasets[0].data.reduce((s,v)=>s+v,0) || 1;
         return d.labels.map((l,i)=>{
           const v = d.datasets[0].data[i];
-          const pct = Math.round(v/total*100);
+          const pct = (v/total*100).toFixed(2);
           return {
             text:`${l}: ${v} (${pct}%)`,
             fillStyle:d.datasets[0].backgroundColor[i],

@@ -274,9 +274,16 @@ const INDICATOR_LABELS = {
 // (Hromada`s\Survey`s protokol (UKR).docx). Інструмент бачать міжнародні
 // донори (UNICEF, KfW), тож опис двомовний — uk перекладено з протоколу
 // вручну, en не з окремого джерела (протокол лише українською).
-// valueType:'percentage' — рівно ті 12 підпоказників, де протокол прямо
-// каже "Частка ... (%)"; решта ('other') — абсолютні кількості, км,
-// грн/особу, співвідношення, категоріальні 0-2/0-3/0-4 бали.
+// valueType: усі 'other'. Протокол описує 12 підпоказників як "Частка ...
+// (%)" — це властивість самого показника, але НЕ те, що фактично лежить у
+// H[]. `convert_workbook.ps1` бере d1_1..d7_3 з аркуша 04_СКОРИНГ_ОПИТУВАННЯ
+// воркбука — це вже КВАРТИЛЬНИЙ БАЛ (ціле число 0..maxPoints, який воркбук
+// сам виставив за відсотком), не сирий відсоток. Перевірено на реальних
+// даних: d1_3=2 (максимум 3) для громади з реальною часткою вразливих у
+// відсотках, яка сама значно менша за "2". `valueType:'other'` і
+// кільцеві діаграми (renderPercentageDonuts, dashboard.js) — код лишається
+// на майбутнє, якщо колись підключимо сирі відсотки з опитувальника окремо
+// (02_ВВЕДЕННЯ_ОПИТУВАЛЬНИКА), а не з аркуша скорингу.
 const INDICATOR_META = {
   d1: {maxPoints:10, valueType:'other', desc:{
     uk:'Сирий бал домену 1 (сума підпоказників 1.1–1.4, максимум 10). Зважений внесок у підсумкову оцінку — 20%, макс. 2,0 бала.',
@@ -303,23 +310,23 @@ const INDICATOR_META = {
   d1_1: {maxPoints:2, valueType:'other', desc:{
     uk:'Абсолютна кількість дітей віком 0–3 роки 11 місяців 29 днів станом на 01.01.2026 (S2_CH04_T). Квартиль у вибірці: Q4=2, Q3=2, Q2=1, Q1=1.',
     en:'Absolute number of children aged 0–3 years 11 months 29 days as of 01.01.2026 (S2_CH04_T). Sample quartile: Q4=2, Q3=2, Q2=1, Q1=1.'}},
-  d1_2: {maxPoints:3, valueType:'percentage', desc:{
+  d1_2: {maxPoints:3, valueType:'other', desc:{
     uk:'Частка дітей віком 0–3 роки 11 місяців 29 днів у загальній чисельності населення громади (%). Розрахунок: S2_CH04_T / S2_POP_T × 100. Квартиль у валідній вибірці: Q4=3, Q3=2, Q2=1, Q1=0.',
     en:"Share of children aged 0–3 years 11 months 29 days in the hromada's total population (%). Calculation: S2_CH04_T / S2_POP_T × 100. Quartile in the valid sample: Q4=3, Q3=2, Q2=1, Q1=0."}},
-  d1_3: {maxPoints:3, valueType:'percentage', desc:{
+  d1_3: {maxPoints:3, valueType:'other', desc:{
     uk:'Частка дітей із вразливих груп серед усіх дітей віком 0–3 роки 11 місяців 29 днів (%). Розрахунок: S2_VUL04_T / S2_CH04_T × 100. Квартиль у валідній вибірці: Q4=3, Q3=2, Q2=1, Q1=0.',
     en:'Share of children from vulnerable groups among all children aged 0–3 years 11 months 29 days (%). Calculation: S2_VUL04_T / S2_CH04_T × 100. Quartile in the valid sample: Q4=3, Q3=2, Q2=1, Q1=0.'}},
   d1_4: {maxPoints:2, valueType:'other', desc:{
     uk:'Загальна кількість дітей віком до 18 років станом на 01.01.2026 (S2_CH18_T). Квартиль у вибірці: Q4=2, Q3=1, Q2=1, Q1=0.',
     en:'Total number of children under 18 as of 01.01.2026 (S2_CH18_T). Sample quartile: Q4=2, Q3=1, Q2=1, Q1=0.'}},
 
-  d2_1: {maxPoints:4, valueType:'percentage', desc:{
+  d2_1: {maxPoints:4, valueType:'other', desc:{
     uk:'Частка дітей віком до 1 року без декларації з лікарем ПМД (%). Розрахунок: (S2_CH01_T − S3_07_A) / S2_CH01_T × 100. Зворотний квартиль у валідній вибірці: Q1=4, Q2=3, Q3=2, Q4=1.',
     en:'Share of children under 1 without a PHC doctor declaration (%). Calculation: (S2_CH01_T − S3_07_A) / S2_CH01_T × 100. Reverse quartile in the valid sample: Q1=4, Q2=3, Q3=2, Q4=1.'}},
-  d2_2: {maxPoints:3, valueType:'percentage', desc:{
+  d2_2: {maxPoints:3, valueType:'other', desc:{
     uk:"Частка домашніх візитів серед усіх контактів для профілактичних оглядів дітей до 1 року у 2025 році (%) (S3_10 = S3_08_T / S3_09 × 100). Квартиль у валідній вибірці: Q4=3, Q3=2, Q2=1, Q1=0.",
     en:'Share of home visits among all contacts for preventive check-ups of children under 1 in 2025 (%) (S3_10 = S3_08_T / S3_09 × 100). Quartile in the valid sample: Q4=3, Q3=2, Q2=1, Q1=0.'}},
-  d2_3: {maxPoints:2, valueType:'percentage', desc:{
+  d2_3: {maxPoints:2, valueType:'other', desc:{
     uk:'Частка вакантних посад лікарів ПМД серед усіх зазначених посад лікарів ПМД (%). Розрахунок: (S3_06_PED + S3_06_GP) / (S3_05_PED_T + S3_05_GP_T + S3_06_PED + S3_06_GP) × 100. Зворотна фіксована шкала: <10%=2, 10–25%=1, >25%=0.',
     en:'Share of vacant PHC doctor positions among all listed PHC doctor positions (%). Calculation: (S3_06_PED + S3_06_GP) / (S3_05_PED_T + S3_05_GP_T + S3_06_PED + S3_06_GP) × 100. Reverse fixed scale: <10%=2, 10–25%=1, >25%=0.'}},
   d2_4: {maxPoints:1, valueType:'other', desc:{
@@ -329,7 +336,7 @@ const INDICATOR_META = {
   d3_1: {maxPoints:2, valueType:'other', desc:{
     uk:'Наявність окремої місцевої бюджетної програми підтримки ПМД у 2026 році (S4_01_NAME, S4_01_KPKV). Окрема профінансована програма=2; включено до загальної програми=1; відсутня=0.',
     en:"Whether the hromada has a separate local budget programme supporting PHC in 2026 (S4_01_NAME, S4_01_KPKV). Separate funded programme=2; included in a general programme=1; none=0."}},
-  d3_2: {maxPoints:4, valueType:'percentage', desc:{
+  d3_2: {maxPoints:4, valueType:'other', desc:{
     uk:"Частка видатків місцевого бюджету на підтримку ПМД у загальних планових видатках місцевого бюджету на охорону здоров'я у 2026 році (%). Розрахунок: S4_03 / S4_02 × 100. Квартиль у валідній вибірці: Q4=4, Q3=3, Q2=2, Q1=1.",
     en:'Share of local budget PHC support spending in total planned local health-budget spending in 2026 (%). Calculation: S4_03 / S4_02 × 100. Quartile in the valid sample: Q4=4, Q3=3, Q2=2, Q1=1.'}},
   d3_3: {maxPoints:4, valueType:'other', desc:{
@@ -349,23 +356,23 @@ const INDICATOR_META = {
   d5_1: {maxPoints:5, valueType:'other', desc:{
     uk:'Кількість профілактичних оглядів дітей до 1 року з вразливих сімей у 2025 році (S3_14). Немає обліку = 0; якщо дані наявні — зворотний квартиль: Q1=5, Q2=3, Q3=2, Q4=1.',
     en:'Number of preventive check-ups of children under 1 from vulnerable families in 2025 (S3_14). No records kept = 0; if data available — reverse quartile: Q1=5, Q2=3, Q3=2, Q4=1.'}},
-  d5_2: {maxPoints:5, valueType:'percentage', desc:{
+  d5_2: {maxPoints:5, valueType:'other', desc:{
     uk:'Частка дітей із вразливих груп серед усіх дітей, охоплених профілактичними оглядами у 2025 році (%) (S3_15). Немає обліку = 0; якщо дані наявні — зворотний квартиль: Q1=5, Q2=3, Q3=2, Q4=1.',
     en:'Share of children from vulnerable groups among all children covered by preventive check-ups in 2025 (%) (S3_15). No records kept = 0; if data available — reverse quartile: Q1=5, Q2=3, Q3=2, Q4=1.'}},
 
-  d6_1: {maxPoints:2, valueType:'percentage', desc:{
+  d6_1: {maxPoints:2, valueType:'other', desc:{
     uk:'Охоплення третім щепленням АКДП дітей до 1 року у 2025 році (%) (S6_01). Зворотний квартиль: Q1=2, Q2=1, Q3=1, Q4=0. Джерело: ЕСОЗ, наказ МОЗ №595.',
     en:'DTP-3 vaccination coverage among children under 1 in 2025 (%) (S6_01). Reverse quartile: Q1=2, Q2=1, Q3=1, Q4=0. Source: eHealth (ЕСОЗ), MoH order No. 595.'}},
-  d6_2: {maxPoints:2, valueType:'percentage', desc:{
+  d6_2: {maxPoints:2, valueType:'other', desc:{
     uk:"Охоплення першим щепленням КПК дітей, яким у 2025 році виповнилося 12 місяців (%) (S6_02). Зворотний квартиль: Q1=2, Q2=1, Q3=1, Q4=0. Джерело: ЕСОЗ, наказ МОЗ №595.",
     en:'MMR-1 vaccination coverage among children who turned 12 months in 2025 (%) (S6_02). Reverse quartile: Q1=2, Q2=1, Q3=1, Q4=0. Source: eHealth (ЕСОЗ), MoH order No. 595.'}},
-  d6_3: {maxPoints:2, valueType:'percentage', desc:{
+  d6_3: {maxPoints:2, valueType:'other', desc:{
     uk:'Частка дітей до 1 року з 4+ профілактичними оглядами за перший рік життя у 2025 році (%) (S6_04). Зворотний квартиль: Q1=2, Q2=1, Q3=1, Q4=0.',
     en:'Share of children under 1 with 4+ preventive check-ups during their first year of life in 2025 (%) (S6_04). Reverse quartile: Q1=2, Q2=1, Q3=1, Q4=0.'}},
-  d6_4: {maxPoints:2, valueType:'percentage', desc:{
+  d6_4: {maxPoints:2, valueType:'other', desc:{
     uk:'Частка дітей до 4 років, охоплених плановими оглядами у 18 місяців, 2 та 3 роки (%) (S6_04A). Зворотний квартиль: Q1=2, Q2=1, Q3=1, Q4=0.',
     en:'Share of children under 4 covered by scheduled check-ups at 18 months, 2 years, and 3 years (%) (S6_04A). Reverse quartile: Q1=2, Q2=1, Q3=1, Q4=0.'}},
-  d6_5: {maxPoints:2, valueType:'percentage', desc:{
+  d6_5: {maxPoints:2, valueType:'other', desc:{
     uk:'Частка дітей до 6 місяців на виключно грудному вигодовуванні у 2025 році (%) (S6_05). Зворотний квартиль: Q1=2, Q2=1, Q3=1, Q4=0.',
     en:'Share of children under 6 months exclusively breastfed in 2025 (%) (S6_05). Reverse quartile: Q1=2, Q2=1, Q3=1, Q4=0.'}},
 
