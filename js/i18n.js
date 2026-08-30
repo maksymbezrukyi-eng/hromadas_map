@@ -174,6 +174,7 @@ function setLang(lang){
   updateSyncLabel();
   populateOblastFilters();
   refreshMarkers();
+  applyF(); // перераховує map-stats (ms-p/ms-c) у новому numLocale(), зберігаючи поточні фільтри
   populateIndicatorPickList();
   populateHromadaList();
   rebuildDashboard();

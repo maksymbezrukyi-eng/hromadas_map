@@ -4,8 +4,8 @@
     {
       "name": "hromadas_map",
       "runtimeExecutable": "py",
-      "runtimeArgs": ["-m", "http.server", "8607"],
-      "port": 8607
+      "runtimeArgs": ["-m", "http.server", "8618"],
+      "port": 8618
     }
   ]
 }
