@@ -52,6 +52,10 @@ function populateIndicatorPickList(){
       lbl.dataset.name = nm.toLowerCase();
       const checked = prevChecked ? prevChecked.has(k) : (k==='score_survey');
       lbl.innerHTML = `<input type="checkbox" ${checked?'checked':''} value="${k}">${nm}`;
+      // title, не innerHTML — опис може містити "<"/">" (наприклад "<10%"),
+      // які зламали б розмітку, якби потрапили в HTML-рядок напряму.
+      const meta = indicatorMeta(k);
+      if(meta && meta.desc && meta.desc.uk) lbl.title = meta.desc.uk;
       wrap.appendChild(lbl);
     });
   });
@@ -134,11 +138,17 @@ function fmtIndVal(v){
 
 function renderCompareTable(hromadas, keys, wrap){
   const table = document.getElementById('ind-compare-table');
-  const thead = '<thead><tr><th>'+t('col_hromada')+'</th>'+keys.map(k=>`<th>${indicatorLabel(k)}</th>`).join('')+'</tr></thead>';
+  const thead = '<thead><tr><th>'+t('col_hromada')+'</th>'+keys.map(k=>`<th data-k="${k}">${indicatorLabel(k)}</th>`).join('')+'</tr></thead>';
   const tbody = '<tbody>'+hromadas.map(h=>
     '<tr><td>'+trName(h.n)+'</td>'+keys.map(k=>`<td>${fmtIndVal(h[k])}</td>`).join('')+'</tr>'
   ).join('')+'</tbody>';
   table.innerHTML = thead+tbody;
+  // title через DOM-властивість, не HTML-рядок — опис може містити "<"/">"
+  // (наприклад "<10%"), які зламали б розмітку, якби потрапили в innerHTML напряму.
+  table.querySelectorAll('th[data-k]').forEach(th=>{
+    const meta = indicatorMeta(th.dataset.k);
+    if(meta && meta.desc && meta.desc.uk) th.title = meta.desc.uk;
+  });
   wrap.style.display = '';
 }
 
@@ -186,6 +196,13 @@ function renderMiniCharts(hromadas, keys, container){
     title.className = 'ind-mini-title';
     title.textContent = indicatorLabel(k);
     container.appendChild(title);
+    const meta = indicatorMeta(k);
+    if(meta && meta.desc && meta.desc.uk){
+      const desc = document.createElement('div');
+      desc.className = 'ind-mini-desc';
+      desc.textContent = meta.desc.uk; // textContent, не innerHTML — опис може містити "<"/">"
+      container.appendChild(desc);
+    }
     const wrap = document.createElement('div');
     wrap.className = 'ind-chart-wrap';
     wrap.style.height = Math.max(140, rankedForKey.length*18) + 'px';
