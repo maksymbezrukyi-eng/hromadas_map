@@ -26,26 +26,56 @@ const INDICATOR_GROUPS = [
   {groupKey:'d7', items:['d4a','d7_1','d7_2','d7_3']},
 ];
 
-// Перебудовує список показників — викликається і при старті, і при
-// перемиканні мови (setLang), бо назви груп/показників залежать від LANG.
-// Вибір користувача зберігається через value поточного select.
-function populateIndicatorPicker(){
-  const sel = document.getElementById('ind-picker');
-  if(!sel) return;
-  const prev = sel.value;
-  sel.innerHTML = '';
+// Перелік показників — чекбокси (не select), згруповані по доменах
+// нередагованими заголовками-роздільниками — той самий принцип, що й
+// список громад нижче, щоб можна було порівнювати кілька показників
+// одразу, а не тільки один. За замовчуванням позначений лише "Бал
+// опитування", щоб при першому відкритті з'являвся один графік, як і
+// раніше — порівняння кількох показників це свідомий вибір користувача,
+// не 35 графіків одразу. Перебудовується і при старті, і при зміні мови
+// (setLang), бо назви груп/показників залежать від LANG; позначені
+// показники зберігаються через рестор після перебудови.
+function populateIndicatorPickList(){
+  const wrap = document.getElementById('ind-picklist');
+  if(!wrap) return;
+  const prevChecked = wrap.children.length ? selectedIndicatorKeys() : null;
+  wrap.innerHTML = '';
   INDICATOR_GROUPS.forEach(g=>{
     const dg = DOMAIN_GROUPS.find(d=>d.key===g.groupKey);
-    const og = document.createElement('optgroup');
-    og.label = domainGroupName(dg);
+    const hdr = document.createElement('div');
+    hdr.className = 'ind-group-hdr';
+    hdr.textContent = domainGroupName(dg);
+    wrap.appendChild(hdr);
     g.items.forEach(k=>{
-      const op = document.createElement('option');
-      op.value = k; op.textContent = indicatorLabel(k);
-      og.appendChild(op);
+      const lbl = document.createElement('label');
+      const nm = indicatorLabel(k);
+      lbl.dataset.name = nm.toLowerCase();
+      const checked = prevChecked ? prevChecked.has(k) : (k==='score_survey');
+      lbl.innerHTML = `<input type="checkbox" ${checked?'checked':''} value="${k}">${nm}`;
+      wrap.appendChild(lbl);
     });
-    sel.appendChild(og);
   });
-  if(prev && [...sel.options].some(o=>o.value===prev)) sel.value = prev;
+}
+function indPickSetAll(checked){
+  document.querySelectorAll('#ind-picklist input[type=checkbox]').forEach(cb=>cb.checked=checked);
+}
+function filterIndPickList(){
+  const q = document.getElementById('ind-pick-q').value.toLowerCase().trim();
+  document.querySelectorAll('#ind-picklist label').forEach(lbl=>{
+    lbl.style.display = (!q || lbl.dataset.name.includes(q)) ? '' : 'none';
+  });
+  // Заголовок домену ховаємо, якщо під ним не лишилось жодного видимого показника.
+  document.querySelectorAll('#ind-picklist .ind-group-hdr').forEach(hdr=>{
+    let sib = hdr.nextElementSibling, anyVisible = false;
+    while(sib && !sib.classList.contains('ind-group-hdr')){
+      if(sib.style.display !== 'none') anyVisible = true;
+      sib = sib.nextElementSibling;
+    }
+    hdr.style.display = anyVisible ? '' : 'none';
+  });
+}
+function selectedIndicatorKeys(){
+  return new Set(Array.from(document.querySelectorAll('#ind-picklist input:checked')).map(cb=>cb.value));
 }
 
 // Перелік громад — чекбокси (не <select multiple>): звичайний клік
@@ -86,29 +116,139 @@ function selectedHromadaIds(){
   return new Set(Array.from(document.querySelectorAll('#ind-hromadas input:checked')).map(cb=>Number(cb.value)));
 }
 
-function renderIndicatorChart(){
-  const field = document.getElementById('ind-picker').value;
-  const selectedIds = selectedHromadaIds();
-  const ranked = H.filter(h=>selectedIds.has(h.id) && h[field]>0).sort((a,b)=>b[field]-a[field]);
-  document.getElementById('ind-empty').style.display = ranked.length ? 'none' : '';
-  if(!ranked.length){ if(_charts['ch-indicator']){_charts['ch-indicator'].destroy(); delete _charts['ch-indicator'];} return; }
-  // Висоту задаємо контейнеру, не самому canvas — інакше Chart.js
-  // (responsive:true) підганяє контейнер під canvas, а canvas під
-  // контейнер по колу, і за кілька перерендерів висота "втікає" в нескінченність.
-  document.getElementById('ind-chart-wrap').style.height = Math.max(180, ranked.length*18) + 'px';
-  mkChart('ch-indicator',{
+// Порівняння кількох громад за кількома показниками одразу — три подання
+// одночасно, бо показники бувають на геть різних шкалах (населення —
+// сотні тисяч, бали доменів — 0-10) і "один графік на все" або оманливий,
+// або взагалі не намалюється:
+//   1. Таблиця — завжди коректна, будь-яка комбінація шкал.
+//   2. Згрупований барчарт — тільки якщо всі обрані показники сумірні
+//      (COMPARABLE_SCALE_FIELDS у config.js), інакше показуємо пояснення.
+//   3. Міні-графіки — по одному на показник, кожен у своєму масштабі.
+const GROUPED_CHART_COLORS = ['#1A6B3C','#0D5E5E','#7D4E00','#5C3A7A','#2E7D32','#00695C','#1A237E','#B23B3B'];
+let _indicatorChartIds = [];
+
+function fmtIndVal(v){
+  if(!(v>0)) return '—';
+  return Number.isInteger(v) ? v.toLocaleString(numLocale()) : v.toFixed(2);
+}
+
+function renderCompareTable(hromadas, keys, wrap){
+  const table = document.getElementById('ind-compare-table');
+  const thead = '<thead><tr><th>'+t('col_hromada')+'</th>'+keys.map(k=>`<th>${indicatorLabel(k)}</th>`).join('')+'</tr></thead>';
+  const tbody = '<tbody>'+hromadas.map(h=>
+    '<tr><td>'+trName(h.n)+'</td>'+keys.map(k=>`<td>${fmtIndVal(h[k])}</td>`).join('')+'</tr>'
+  ).join('')+'</tbody>';
+  table.innerHTML = thead+tbody;
+  wrap.style.display = '';
+}
+
+function renderGroupedChart(hromadas, keys){
+  const note = document.getElementById('ind-grouped-note');
+  const chartWrap = document.getElementById('ind-grouped-wrap');
+  const comparable = keys.every(k=>COMPARABLE_SCALE_FIELDS.has(k));
+  if(!comparable){
+    note.style.display = '';
+    chartWrap.style.display = 'none';
+    if(_charts['ch-indicator-grouped']){ _charts['ch-indicator-grouped'].destroy(); delete _charts['ch-indicator-grouped']; }
+    return;
+  }
+  note.style.display = 'none';
+  chartWrap.style.display = '';
+  // Висота задається обгортці, не canvas — той самий фікс "розповзання",
+  // що й у міні-графіках нижче.
+  chartWrap.style.height = Math.max(180, hromadas.length*keys.length*10) + 'px';
+  mkChart('ch-indicator-grouped',{
     type:'bar',
     data:{
-      labels: ranked.map(h=>trName(h.n).slice(0,18)),
-      datasets:[{ data: ranked.map(h=>h[field]), backgroundColor:'#006EB6', borderRadius:2 }]
+      labels: hromadas.map(h=>trName(h.n).slice(0,18)),
+      datasets: keys.map((k,i)=>({
+        label: indicatorLabel(k),
+        data: hromadas.map(h=>h[k]||0),
+        backgroundColor: GROUPED_CHART_COLORS[i % GROUPED_CHART_COLORS.length],
+        borderRadius:2
+      }))
     },
     options:{...CHART_OPTS, indexAxis:'y',
+      plugins:{legend:{display:true,position:'bottom',labels:{font:CHART_FONT,color:'#6B6961',boxWidth:10,padding:10}}},
       scales:{
         y:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
         x:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
       }
     }
   });
+}
+
+function renderMiniCharts(hromadas, keys, container){
+  keys.forEach(k=>{
+    const rankedForKey = hromadas.filter(h=>h[k]>0).sort((a,b)=>b[k]-a[k]);
+    if(!rankedForKey.length) return; // немає даних по цьому показнику — нічого малювати
+    const title = document.createElement('div');
+    title.className = 'ind-mini-title';
+    title.textContent = indicatorLabel(k);
+    container.appendChild(title);
+    const wrap = document.createElement('div');
+    wrap.className = 'ind-chart-wrap';
+    wrap.style.height = Math.max(140, rankedForKey.length*18) + 'px';
+    const canvasId = 'ind-chart-'+k;
+    const canvas = document.createElement('canvas');
+    canvas.id = canvasId;
+    wrap.appendChild(canvas);
+    container.appendChild(wrap);
+    _indicatorChartIds.push(canvasId);
+    mkChart(canvasId,{
+      type:'bar',
+      data:{
+        labels: rankedForKey.map(h=>trName(h.n).slice(0,18)),
+        datasets:[{ data: rankedForKey.map(h=>h[k]), backgroundColor:'#006EB6', borderRadius:2 }]
+      },
+      options:{...CHART_OPTS, indexAxis:'y',
+        scales:{
+          y:{ticks:{font:{family:'IBM Plex Mono',size:8},color:'#6B6961'},grid:{display:false}},
+          x:{ticks:{font:CHART_FONT,color:'#6B6961'},grid:{color:'#F2F1EE'}}
+        }
+      }
+    });
+  });
+}
+
+function renderIndicatorComparison(){
+  const selectedIds = selectedHromadaIds();
+  const keys = [...selectedIndicatorKeys()];
+  const hromadas = H.filter(h=>selectedIds.has(h.id));
+  const emptyMsg = document.getElementById('ind-empty');
+  const tableWrap = document.getElementById('ind-compare-table-wrap');
+  const groupedSection = document.getElementById('ind-grouped-section');
+  const chartsContainer = document.getElementById('ind-charts-container');
+
+  // Завжди чистимо попередні міні-графіки перед перебудовою — інакше
+  // Chart.js-інстанси лишаються "висіти" на видалених canvas.
+  _indicatorChartIds.forEach(id=>{ if(_charts[id]){ _charts[id].destroy(); delete _charts[id]; } });
+  _indicatorChartIds = [];
+  chartsContainer.innerHTML = '';
+
+  if(!hromadas.length || !keys.length){
+    emptyMsg.style.display = '';
+    tableWrap.style.display = 'none';
+    groupedSection.style.display = 'none';
+    if(_charts['ch-indicator-grouped']){ _charts['ch-indicator-grouped'].destroy(); delete _charts['ch-indicator-grouped']; }
+    return;
+  }
+  emptyMsg.style.display = 'none';
+  // Згрупований графік має сенс лише від 2 показників — з одним це те
+  // саме, що й перший міні-графік нижче, тож секцію просто ховаємо, а не
+  // показуємо примітку "різні шкали" (це була б неправда — показник один).
+  groupedSection.style.display = keys.length >= 2 ? '' : 'none';
+  if(keys.length < 2 && _charts['ch-indicator-grouped']){
+    _charts['ch-indicator-grouped'].destroy(); delete _charts['ch-indicator-grouped'];
+  }
+
+  // Сортуємо за першим обраним показником (спаданням) — той самий принцип,
+  // що й у старому одиничному графіку: найвищий результат згори.
+  const sorted = [...hromadas].sort((a,b)=>(b[keys[0]]||0)-(a[keys[0]]||0));
+
+  renderCompareTable(sorted, keys, tableWrap);
+  if(keys.length >= 2) renderGroupedChart(sorted, keys);
+  renderMiniCharts(sorted, keys, chartsContainer);
 }
 
 // Два донати замість старої текстової воронки — скільки подали опитувальник
@@ -154,7 +294,7 @@ function renderSubmissionDonuts(){
   });
 }
 
-function initDash(){ populateIndicatorPicker(); populateHromadaList(); rebuildDashboard(); }
+function initDash(){ populateIndicatorPickList(); populateHromadaList(); rebuildDashboard(); }
 
 function rebuildDashboard(){
   // KPIs
@@ -165,7 +305,7 @@ function rebuildDashboard(){
   document.getElementById('kpi-selected').textContent = selected||'—';
   document.getElementById('kpi-oblasts').textContent = new Set(H.map(h=>h.o)).size;
   renderSubmissionDonuts();
-  renderIndicatorChart();
+  renderIndicatorComparison();
 
   // Scores — only if data available
   const hasScores = SCORING_DATA.length > 0 && H.some(h=>h.score_survey>0);

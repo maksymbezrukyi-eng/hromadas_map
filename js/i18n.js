@@ -40,7 +40,10 @@ const I18N = {
     indicator_analytics_title: 'Аналітика за показником',
     col_hromada: 'Громада', col_indicator: 'Показник',
     all: 'Усі', none: 'Жодної', display_btn: '▸ Відобразити',
-    no_indicator_data: 'Немає обраних громад із даними по цьому показнику.',
+    no_indicator_data: 'Немає обраних громад або показників.',
+    ind_compare_table_title: 'Порівняння — таблиця',
+    ind_grouped_title: 'Порівняння — згрупований графік (показники однієї шкали)',
+    ind_grouped_scale_note: 'Недоступно: обрані показники мають різні шкали значень (наприклад населення й бал домену). Оберіть 2+ показники з одного домену/опитування — або дивіться таблицю й міні-графіки нижче.',
 
     top20_title: 'Топ-20 громад за зваженим балом',
     domains_avg_title: 'Середні бали по доменах (вибірка)',
@@ -97,7 +100,10 @@ const I18N = {
     indicator_analytics_title: 'Indicator analytics',
     col_hromada: 'Hromada', col_indicator: 'Indicator',
     all: 'All', none: 'None', display_btn: '▸ Show',
-    no_indicator_data: 'No selected hromadas have data for this indicator.',
+    no_indicator_data: 'No hromadas or indicators selected.',
+    ind_compare_table_title: 'Comparison — table',
+    ind_grouped_title: 'Comparison — grouped chart (same-scale indicators)',
+    ind_grouped_scale_note: 'Unavailable: the selected indicators use different value scales (e.g. population vs. a domain score). Pick 2+ indicators from the same domain/survey score — or check the table and mini-charts below.',
 
     top20_title: 'Top 20 hromadas by weighted score',
     domains_avg_title: 'Average domain scores (sample)',
@@ -156,7 +162,7 @@ function setLang(lang){
   updateSyncLabel();
   populateOblastFilters();
   refreshMarkers();
-  populateIndicatorPicker();
+  populateIndicatorPickList();
   populateHromadaList();
   rebuildDashboard();
   if(document.getElementById('pane-tbl').classList.contains('active')) renderT();

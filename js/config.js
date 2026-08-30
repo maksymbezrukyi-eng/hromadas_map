@@ -175,6 +175,15 @@ const INDICATOR_LABELS = {
   d7_2: {uk:'Д7.2 Підрозділ ОЗ', en:'D7.2 Health unit structure'},
   d7_3: {uk:'Д7.3 Якість відповідей', en:'D7.3 Response quality'},
 };
+// Показники, чиї значення сумірні на одній шкалі (0-10, домени й
+// підпоказники опитування — max ~8-10) — тільки для них має сенс
+// згрупований барчарт "усі показники поруч". population_survey/
+// children_u1_confirmed/rank навмисно виключені: інші порядки величин,
+// в одному графіку зі шкалою 0-10 вони або зникнуть, або зламають вісь.
+const COMPARABLE_SCALE_FIELDS = new Set([
+  ...SUB_INDICATOR_FIELDS,
+  'd1','d2','d3','d4','d5','d6','d4a','score_survey','final_score',
+]);
 function indicatorLabel(k){
   const e = INDICATOR_LABELS[k];
   if(!e) return k;
@@ -220,6 +229,7 @@ window.INDICATOR_NAMES = INDICATOR_NAMES;
 window.GC = GC;
 window.SUA = SUA;
 window.statusLabel = statusLabel;
+window.COMPARABLE_SCALE_FIELDS = COMPARABLE_SCALE_FIELDS;
 window.SBC = SBC;
 window.KC = KC;
 window.CHART_FONT = CHART_FONT;

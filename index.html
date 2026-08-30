@@ -131,12 +131,26 @@
           </div>
           <div class="ind-col">
             <div class="ind-col-lbl" data-i18n="col_indicator">Показник</div>
-            <select id="ind-picker"></select>
-            <button class="btn-r" style="margin-top:8px" onclick="renderIndicatorChart()" data-i18n="display_btn">▸ Відобразити</button>
+            <input type="text" id="ind-pick-q" placeholder="Пошук..." data-i18n-placeholder="search_generic" oninput="filterIndPickList()" style="margin-bottom:6px">
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <button class="btn-r" style="flex:1" onclick="indPickSetAll(true)" data-i18n="all">Усі</button>
+              <button class="btn-r" style="flex:1" onclick="indPickSetAll(false)" data-i18n="none">Жодної</button>
+            </div>
+            <div id="ind-picklist" class="ind-list"></div>
           </div>
         </div>
-        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0" data-i18n="no_indicator_data">Немає обраних громад із даними по цьому показнику.</div>
-        <div class="ind-chart-wrap" id="ind-chart-wrap"><canvas id="ch-indicator"></canvas></div>
+        <button class="btn-r" onclick="renderIndicatorComparison()" data-i18n="display_btn">▸ Відобразити</button>
+        <div id="ind-empty" style="display:none;font-size:12px;color:var(--g3);padding:8px 0" data-i18n="no_indicator_data">Немає обраних громад або показників.</div>
+        <div id="ind-compare-table-wrap" style="display:none">
+          <div class="ind-subtitle" data-i18n="ind_compare_table_title">Порівняння — таблиця</div>
+          <div class="ind-table-scroll"><table class="ind-compare-table" id="ind-compare-table"></table></div>
+        </div>
+        <div id="ind-grouped-section" style="display:none">
+          <div class="ind-subtitle" data-i18n="ind_grouped_title">Порівняння — згрупований графік (показники однієї шкали)</div>
+          <div id="ind-grouped-note" style="display:none;font-size:12px;color:var(--g3);padding:4px 0" data-i18n="ind_grouped_scale_note">Недоступно: обрані показники мають різні шкали значень.</div>
+          <div class="ind-chart-wrap" id="ind-grouped-wrap" style="display:none"><canvas id="ch-indicator-grouped"></canvas></div>
+        </div>
+        <div id="ind-charts-container"></div>
       </div>
 
       <!-- Scores row — shown when data available -->
