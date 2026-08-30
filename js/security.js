@@ -128,6 +128,24 @@ async function initSecurity(){
   });
 }
 
+// Проста текстова версія — для hover-картки й попапу на карті (там усі
+// поля звичайний текст, без кольорових бейджів, як population/children/share).
+function securityBadgeText(h){
+  if(!h.security) return '—';
+  const {km, zone, inside} = h.security;
+  return inside ? securityZoneLabel(zone, true) : `${Math.round(km)} ${t('km_short')}`;
+}
+// Бейдж для колонки "Безпека" в таблиці (Крок 11.2) — перевикористовує
+// наявні .badge-класи (table.js/style.css), той самий колірний принцип, що
+// й UNICEF-статус/short-list поруч, а не нові класи заради трьох кольорів.
+function securityBadgeHTML(h){
+  if(!h.security) return '—';
+  const cls = h.security.zone==='red' ? 'b-excl' : h.security.zone==='yellow' ? 'b-res' : 'b-rec';
+  return `<span class="badge ${cls}">${securityBadgeText(h)}</span>`;
+}
+
+window.securityBadgeText = securityBadgeText;
+window.securityBadgeHTML = securityBadgeHTML;
 window.fetchOccupiedTerritory = fetchOccupiedTerritory;
 window.distanceToOccupiedKm = distanceToOccupiedKm;
 window.securityZone = securityZone;

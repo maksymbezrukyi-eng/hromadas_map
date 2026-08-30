@@ -26,7 +26,7 @@ function detailRow(h){
     dtlCell(indicatorLabel('rank'),num(h.rank)),
     dtlCell(indicatorLabel('population_survey'),num(h.population_survey)),
   ].join('');
-  return `<tr class="dt-expand"><td colspan="11"><div class="dtl-grid">${cells}</div></td></tr>`;
+  return `<tr class="dt-expand"><td colspan="12"><div class="dtl-grid">${cells}</div></td></tr>`;
 }
 
 function renderT(){
@@ -36,7 +36,7 @@ function renderT(){
     const chTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
     const sh = confirmed ? (h.children_u1_confirmed/h.pop*100).toFixed(1)+'%' : '—';
     const arrow = EXP.has(h.id) ? '▾' : '▸';
-    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${trName(h.n)}</td><td>${trName(h.o)}</td><td class="num">${h.pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td></tr>`;
+    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${trName(h.n)}</td><td>${trName(h.o)}</td><td class="num">${h.pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td><td>${securityBadgeHTML(h)}</td></tr>`;
     if(EXP.has(h.id)) tb.innerHTML+=detailRow(h);
   });
   document.getElementById('tcnt').textContent=t('tcnt',FR.length,H.length);
@@ -59,8 +59,19 @@ function st(c){
   ths.forEach(t=>t.classList.remove('asc','desc'));
   if(SC===c)SD*=-1;else{SC=c;SD=1};
   ths[c].classList.add(SD===1?'asc':'desc');
-  const K=[null,'id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final'];
+  const K=[null,'id','n','o','pop','children_u1_confirmed',null,'us','sl','interview','final','security'];
   const k=K[c];if(!k)return;
+  if(k==='security'){
+    // h.security — об'єкт {km,zone,inside}, не пряме число; немає даних —
+    // в кінець сортування завжди, незалежно від напрямку.
+    FR.sort((a,b)=>{
+      const av = a.security ? a.security.km : Infinity;
+      const bv = b.security ? b.security.km : Infinity;
+      return (av-bv)*SD;
+    });
+    renderT();
+    return;
+  }
   const isName = k==='n'||k==='o';
   FR.sort((a,b)=>{
     let av=a[k],bv=b[k];

@@ -73,6 +73,7 @@ function loadBoundaries(){
             const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
             const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
             const status = h ? submissionLabel(submissionState(h)) : '—';
+            const security = h ? securityBadgeText(h) : '—';
             layer.bindPopup(
               '<div class="pp-name">'+trName(p.name||p.n||'')+'</div>'+
               '<div class="pp-obl">'+trName(p.oblast||p.o||'')+'</div>'+
@@ -81,6 +82,7 @@ function loadBoundaries(){
               '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
               '<div><div class="pp-lbl">'+t('share')+'</div><div class="pp-val">'+share+'</div></div>'+
               '<div><div class="pp-lbl">'+t('status_lbl')+'</div><div class="pp-val">'+status+'</div></div>'+
+              '<div><div class="pp-lbl">'+t('col_security')+'</div><div class="pp-val">'+security+'</div></div>'+
               '</div>'
             ).openPopup();
           });
@@ -112,6 +114,7 @@ function showHCard(p){
   document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
   const pop = p.pop||1;
   document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(1)+'%' : '—';
+  document.getElementById('hc-sec').textContent = h ? securityBadgeText(h) : '—';
   document.getElementById('hcard').classList.add('on');
 }
 
@@ -140,6 +143,52 @@ function toggleBounds(show){
   if(!boundaryLayer) return;
   if(show) boundaryLayer.addTo(map);
   else map.removeLayer(boundaryLayer);
+}
+
+// Окупована територія (Крок 11.2) — окремий Leaflet GeoJSON-шар поверх меж
+// громад, той самий патерн, що й boundaryLayer у loadBoundaries(), але без
+// interaction-обробників (лише візуальний контекст). Вимкнено за
+// замовчуванням — це довідковий шар, не основний вигляд карти.
+let occupiedLayer = null;
+function buildOccupiedLayer(){
+  occupiedLayer = L.geoJSON(OCCUPIED_TERRITORY.feature, {
+    style: {fillColor:SECURITY_ZONE_COLORS.red, fillOpacity:0.22, color:SECURITY_ZONE_COLORS.red, weight:1, opacity:0.5},
+    interactive: false,
+  });
+}
+function toggleOccupiedLayer(show){
+  if(!OCCUPIED_TERRITORY) return; // джерело недоступне — чекбокс задизейблений (onSecurityLoaded)
+  if(show){
+    if(!occupiedLayer) buildOccupiedLayer();
+    occupiedLayer.addTo(map);
+  } else if(occupiedLayer){
+    map.removeLayer(occupiedLayer);
+  }
+}
+// Підпис дати DeepState + вмикання/вимикання чекбокса залежно від того, чи
+// вдалось завантажити джерело. Викликається і після initSecurity() (перший
+// раз), і з setLang() (переклад підпису під нову мову).
+function updateOccupiedNote(){
+  const note = document.getElementById('occupied-date-note');
+  const cb = document.getElementById('toggle-occupied');
+  if(!note || !cb) return;
+  if(OCCUPIED_TERRITORY){
+    const ymd = OCCUPIED_TERRITORY.dateUsed; // "20260830"
+    const d = new Date(Date.UTC(+ymd.slice(0,4), +ymd.slice(4,6)-1, +ymd.slice(6,8)));
+    note.textContent = t('occupied_date_note', d.toLocaleDateString(numLocale(), {timeZone:'UTC'}));
+    cb.disabled = false;
+  } else {
+    note.textContent = t('occupied_unavailable');
+    cb.disabled = true;
+  }
+}
+// Викликається один раз після initSecurity() (app.js) — таблиця й hcard уже
+// могли відрендеритись до того, як h.security з'явився, тож перемальовуємо
+// їх, якщо зараз видимі (той самий принцип, що й lastHCardProps у setLang()).
+function onSecurityLoaded(){
+  updateOccupiedNote();
+  if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
+  if(lastHCardProps) showHCard(lastHCardProps);
 }
 function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF()}
 function upMS(v){

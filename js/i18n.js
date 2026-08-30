@@ -23,6 +23,10 @@ const I18N = {
     indicators_title: 'Показники', shown: 'Показано', population_k: 'Населення (тис)',
     children_u1: 'Дітей до 1р.', oblasts: 'Областей',
     show_boundaries: 'Показувати межі громад',
+    show_occupied: 'Показати окуповані території',
+    occupied_date_note: date=>`Дані DeepState станом на ${date}`,
+    occupied_unavailable: 'Дані DeepState недоступні',
+    col_security: 'Безпека', km_short: 'км',
 
     population: 'Населення', share: 'Частка', status_lbl: 'Статус',
 
@@ -89,6 +93,10 @@ const I18N = {
     indicators_title: 'Indicators', shown: 'Shown', population_k: 'Population (thousands)',
     children_u1: 'Children under 1', oblasts: 'Oblasts',
     show_boundaries: 'Show hromada boundaries',
+    show_occupied: 'Show occupied territory',
+    occupied_date_note: date=>`DeepState data as of ${date}`,
+    occupied_unavailable: 'DeepState data unavailable',
+    col_security: 'Security', km_short: 'km',
 
     population: 'Population', share: 'Share', status_lbl: 'Status',
 
@@ -175,6 +183,7 @@ function setLang(lang){
   populateOblastFilters();
   refreshMarkers();
   applyF(); // перераховує map-stats (ms-p/ms-c) у новому numLocale(), зберігаючи поточні фільтри
+  updateOccupiedNote(); // перекладає підпис дати DeepState (occupied-date-note) під новою мовою
   populateIndicatorPickList();
   populateHromadaList();
   rebuildDashboard();
