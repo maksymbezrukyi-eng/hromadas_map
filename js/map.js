@@ -118,6 +118,22 @@ function showHCard(p){
   document.getElementById('hcard').classList.add('on');
 }
 
+// Центрувати карту на видимих (відфільтрованих) громадах — за їхніми
+// маркерами (h.lat/h.lng), не межами з geojson: межа є не для всіх 69
+// громад (зокрема нема для Бісковицької), а точка є завжди для кожної.
+// Одна громада — просто наближення на неї; кілька — вписати межі.
+function centerMapOnVisible(vis){
+  if(!vis.length) return;
+  // animate:false — анімований fitBounds/setView інколи "зависає" по
+  // дорозі (не завершує перехід) у деяких браузерних середовищах;
+  // миттєвий стрибок надійніший, ніж плавний, який іноді не спрацьовує.
+  if(vis.length===1){
+    map.setView([vis[0].lat, vis[0].lng], 11, {animate:false});
+  } else {
+    map.fitBounds(L.latLngBounds(vis.map(h=>[h.lat,h.lng])), {padding:[40,40], maxZoom:11, animate:false});
+  }
+}
+
 function applyF(){
   const ob=document.getElementById('f-obl').value;
   const q=document.getElementById('f-q').value.toLowerCase().trim();
@@ -138,6 +154,7 @@ function applyF(){
     });
   }
   upMS(vis);
+  if(ob||q) centerMapOnVisible(vis); // тільки коли справді щось відфільтровано — resetF() сам вертає стартовий вигляд
 }
 function toggleBounds(show){
   if(!boundaryLayer) return;
@@ -197,7 +214,7 @@ function onSecurityLoaded(){
   if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
   if(lastHCardProps) showHCard(lastHCardProps);
 }
-function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF()}
+function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF();map.setView([49.2,31.5],6,{animate:false})}
 function upMS(v){
   document.getElementById('ms-n').textContent=v.length;
   document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString(numLocale());
