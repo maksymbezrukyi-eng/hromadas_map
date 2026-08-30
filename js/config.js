@@ -117,6 +117,26 @@ const SBC={
 };
 const KC={"KfW 1":"kfw1","KfW 2":"kfw2","KfW 2+":"kfw2p"};
 
+// Безпековий шар (Крок 11, v0.7) — пороги й кольори для відстані до
+// окупованої території (js/security.js). Пороги 30/80 км попередні, ще не
+// підтверджені ЮНІСЕФ (CLAUDE.md) — це лише автоматичний індикатор, рішення
+// про участь громади ухвалює людина. Кольори свідомо відмінні від
+// SUBMISSION_COLOR (map.js), щоб не плутати статус подачі й безпекову зону.
+const SECURITY_THRESHOLDS_KM = {red:30, yellow:80};
+const SECURITY_ZONE_COLORS = {red:'#C0392B', yellow:'#E0A100', green:'#1A6B3C'};
+const SECURITY_ZONE_LABELS = {
+  red:{uk:'< 30 км', en:'< 30 km'},
+  yellow:{uk:'30–80 км', en:'30–80 km'},
+  green:{uk:'> 80 км', en:'> 80 km'},
+  inside:{uk:'В окупації', en:'In occupied territory'},
+};
+function securityZoneLabel(zone, inside){
+  const key = inside ? 'inside' : zone;
+  const e = SECURITY_ZONE_LABELS[key];
+  if(!e) return '—';
+  return e[typeof LANG!=='undefined'?LANG:'uk'] || e.uk;
+}
+
 // Домени й показники — {uk, en} для кожного. Спільне джерело для
 // dashboard.js (випадаючий список "Показник") і table.js (розгорнутий
 // рядок таблиці) — щоб та сама назва не перекладалась двічі по-різному.
@@ -390,6 +410,10 @@ window.GC = GC;
 window.SUA = SUA;
 window.statusLabel = statusLabel;
 window.COMPARABLE_SCALE_FIELDS = COMPARABLE_SCALE_FIELDS;
+window.SECURITY_THRESHOLDS_KM = SECURITY_THRESHOLDS_KM;
+window.SECURITY_ZONE_COLORS = SECURITY_ZONE_COLORS;
+window.SECURITY_ZONE_LABELS = SECURITY_ZONE_LABELS;
+window.securityZoneLabel = securityZoneLabel;
 window.INDICATOR_META = INDICATOR_META;
 window.indicatorMeta = indicatorMeta;
 window.metaDesc = metaDesc;

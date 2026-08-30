@@ -51,6 +51,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>syncFromSheets(true), 1000);
   // Auto-refresh every 5 minutes
   setInterval(()=>syncFromSheets(true), 300000);
+  // Безпековий шар (Крок 11) — окремий асинхронний фетч, не блокує решту
+  // ініціалізації; джерело оновлюється раз на добу, тож без інтервалу.
+  initSecurity().then(()=>{
+    console.log('security:', OCCUPIED_TERRITORY ? `дані DeepState на ${OCCUPIED_TERRITORY.dateUsed}` : 'недоступно');
+  });
 });
 
 function showTab(id){
