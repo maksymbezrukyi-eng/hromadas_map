@@ -317,6 +317,21 @@ function renderIndicatorComparison(){
   renderMiniCharts(sorted, keys, chartsContainer);
 }
 
+// "Скинути" біля "Відобразити" — повертає обидва списки до початкового
+// стану (усі громади позначені, лише "Бал опитування" серед показників —
+// той самий дефолт, що й при першому відкритті дашборда) і перемальовує.
+function resetIndComparison(){
+  document.getElementById('ind-list-q').value = '';
+  indListSetAll(true);
+  filterIndList();
+  document.getElementById('ind-pick-q').value = '';
+  document.querySelectorAll('#ind-picklist input[type=checkbox]').forEach(cb=>{
+    cb.checked = (cb.value === 'score_survey');
+  });
+  filterIndPickList();
+  renderIndicatorComparison();
+}
+
 // Два донати замість старої текстової воронки — скільки подали опитувальник
 // і скільки пройшли інтерв'ю, з 68. Легенда показує саме й абсолютне число, і
 // відсоток — без плагіна datalabels (його нема серед дозволених залежностей),
