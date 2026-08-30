@@ -137,6 +137,53 @@ function securityZoneLabel(zone, inside){
   return e[typeof LANG!=='undefined'?LANG:'uk'] || e.uk;
 }
 
+// Офіційна процедура оцінювання безпеки — протокол відбору, Додаток C
+// (Hromada`s\Survey`s protokol (UKR).docx). ЯКІСНА оцінка (активні бойові
+// дії, офіційні обмеження пересування, частка нефункціонуючих закладів
+// ПМД) за даними OCHA/ЮНІСЕФ/Міністерства розвитку громад/військових
+// адміністрацій — НЕ те саме, що автоматична відстань до окупованої
+// території вище (SECURITY_THRESHOLDS_KM/js/security.js). Автоматичного
+// джерела даних для цієї оцінки нема, тож вона лише показується як
+// довідник (вкладка "Паспорт показників", Крок 11.3), не рахується.
+const SECURITY_PROTOCOL = {
+  sources: [
+    {uk:'OCHA Ukraine — звіти про гуманітарну ситуацію та оперативні оновлення (reliefweb.int)',
+      en:'OCHA Ukraine — humanitarian situation reports and operational updates (reliefweb.int)'},
+    {uk:'ЮНІСЕФ Україна — внутрішні рекомендації щодо безпеки польової роботи',
+      en:'UNICEF Ukraine — internal field-work safety recommendations'},
+    {uk:'Міністерство розвитку громад та територій України — офіційний перелік громад з обмеженим доступом',
+      en:'Ministry of Communities and Territories Development of Ukraine — official list of hromadas with restricted access'},
+    {uk:'Обласні та районні військові адміністрації громад вибірки — офіційні повідомлення про режим доступу',
+      en:'Oblast and raion military administrations of sample hromadas — official notices on the access regime'},
+  ],
+  levels: [
+    {level:{uk:'Зелений', en:'Green'}, color:'#1A6B3C',
+      desc:{uk:'Активні бойові дії та обмеження пересування відсутні, заклади ПМД працюють у звичайному режимі.',
+        en:'No active combat or movement restrictions; PHC facilities operate normally.'},
+      decision:{uk:'Участь без обмежень.', en:'Unrestricted participation.'}},
+    {level:{uk:'Жовтий', en:'Yellow'}, color:'#E0A100',
+      desc:{uk:'Епізодичні обстріли, часткові обмеження пересування, заклади ПМД працюють з обмеженнями.',
+        en:'Episodic shelling, partial movement restrictions, PHC facilities operate with limitations.'},
+      decision:{uk:'Участь можлива за адаптованого формату заходів (дистанційні компоненти, скорочені польові візити).',
+        en:'Participation possible with an adapted format (remote components, shortened field visits).'}},
+    {level:{uk:'Червоний', en:'Red'}, color:'#C0392B',
+      desc:{uk:'Активні бойові дії, або офіційні обмеження пересування, або понад 50% закладів ПМД не функціонують.',
+        en:'Active combat, or official movement restrictions, or over 50% of PHC facilities non-functional.'},
+      decision:{uk:'Виключення з пріоритетного списку, перенесення до резерву (автоматичне виключення A2 з Додатка B).',
+        en:'Excluded from the priority list, moved to reserve (automatic exclusion A2 from Appendix B).'}},
+  ],
+  procedure: [
+    {uk:'Початкове оцінювання безпеки проводить команда програми до формування остаточного списку.',
+      en:'The programme team performs the initial safety assessment before the final list is formed.'},
+    {uk:"Оцінювання підтверджує координатор із безпеки ЮНІСЕФ Україна.",
+      en:"UNICEF Ukraine's safety coordinator confirms the assessment."},
+    {uk:'Громади з жовтим статусом включаються лише за наявності плану адаптації заходів.',
+      en:'Hromadas with yellow status are included only if an activity adaptation plan exists.'},
+    {uk:'Якщо ситуація змінюється після початку заходів, рішення про продовження чи призупинення ухвалюють спільно команда програми та ЮНІСЕФ Україна протягом 5 робочих днів.',
+      en:'If the situation changes after activities begin, the programme team and UNICEF Ukraine jointly decide on continuation or suspension within 5 working days.'},
+  ],
+};
+
 // Домени й показники — {uk, en} для кожного. Спільне джерело для
 // dashboard.js (випадаючий список "Показник") і table.js (розгорнутий
 // рядок таблиці) — щоб та сама назва не перекладалась двічі по-різному.
@@ -414,6 +461,7 @@ window.SECURITY_THRESHOLDS_KM = SECURITY_THRESHOLDS_KM;
 window.SECURITY_ZONE_COLORS = SECURITY_ZONE_COLORS;
 window.SECURITY_ZONE_LABELS = SECURITY_ZONE_LABELS;
 window.securityZoneLabel = securityZoneLabel;
+window.SECURITY_PROTOCOL = SECURITY_PROTOCOL;
 window.INDICATOR_META = INDICATOR_META;
 window.indicatorMeta = indicatorMeta;
 window.metaDesc = metaDesc;

@@ -59,4 +59,54 @@ function renderPassport(){
     name: b.name[LANG] || b.name.uk, maxPoints: b.max, desc: b.desc[LANG] || b.desc.uk,
   }));
   root.appendChild(pspDomainCard(t('psp_domain8_name'), `20% · ${t('psp_max_score', '2.0')}`, d8Items));
+
+  root.appendChild(pspSecurityProtocolCard());
+}
+
+// Додаток C протоколу — офіційна ЯКІСНА оцінка безпеки (OCHA/ЮНІСЕФ/
+// Мінрозвитку громад/військові адміністрації), не рахується інструментом —
+// на відміну від автоматичної відстані до окупованої території (карта,
+// таблиця, hover-картка, Крок 11), для якої нема живого джерела даних.
+// Показано тут суто як довідник методології, з явним поясненням різниці.
+function pspSecurityProtocolCard(){
+  const card = pspEl('div', 'psp-domain');
+  const hdr = pspEl('div', 'psp-domain-hdr');
+  hdr.appendChild(pspEl('span', 'psp-domain-name', t('psp_security_title')));
+  card.appendChild(hdr);
+  card.appendChild(pspEl('div', 'psp-item-desc', t('psp_security_note')));
+
+  card.appendChild(pspEl('div', 'psp-security-subhdr', t('psp_security_sources_title')));
+  const sourcesList = pspEl('ul', 'psp-security-sources');
+  SECURITY_PROTOCOL.sources.forEach(s=>{
+    const li = document.createElement('li');
+    li.textContent = s[LANG] || s.uk;
+    sourcesList.appendChild(li);
+  });
+  card.appendChild(sourcesList);
+
+  card.appendChild(pspEl('div', 'psp-security-subhdr', t('psp_security_levels_title')));
+  const levels = pspEl('div', 'psp-security-levels');
+  SECURITY_PROTOCOL.levels.forEach(lvl=>{
+    const lc = pspEl('div', 'psp-level-card');
+    lc.style.borderLeftColor = lvl.color;
+    lc.appendChild(pspEl('div', 'psp-level-name', lvl.level[LANG] || lvl.level.uk));
+    lc.appendChild(pspEl('div', 'psp-level-desc', lvl.desc[LANG] || lvl.desc.uk));
+    const decision = pspEl('div', 'psp-level-decision');
+    decision.appendChild(pspEl('span', 'psp-level-decision-lbl', t('psp_security_decision_lbl')));
+    decision.appendChild(document.createTextNode(' ' + (lvl.decision[LANG] || lvl.decision.uk)));
+    lc.appendChild(decision);
+    levels.appendChild(lc);
+  });
+  card.appendChild(levels);
+
+  card.appendChild(pspEl('div', 'psp-security-subhdr', t('psp_security_procedure_title')));
+  const procList = pspEl('ul', 'psp-security-sources');
+  SECURITY_PROTOCOL.procedure.forEach(p=>{
+    const li = document.createElement('li');
+    li.textContent = p[LANG] || p.uk;
+    procList.appendChild(li);
+  });
+  card.appendChild(procList);
+
+  return card;
 }

@@ -80,7 +80,7 @@
             </label>
           </div>
           <div style="margin-top:8px">
-            <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g4);cursor:pointer">
+            <label id="toggle-occupied-lbl" style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g4);cursor:pointer">
               <input type="checkbox" id="toggle-occupied" disabled onchange="toggleOccupiedLayer(this.checked)" style="width:auto;margin-bottom:0"> <span data-i18n="show_occupied">Показати окуповані території</span>
             </label>
             <div id="occupied-date-note" style="font-size:10px;color:var(--g3);margin-top:3px"></div>
@@ -228,7 +228,7 @@
             <th onclick="st(8)" data-i18n="kpi_shortlist">Short-list</th>
             <th onclick="st(9)" data-i18n="col_interview">Інтерв'ю</th>
             <th onclick="st(10)" data-i18n="col_final_status">Фінальний статус</th>
-            <th onclick="st(11)" data-i18n="col_security">Безпека</th>
+            <th id="th-security" onclick="st(11)" data-i18n="col_security">Безпека</th>
           </tr></thead>
           <tbody id="tbody"></tbody>
         </table>

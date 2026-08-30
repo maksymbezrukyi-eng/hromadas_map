@@ -172,6 +172,13 @@ function updateOccupiedNote(){
   const note = document.getElementById('occupied-date-note');
   const cb = document.getElementById('toggle-occupied');
   if(!note || !cb) return;
+  // Пояснювальна підказка — щоб не сплутати цей автоматичний індикатор з
+  // офіційною оцінкою за Додатком C (яка теж є, у вкладці Паспорт, Крок 11.3).
+  const proxyNote = t('security_auto_proxy_note');
+  const thSecurity = document.getElementById('th-security');
+  const toggleLbl = document.getElementById('toggle-occupied-lbl');
+  if(thSecurity) thSecurity.title = proxyNote;
+  if(toggleLbl) toggleLbl.title = proxyNote;
   if(OCCUPIED_TERRITORY){
     const ymd = OCCUPIED_TERRITORY.dateUsed; // "20260830"
     const d = new Date(Date.UTC(+ymd.slice(0,4), +ymd.slice(4,6)-1, +ymd.slice(6,8)));

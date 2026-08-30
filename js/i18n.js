@@ -27,6 +27,7 @@ const I18N = {
     occupied_date_note: date=>`Дані DeepState станом на ${date}`,
     occupied_unavailable: 'Дані DeepState недоступні',
     col_security: 'Безпека', km_short: 'км',
+    security_auto_proxy_note: 'Автоматична відстань до окупованої території (DeepState) — орієнтовний індикатор, НЕ офіційна якісна оцінка безпеки з Додатка C протоколу відбору. Офіційні критерії — у вкладці "Паспорт".',
 
     population: 'Населення', share: 'Частка', status_lbl: 'Статус',
 
@@ -70,6 +71,12 @@ const I18N = {
     psp_max_points: n=>`макс ${n}`,
     psp_no_points: 'без балів',
     psp_domain8_name: "Домен 8: Оцінювання інтерв'ю",
+    psp_security_title: 'Додаток C. Оцінювання безпеки',
+    psp_security_note: 'Це офіційна процедура з протоколу — якісна оцінка за даними OCHA/ЮНІСЕФ/Мінрозвитку громад/військових адміністрацій, її ще нема ким порахувати автоматично. Кольорова колонка "Безпека" в таблиці й перемикач на карті — це інша річ: автоматична відстань до окупованої території (DeepState), лише орієнтовний індикатор, не ця офіційна оцінка.',
+    psp_security_sources_title: 'Джерела даних',
+    psp_security_levels_title: 'Рівні безпеки',
+    psp_security_decision_lbl: 'Рішення щодо участі:',
+    psp_security_procedure_title: 'Процедура та відповідальність',
 
     footer: 'v0.5 · дані з воркбука відбору',
   },
@@ -97,6 +104,7 @@ const I18N = {
     occupied_date_note: date=>`DeepState data as of ${date}`,
     occupied_unavailable: 'DeepState data unavailable',
     col_security: 'Security', km_short: 'km',
+    security_auto_proxy_note: 'Automatic distance to occupied territory (DeepState) — an approximate indicator, NOT the official qualitative safety assessment from Appendix C of the selection protocol. Official criteria are in the "Passport" tab.',
 
     population: 'Population', share: 'Share', status_lbl: 'Status',
 
@@ -140,6 +148,12 @@ const I18N = {
     psp_max_points: n=>`max ${n}`,
     psp_no_points: 'not scored',
     psp_domain8_name: 'Domain 8: Interview assessment',
+    psp_security_title: 'Appendix C. Safety Assessment',
+    psp_security_note: "This is the official protocol procedure — a qualitative assessment based on OCHA/UNICEF/Ministry of Communities and Territories Development/military administration data, which there is currently no automated source for. The colored \"Security\" column in the table and the map toggle are a different thing: an automatic distance to occupied territory (DeepState), only an approximate indicator, not this official assessment.",
+    psp_security_sources_title: 'Data sources',
+    psp_security_levels_title: 'Safety levels',
+    psp_security_decision_lbl: 'Participation decision:',
+    psp_security_procedure_title: 'Procedure and responsibility',
 
     footer: 'v0.5 · data from the selection workbook',
   },

@@ -115,6 +115,14 @@ select:focus,input:focus{border-color:var(--blue)}
 .psp-item-name{font-size:12.5px;font-weight:600;color:var(--g5)}
 .psp-item-max{font-family:var(--mono);font-size:10px;color:var(--g3);white-space:nowrap}
 .psp-item-desc{font-size:11.5px;color:var(--g4);line-height:1.45;margin-top:2px}
+.psp-security-subhdr{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g3);margin:14px 0 6px}
+.psp-security-sources{margin:0;padding-left:18px;font-size:11.5px;color:var(--g4);line-height:1.6}
+.psp-security-levels{display:flex;gap:12px;flex-wrap:wrap}
+.psp-level-card{flex:1;min-width:200px;border-left:3px solid var(--g2);padding-left:10px}
+.psp-level-name{font-size:12.5px;font-weight:700;color:var(--g5);margin-bottom:3px}
+.psp-level-desc{font-size:11.5px;color:var(--g4);line-height:1.45}
+.psp-level-decision{font-size:11.5px;color:var(--g4);line-height:1.45;margin-top:5px}
+.psp-level-decision-lbl{font-weight:600;color:var(--g5)}
 
 /* TABLE */
 .tbl-layout{flex:1;display:flex;flex-direction:column;overflow:hidden}
