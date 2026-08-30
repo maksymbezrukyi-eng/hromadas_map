@@ -33,6 +33,7 @@
   <div class="tab active" onclick="showTab('map')" data-i18n="tab_map">◉ Карта</div>
   <div class="tab" onclick="showTab('dash')" data-i18n="tab_dash">▦ Дашборд</div>
   <div class="tab" onclick="showTab('tbl')" data-i18n="tab_tbl">≡ Таблиця</div>
+  <div class="tab" onclick="showTab('passport')" data-i18n="tab_passport">▤ Паспорт</div>
 </div>
 
 <div class="content">
@@ -226,6 +227,11 @@
       </div>
     </div>
   </div>
+
+  <!-- PASSPORT — методологія відбору (Додаток A протоколу), не залежить від live H[] -->
+  <div class="pane" id="pane-passport">
+    <div class="dash" id="passport-content"></div>
+  </div>
 </div>
 
 <footer>
@@ -242,6 +248,7 @@
 <script src="js/sheets.js"></script>
 <script src="js/table.js"></script>
 <script src="js/dashboard.js"></script>
+<script src="js/passport.js"></script>
 <script src="js/map.js"></script>
 <script src="js/app.js"></script>
 </body>

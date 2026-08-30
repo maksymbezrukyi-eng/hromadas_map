@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   updateHeaderStats();
   updateFooterDate();
   populateOblastFilters();
-  initMap(); initDash(); initTbl();
+  initMap(); initDash(); initTbl(); renderPassport();
   // Auto-sync on load
   setTimeout(()=>syncFromSheets(true), 1000);
   // Auto-refresh every 5 minutes
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function showTab(id){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['map','dash','tbl'][i]===id));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['map','dash','tbl','passport'][i]===id));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
   if(id==='map')setTimeout(()=>map.invalidateSize(),50);
   // FR holds the same hromada objects as H, but the HTML was last built

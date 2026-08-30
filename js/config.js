@@ -130,6 +130,28 @@ const DOMAIN_GROUPS = [
   {key:'d6', name:{uk:"Домен 6: Громадське здоров'я", en:'Domain 6: Public health'}},
   {key:'d7', name:{uk:'Домен 7: Інституційний профіль', en:'Domain 7: Institutional profile'}},
 ];
+
+// Вага і макс. зважений бал кожного домену — протокол відбору, Додаток
+// A.1 "Домени, ваги та джерела даних". Разом (з доменом 8) — 100% / 10.0.
+// Для вкладки "Паспорт показників" (Крок 10).
+const DOMAIN_WEIGHTS = {
+  d1:{weight:'20%', max:2.0}, d2:{weight:'10%', max:1.0}, d3:{weight:'15%', max:1.5},
+  d4:{weight:'10%', max:1.0}, d5:{weight:'5%', max:0.5}, d6:{weight:'10%', max:1.0},
+  d7:{weight:'10%', max:1.0},
+};
+// Домен 8 (оцінювання інтерв'ю, вага 20%, макс 2.0) не має полів у H[] —
+// окрема статична структура з протоколу, Додаток A.3 "Домен 8".
+const PASSPORT_INTERVIEW_BLOCKS = [
+  {name:{uk:'Блок 1. Лідерство', en:'Block 1. Leadership'}, max:4,
+    desc:{uk:'Конкретні управлінські рішення; розуміння потреб і особливостей послуг для дітей віком до 1 року та дітей віком 0–3 роки включно; готовність запроваджувати і підтримувати зміни.'}},
+  {name:{uk:'Блок 2. Інституційна спроможність', en:'Block 2. Institutional capacity'}, max:3,
+    desc:{uk:'Фактичне співфінансування; план фінансової сталості після завершення донорської підтримки; міжсекторальна співпраця.'}},
+  {name:{uk:'Блок 3. Безпека та адаптація', en:'Block 3. Safety and adaptation'}, max:null,
+    desc:{uk:'Оцінювання адаптації програми до умов воєнного стану — інформаційний блок, не оцінюється балами; результати заносяться до Форми оцінювання для формування загального профілю громади.'}},
+  {name:{uk:'Блок 4. Ризики та обмеження', en:'Block 4. Risks and constraints'}, max:3,
+    desc:{uk:'Відкритість щодо проблем і впроваджених заходів, визначення чинників, що впливають на реалізацію програми.'}},
+];
+
 const INDICATOR_LABELS = {
   score_survey: {uk:'Бал опитування (макс 8)', en:'Survey score (max 8)'},
   children_u1_confirmed: {uk:'Дітей до 1 року (за анкетою)', en:'Children under 1 (from survey)'},
@@ -307,6 +329,8 @@ window.statusLabel = statusLabel;
 window.COMPARABLE_SCALE_FIELDS = COMPARABLE_SCALE_FIELDS;
 window.INDICATOR_META = INDICATOR_META;
 window.indicatorMeta = indicatorMeta;
+window.DOMAIN_WEIGHTS = DOMAIN_WEIGHTS;
+window.PASSPORT_INTERVIEW_BLOCKS = PASSPORT_INTERVIEW_BLOCKS;
 window.SBC = SBC;
 window.KC = KC;
 window.CHART_FONT = CHART_FONT;

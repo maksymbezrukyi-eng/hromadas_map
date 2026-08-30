@@ -103,6 +103,19 @@ select:focus,input:focus{border-color:var(--blue)}
 .ind-donut-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--g5);margin-top:2px}
 .ind-donut-name{font-size:10px;color:var(--g3);line-height:1.25;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* PASSPORT — довідник методології (Крок 10) */
+.psp-intro{font-size:12px;color:var(--g4);line-height:1.5;max-width:760px;margin-bottom:16px}
+.psp-domain{background:var(--white);border-radius:6px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.psp-domain-hdr{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--g1);padding-bottom:8px;margin-bottom:10px}
+.psp-domain-name{font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g5)}
+.psp-domain-weight{font-family:var(--mono);font-size:10px;color:var(--g3);white-space:nowrap}
+.psp-items{display:flex;flex-direction:column;gap:10px}
+.psp-item{border-left:2px solid var(--blue-light);padding-left:10px}
+.psp-item-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.psp-item-name{font-size:12.5px;font-weight:600;color:var(--g5)}
+.psp-item-max{font-family:var(--mono);font-size:10px;color:var(--g3);white-space:nowrap}
+.psp-item-desc{font-size:11.5px;color:var(--g4);line-height:1.45;margin-top:2px}
+
 /* TABLE */
 .tbl-layout{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .tbar{padding:8px 14px;background:var(--white);border-bottom:1px solid var(--g2);display:flex;align-items:center;gap:10px;flex-shrink:0}

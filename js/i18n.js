@@ -6,7 +6,7 @@ const I18N = {
   uk: {
     page_title: 'Інструмент відбору громад',
     app_title: 'Відбір громад',
-    tab_map: '◉ Карта', tab_dash: '▦ Дашборд', tab_tbl: '≡ Таблиця',
+    tab_map: '◉ Карта', tab_dash: '▦ Дашборд', tab_tbl: '≡ Таблиця', tab_passport: '▤ Паспорт',
 
     filters: 'Фільтри', all_oblasts: 'Всі області', search_hromada: 'Пошук громади...',
     reset: 'Скинути', data_section: 'Дані', refresh_data: '⟳ Оновити дані',
@@ -61,12 +61,18 @@ const I18N = {
     children_u1_confirmed_lbl: (n,total)=>`Дітей до 1 року (${n} з ${total} підтв.)`,
     children_u1_none_lbl: 'Дітей до 1 року (даних ще нема)',
 
+    psp_intro: "Повний довідник методології відбору — 8 доменів оцінювання, їхні ваги й підпоказники з описом методу оцінювання. Джерело: офіційний протокол відбору територіальних громад, Додаток A «Матриця оцінювання». Описи показників поки лише українською.",
+    psp_max_score: n=>`макс. бал домену ${n}`,
+    psp_max_points: n=>`макс ${n}`,
+    psp_no_points: 'без балів',
+    psp_domain8_name: "Домен 8: Оцінювання інтерв'ю",
+
     footer: 'v0.5 · дані з воркбука відбору',
   },
   en: {
     page_title: 'Hromada Selection Tool',
     app_title: 'Hromada Selection',
-    tab_map: '◉ Map', tab_dash: '▦ Dashboard', tab_tbl: '≡ Table',
+    tab_map: '◉ Map', tab_dash: '▦ Dashboard', tab_tbl: '≡ Table', tab_passport: '▤ Passport',
 
     filters: 'Filters', all_oblasts: 'All oblasts', search_hromada: 'Search hromada...',
     reset: 'Reset', data_section: 'Data', refresh_data: '⟳ Refresh data',
@@ -121,6 +127,12 @@ const I18N = {
     children_u1_confirmed_lbl: (n,total)=>`Children under 1 (${n} of ${total} confirmed)`,
     children_u1_none_lbl: 'Children under 1 (no data yet)',
 
+    psp_intro: 'A full reference for the selection methodology — 8 scoring domains, their weights, and sub-indicators with the scoring method described. Source: the official hromada selection protocol, Appendix A "Scoring matrix". Indicator descriptions are Ukrainian-only for now.',
+    psp_max_score: n=>`domain max score ${n}`,
+    psp_max_points: n=>`max ${n}`,
+    psp_no_points: 'not scored',
+    psp_domain8_name: 'Domain 8: Interview assessment',
+
     footer: 'v0.5 · data from the selection workbook',
   },
 };
@@ -165,6 +177,7 @@ function setLang(lang){
   populateIndicatorPickList();
   populateHromadaList();
   rebuildDashboard();
+  renderPassport();
   if(document.getElementById('pane-tbl').classList.contains('active')) renderT();
   if(lastHCardProps) showHCard(lastHCardProps);
 }
