@@ -48,7 +48,7 @@ function renderPassport(){
     if(!g || !dg || !w) return;
     const items = g.items.map(k=>{
       const meta = indicatorMeta(k);
-      return {name: indicatorLabel(k), maxPoints: meta ? meta.maxPoints : null, desc: meta && meta.desc ? meta.desc.uk : null};
+      return {name: indicatorLabel(k), maxPoints: meta ? meta.maxPoints : null, desc: metaDesc(meta)};
     });
     root.appendChild(pspDomainCard(domainGroupName(dg), `${w.weight} · ${t('psp_max_score', w.max.toFixed(1))}`, items));
   });
@@ -56,7 +56,7 @@ function renderPassport(){
   // Домен 8 — окремо, бо не прив'язаний до жодного поля H[] (оцінюється за
   // інтерв'ю, не за опитувальником).
   const d8Items = PASSPORT_INTERVIEW_BLOCKS.map(b=>({
-    name: b.name[LANG] || b.name.uk, maxPoints: b.max, desc: b.desc.uk,
+    name: b.name[LANG] || b.name.uk, maxPoints: b.max, desc: b.desc[LANG] || b.desc.uk,
   }));
   root.appendChild(pspDomainCard(t('psp_domain8_name'), `20% · ${t('psp_max_score', '2.0')}`, d8Items));
 }

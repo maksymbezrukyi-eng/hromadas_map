@@ -55,7 +55,8 @@ function populateIndicatorPickList(){
       // title, не innerHTML — опис може містити "<"/">" (наприклад "<10%"),
       // які зламали б розмітку, якби потрапили в HTML-рядок напряму.
       const meta = indicatorMeta(k);
-      if(meta && meta.desc && meta.desc.uk) lbl.title = meta.desc.uk;
+      const mDesc = metaDesc(meta);
+      if(mDesc) lbl.title = mDesc;
       wrap.appendChild(lbl);
     });
   });
@@ -146,8 +147,8 @@ function renderCompareTable(hromadas, keys, wrap){
   // title через DOM-властивість, не HTML-рядок — опис може містити "<"/">"
   // (наприклад "<10%"), які зламали б розмітку, якби потрапили в innerHTML напряму.
   table.querySelectorAll('th[data-k]').forEach(th=>{
-    const meta = indicatorMeta(th.dataset.k);
-    if(meta && meta.desc && meta.desc.uk) th.title = meta.desc.uk;
+    const mDesc = metaDesc(indicatorMeta(th.dataset.k));
+    if(mDesc) th.title = mDesc;
   });
   wrap.style.display = '';
 }
@@ -240,10 +241,11 @@ function renderMiniCharts(hromadas, keys, container){
     title.textContent = indicatorLabel(k);
     container.appendChild(title);
     const meta = indicatorMeta(k);
-    if(meta && meta.desc && meta.desc.uk){
+    const mDesc = metaDesc(meta);
+    if(mDesc){
       const desc = document.createElement('div');
       desc.className = 'ind-mini-desc';
-      desc.textContent = meta.desc.uk; // textContent, не innerHTML — опис може містити "<"/">"
+      desc.textContent = mDesc; // textContent, не innerHTML — опис може містити "<"/">"
       container.appendChild(desc);
     }
     if(meta && meta.valueType==='percentage'){

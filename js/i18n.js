@@ -61,7 +61,7 @@ const I18N = {
     children_u1_confirmed_lbl: (n,total)=>`Дітей до 1 року (${n} з ${total} підтв.)`,
     children_u1_none_lbl: 'Дітей до 1 року (даних ще нема)',
 
-    psp_intro: "Повний довідник методології відбору — 8 доменів оцінювання, їхні ваги й підпоказники з описом методу оцінювання. Джерело: офіційний протокол відбору територіальних громад, Додаток A «Матриця оцінювання». Описи показників поки лише українською.",
+    psp_intro: "Повний довідник методології відбору — 8 доменів оцінювання, їхні ваги й підпоказники з описом методу оцінювання. Джерело: офіційний протокол відбору територіальних громад, Додаток A «Матриця оцінювання».",
     psp_max_score: n=>`макс. бал домену ${n}`,
     psp_max_points: n=>`макс ${n}`,
     psp_no_points: 'без балів',
@@ -127,7 +127,7 @@ const I18N = {
     children_u1_confirmed_lbl: (n,total)=>`Children under 1 (${n} of ${total} confirmed)`,
     children_u1_none_lbl: 'Children under 1 (no data yet)',
 
-    psp_intro: 'A full reference for the selection methodology — 8 scoring domains, their weights, and sub-indicators with the scoring method described. Source: the official hromada selection protocol, Appendix A "Scoring matrix". Indicator descriptions are Ukrainian-only for now.',
+    psp_intro: 'A full reference for the selection methodology — 8 scoring domains, their weights, and sub-indicators with the scoring method described. Source: the official hromada selection protocol, Appendix A "Scoring matrix".',
     psp_max_score: n=>`domain max score ${n}`,
     psp_max_points: n=>`max ${n}`,
     psp_no_points: 'not scored',
