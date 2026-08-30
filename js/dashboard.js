@@ -188,6 +188,49 @@ function renderGroupedChart(hromadas, keys){
   });
 }
 
+// Показники-частки (valueType:'percentage', INDICATOR_META) — ряд маленьких
+// кільцевих діаграм, по одній на громаду, кожна "X% зі 100%". Барчарт із
+// кількома % поруч на одній осі 0-10 і так уже нечитабельний, а поруч з
+// показниками іншої шкали (абсолютні бали) — просто оманливий. Той самий
+// принцип no-plugin легенди, що й у renderSubmissionDonuts() вище, тільки
+// без легенди зовсім (замінена текстовим підписом значення під донатом).
+function renderPercentageDonuts(k, hromadas, container){
+  const withData = hromadas.filter(h=>h[k]>0);
+  if(!withData.length) return;
+  const grid = document.createElement('div');
+  grid.className = 'ind-donut-grid';
+  container.appendChild(grid);
+  withData.forEach(h=>{
+    const item = document.createElement('div');
+    item.className = 'ind-donut-item';
+    const wrap = document.createElement('div');
+    wrap.className = 'donut-wrap-sm';
+    const canvasId = 'ind-donut-'+k+'-'+h.id;
+    const canvas = document.createElement('canvas');
+    canvas.id = canvasId;
+    wrap.appendChild(canvas);
+    item.appendChild(wrap);
+    const val = document.createElement('div');
+    val.className = 'ind-donut-val';
+    val.textContent = (Number.isInteger(h[k]) ? h[k] : h[k].toFixed(1)) + '%';
+    item.appendChild(val);
+    const nm = document.createElement('div');
+    nm.className = 'ind-donut-name';
+    nm.textContent = trName(h.n);
+    item.appendChild(nm);
+    grid.appendChild(item);
+    _indicatorChartIds.push(canvasId);
+    mkChart(canvasId,{
+      type:'doughnut',
+      data:{ labels:['',''], datasets:[{
+        data:[h[k], Math.max(0,100-h[k])],
+        backgroundColor:['#006EB6','#E0DED8'], borderWidth:0
+      }] },
+      options:{responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{display:false}}}
+    });
+  });
+}
+
 function renderMiniCharts(hromadas, keys, container){
   keys.forEach(k=>{
     const rankedForKey = hromadas.filter(h=>h[k]>0).sort((a,b)=>b[k]-a[k]);
@@ -202,6 +245,10 @@ function renderMiniCharts(hromadas, keys, container){
       desc.className = 'ind-mini-desc';
       desc.textContent = meta.desc.uk; // textContent, не innerHTML — опис може містити "<"/">"
       container.appendChild(desc);
+    }
+    if(meta && meta.valueType==='percentage'){
+      renderPercentageDonuts(k, rankedForKey, container);
+      return;
     }
     const wrap = document.createElement('div');
     wrap.className = 'ind-chart-wrap';

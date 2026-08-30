@@ -96,6 +96,12 @@ select:focus,input:focus{border-color:var(--blue)}
 .ind-compare-table tr:last-child td{border-bottom:none}
 .ind-mini-title{font-family:var(--mono);font-size:10px;color:var(--g4);margin:12px 0 4px}
 .ind-mini-desc{font-size:11px;color:var(--g3);line-height:1.4;margin:0 0 6px;max-width:640px}
+.ind-donut-grid{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px}
+.ind-donut-item{width:100px;text-align:center}
+.donut-wrap-sm{position:relative;height:84px;max-width:100%}
+.donut-wrap-sm canvas{max-width:100%}
+.ind-donut-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--g5);margin-top:2px}
+.ind-donut-name{font-size:10px;color:var(--g3);line-height:1.25;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* TABLE */
 .tbl-layout{flex:1;display:flex;flex-direction:column;overflow:hidden}
