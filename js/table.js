@@ -33,10 +33,11 @@ function renderT(){
   const tb=document.getElementById('tbody');tb.innerHTML='';
   FR.forEach(h=>{
     const confirmed = h.children_u1_confirmed>0;
+    const pop = effectivePop(h);
     const chTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
-    const sh = confirmed ? (h.children_u1_confirmed/h.pop*100).toFixed(2)+'%' : '—';
+    const sh = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
     const arrow = EXP.has(h.id) ? '▾' : '▸';
-    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${trName(h.n)}</td><td>${trName(h.o)}</td><td class="num">${h.pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td><td>${securityBadgeHTML(h)}</td></tr>`;
+    tb.innerHTML+=`<tr><td class="mono expand-btn" onclick="toggleRow(${h.id})">${arrow}</td><td class="mono">${h.id}</td><td>${trName(h.n)}</td><td>${trName(h.o)}</td><td class="num">${pop.toLocaleString(numLocale())}</td><td class="num">${chTxt}</td><td class="num">${sh}</td><td>${badge(h.us)}</td><td>${badge(h.sl)}</td><td>${h.interview?badge(h.interview):'—'}</td><td>${h.final?badge(h.final):'—'}</td><td>${securityBadgeHTML(h)}</td></tr>`;
     if(EXP.has(h.id)) tb.innerHTML+=detailRow(h);
   });
   document.getElementById('tcnt').textContent=t('tcnt',FR.length,H.length);

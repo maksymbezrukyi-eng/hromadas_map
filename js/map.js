@@ -67,8 +67,8 @@ function loadBoundaries(){
           layer.on('click', e => {
             L.DomEvent.stopPropagation(e);
             showHCard(p);
-            const pop = Number(p.pop)||0;
             const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
+            const pop = h ? effectivePop(h) : (Number(p.pop)||0);
             const confirmed = h && h.children_u1_confirmed>0;
             const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
             const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
@@ -108,12 +108,12 @@ function showHCard(p){
   lastHCardProps = p;
   const h = H.find(x=>x.id===p.id) || H.find(x=>x.id===Number(p.id));
   const confirmed = h && h.children_u1_confirmed>0;
+  const pop = h ? effectivePop(h) : (p.pop||0);
   document.getElementById('hc-n').textContent = trName(p.name || p.n);
   document.getElementById('hc-o').textContent = trName(p.oblast || p.o);
-  document.getElementById('hc-p').textContent = (p.pop||0).toLocaleString(numLocale());
+  document.getElementById('hc-p').textContent = pop.toLocaleString(numLocale());
   document.getElementById('hc-c').textContent = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
-  const pop = p.pop||1;
-  document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
+  document.getElementById('hc-s').textContent = confirmed ? (h.children_u1_confirmed/(pop||1)*100).toFixed(2)+'%' : '—';
   document.getElementById('hc-sec').textContent = h ? securityBadgeText(h) : '—';
   document.getElementById('hcard').classList.add('on');
 }
@@ -217,7 +217,7 @@ function onSecurityLoaded(){
 function resetF(){['f-obl','f-kfw','f-q'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('hcard').classList.remove('on');applyF();map.setView([49.2,31.5],6,{animate:false})}
 function upMS(v){
   document.getElementById('ms-n').textContent=v.length;
-  document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+h.pop,0)/1000).toLocaleString(numLocale());
+  document.getElementById('ms-p').textContent=Math.round(v.reduce((s,h)=>s+effectivePop(h),0)/1000).toLocaleString(numLocale());
   const confirmed = v.filter(h=>h.children_u1_confirmed>0);
   document.getElementById('ms-c').textContent = confirmed.length
     ? confirmed.reduce((s,h)=>s+h.children_u1_confirmed,0).toLocaleString(numLocale())

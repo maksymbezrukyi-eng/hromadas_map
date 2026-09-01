@@ -117,6 +117,16 @@ const SBC={
 };
 const KC={"KfW 1":"kfw1","KfW 2":"kfw2","KfW 2+":"kfw2p"};
 
+// Населення — пріоритет підтвердженому з анкети (population_survey), той
+// самий принцип, що й children_u1_confirmed. На відміну від дітей до 1
+// року, застереження воркбука щодо h.pop не було (CLAUDE.md: "H[].pop не
+// займаємо — застереження воркбука стосувалось лише поля дітей"), тож поки
+// анкета не прийнята — не ховаємо число як "—", а показуємо стару оцінку
+// h.pop як тимчасову, неперевірену.
+function effectivePop(h){
+  return h.population_survey>0 ? h.population_survey : h.pop;
+}
+
 // Безпековий шар (Крок 11, v0.7) — пороги й кольори для відстані до
 // окупованої території (js/security.js). Пороги 30/80 км попередні, ще не
 // підтверджені ЮНІСЕФ (CLAUDE.md) — це лише автоматичний індикатор, рішення
@@ -468,6 +478,7 @@ window.SECURITY_THRESHOLDS_KM = SECURITY_THRESHOLDS_KM;
 window.SECURITY_ZONE_COLORS = SECURITY_ZONE_COLORS;
 window.SECURITY_ZONE_LABELS = SECURITY_ZONE_LABELS;
 window.securityZoneLabel = securityZoneLabel;
+window.effectivePop = effectivePop;
 window.SECURITY_PROTOCOL = SECURITY_PROTOCOL;
 window.INDICATOR_META = INDICATOR_META;
 window.indicatorMeta = indicatorMeta;
