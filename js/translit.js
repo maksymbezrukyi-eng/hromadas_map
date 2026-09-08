@@ -31,7 +31,7 @@ const TRANSLIT = {
   'Куликівська':'Kulykivska', 'Менська':'Menska', 'Ніжинська':'Nizhynska',
   'Криворізька':'Kryvorizka', 'Новомосковська':'Novomoskovska',
   'Жовтоводська':'Zhovtovodska', 'Верхньодніпровська':'Verkhnodniprovska',
-  'Підгороднєнська':'Pidhorodnienska', 'Перещепинська':'Pereshchepynska',
+  'Підгородненська':'Pidhorodnenska', 'Перещепинська':'Pereshchepynska',
   'Царичанська':'Tsarychanska', 'Балаклійська':'Balakliiska',
   'Чугуївська':'Chuhuivska', 'Кегичівська':'Kehychivska',
   'Пісочинська':'Pisochynska', 'Валківська':'Valkivska',
