@@ -56,6 +56,12 @@ const TRANSLIT = {
   'Андрушівська':'Andrushivska', 'Хорошівська':'Khoroshivska',
   'Коростенська':'Korostenska', 'Олевська':'Olevska',
   'Новоград-Волинська':'Novohrad-Volynska', 'Бісковицька':'Biskovytska',
+
+  // Додано 2026-09-08 (69 -> 77 громад).
+  'Оброшинська':'Obroshynska', 'Коростишівська':'Korostyshivska',
+  'Близнюківська':'Blyzniukivska', 'Пірнівська':'Pirnivska',
+  'Східницька':'Skhidnytska', 'Ізюмська':'Iziumska',
+  'Ємільчинська':'Yemilchynska', 'Старосамбірська':'Starosambirska',
 };
 
 // LANG-aware: повертає латинницю в англійському режимі, оригінал —
