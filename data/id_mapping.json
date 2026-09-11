@@ -554,20 +554,82 @@
         "matched":  true
     },
     {
+        "tool_id":  70,
+        "tool_name":  "Оброшинська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Львівська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  71,
+        "tool_name":  "Коростишівська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Житомирська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  72,
+        "tool_name":  "Близнюківська",
+        "workbook_id":  52,
+        "workbook_name":  "Близнюківська",
+        "oblast":  "Харківська",
+        "matched":  true
+    },
+    {
+        "tool_id":  73,
+        "tool_name":  "Пірнівська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Київська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  74,
+        "tool_name":  "Східницька",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Львівська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  75,
+        "tool_name":  "Ізюмська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Харківська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  76,
+        "tool_name":  "Ємільчинська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Житомирська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
+        "tool_id":  77,
+        "tool_name":  "Старосамбірська",
+        "workbook_id":  null,
+        "workbook_name":  null,
+        "oblast":  "Львівська",
+        "matched":  false,
+        "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
+    },
+    {
         "tool_id":  null,
         "tool_name":  null,
         "workbook_id":  45,
         "workbook_name":  "Березівська",
         "oblast":  "Одеська",
-        "matched":  false,
-        "note":  "Є у воркбуку, немає в H[] інструмента"
-    },
-    {
-        "tool_id":  null,
-        "tool_name":  null,
-        "workbook_id":  52,
-        "workbook_name":  "Близнюківська",
-        "oblast":  "Харківська",
         "matched":  false,
         "note":  "Є у воркбуку, немає в H[] інструмента"
     }
