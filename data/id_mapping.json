@@ -625,6 +625,22 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
+        "tool_id":  78,
+        "tool_name":  "Новояворівська",
+        "workbook_id":  70,
+        "workbook_name":  "Новояворівська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  79,
+        "tool_name":  "Горохівська",
+        "workbook_id":  71,
+        "workbook_name":  "Горохівська",
+        "oblast":  "Волинська",
+        "matched":  true
+    },
+    {
         "tool_id":  null,
         "tool_name":  null,
         "workbook_id":  45,

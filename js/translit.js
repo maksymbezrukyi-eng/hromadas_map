@@ -62,6 +62,9 @@ const TRANSLIT = {
   'Близнюківська':'Blyzniukivska', 'Пірнівська':'Pirnivska',
   'Східницька':'Skhidnytska', 'Ізюмська':'Iziumska',
   'Ємільчинська':'Yemilchynska', 'Старосамбірська':'Starosambirska',
+
+  // Додано 2026-10-02 (77 -> 79 громад).
+  'Новояворівська':'Novoiavorivska', 'Горохівська':'Horokhivska',
 };
 
 // LANG-aware: повертає латинницю в англійському режимі, оригінал —
