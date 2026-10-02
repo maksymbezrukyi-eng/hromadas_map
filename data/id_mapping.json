@@ -555,6 +555,22 @@
     },
     {
         "tool_id":  70,
+        "tool_name":  "Новояворівська",
+        "workbook_id":  70,
+        "workbook_name":  "Новояворівська",
+        "oblast":  "Львівська",
+        "matched":  true
+    },
+    {
+        "tool_id":  71,
+        "tool_name":  "Горохівська",
+        "workbook_id":  71,
+        "workbook_name":  "Горохівська",
+        "oblast":  "Волинська",
+        "matched":  true
+    },
+    {
+        "tool_id":  72,
         "tool_name":  "Оброшинська",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -563,7 +579,7 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  71,
+        "tool_id":  73,
         "tool_name":  "Коростишівська",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -572,7 +588,7 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  72,
+        "tool_id":  74,
         "tool_name":  "Близнюківська",
         "workbook_id":  52,
         "workbook_name":  "Близнюківська",
@@ -580,7 +596,7 @@
         "matched":  true
     },
     {
-        "tool_id":  73,
+        "tool_id":  75,
         "tool_name":  "Пірнівська",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -589,7 +605,7 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  74,
+        "tool_id":  76,
         "tool_name":  "Східницька",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -598,7 +614,7 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  75,
+        "tool_id":  77,
         "tool_name":  "Ізюмська",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -607,7 +623,7 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  76,
+        "tool_id":  78,
         "tool_name":  "Ємільчинська",
         "workbook_id":  null,
         "workbook_name":  null,
@@ -616,29 +632,13 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  77,
+        "tool_id":  79,
         "tool_name":  "Старосамбірська",
         "workbook_id":  null,
         "workbook_name":  null,
         "oblast":  "Львівська",
         "matched":  false,
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
-    },
-    {
-        "tool_id":  78,
-        "tool_name":  "Новояворівська",
-        "workbook_id":  70,
-        "workbook_name":  "Новояворівська",
-        "oblast":  "Львівська",
-        "matched":  true
-    },
-    {
-        "tool_id":  79,
-        "tool_name":  "Горохівська",
-        "workbook_id":  71,
-        "workbook_name":  "Горохівська",
-        "oblast":  "Волинська",
-        "matched":  true
     },
     {
         "tool_id":  null,

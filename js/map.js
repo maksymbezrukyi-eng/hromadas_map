@@ -29,7 +29,7 @@ function refreshMarkers() {
 function initMap(){
   map=L.map('map',{center:[49.2,31.5],zoom:6});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
-  // Markers removed — boundaries only
+  // Boundaries for most hromadas; point markers only for those without one (addMarkersWithoutBoundary)
   upMS(H);
   loadBoundaries();
 }
@@ -66,34 +66,54 @@ function loadBoundaries(){
           });
           layer.on('click', e => {
             L.DomEvent.stopPropagation(e);
-            showHCard(p);
-            const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
-            const pop = h ? effectivePop(h) : (Number(p.pop)||0);
-            const confirmed = h && h.children_u1_confirmed>0;
-            const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
-            const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
-            const status = h ? submissionLabel(submissionState(h)) : '—';
-            const security = h ? securityBadgeText(h) : '—';
-            layer.bindPopup(
-              '<div class="pp-name">'+trName(p.name||p.n||'')+'</div>'+
-              '<div class="pp-obl">'+trName(p.oblast||p.o||'')+'</div>'+
-              '<div class="pp-grid">'+
-              '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString(numLocale())+'</div></div>'+
-              '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
-              '<div><div class="pp-lbl">'+t('share')+'</div><div class="pp-val">'+share+'</div></div>'+
-              '<div><div class="pp-lbl">'+t('status_lbl')+'</div><div class="pp-val">'+status+'</div></div>'+
-              '<div><div class="pp-lbl">'+t('col_security')+'</div><div class="pp-val">'+security+'</div></div>'+
-              '</div>'
-            ).openPopup();
+            openHromadaPopup(layer, p);
           });
         }
       }).addTo(map);
       console.log('BoundaryLayer added to map');
+      addMarkersWithoutBoundary(new Set(data.features.map(f=>Number(f.properties.id))));
       upMS(H);
     })
     .catch(e=>{
       console.error('GeoJSON load failed:', e);
     });
+}
+
+function openHromadaPopup(layer, p){
+  showHCard(p);
+  const h = H.find(x=>x.id===p.id)||H.find(x=>x.id===Number(p.id));
+  const pop = h ? effectivePop(h) : (Number(p.pop)||0);
+  const confirmed = h && h.children_u1_confirmed>0;
+  const childrenTxt = confirmed ? h.children_u1_confirmed.toLocaleString(numLocale()) : '—';
+  const share = confirmed && pop ? (h.children_u1_confirmed/pop*100).toFixed(2)+'%' : '—';
+  const status = h ? submissionLabel(submissionState(h)) : '—';
+  const security = h ? securityBadgeText(h) : '—';
+  layer.bindPopup(
+    '<div class="pp-name">'+trName(p.name||p.n||'')+'</div>'+
+    '<div class="pp-obl">'+trName(p.oblast||p.o||'')+'</div>'+
+    '<div class="pp-grid">'+
+    '<div><div class="pp-lbl">'+t('population')+'</div><div class="pp-val">'+pop.toLocaleString(numLocale())+'</div></div>'+
+    '<div><div class="pp-lbl">'+t('children_u1')+'</div><div class="pp-val">'+childrenTxt+'</div></div>'+
+    '<div><div class="pp-lbl">'+t('share')+'</div><div class="pp-val">'+share+'</div></div>'+
+    '<div><div class="pp-lbl">'+t('status_lbl')+'</div><div class="pp-val">'+status+'</div></div>'+
+    '<div><div class="pp-lbl">'+t('col_security')+'</div><div class="pp-val">'+security+'</div></div>'+
+    '</div>'
+  ).openPopup();
+}
+
+// Hromadas added after hromadas_68.geojson was built have no boundary polygon;
+// without a point marker they would be invisible on the map.
+function addMarkersWithoutBoundary(boundaryIds){
+  H.filter(h=>!boundaryIds.has(h.id)).forEach(h=>{
+    const p = {id:h.id, name:h.n, oblast:h.o};
+    const m = L.circleMarker([h.lat,h.lng], {radius:7, fillColor:statusMarkerColor(h), fillOpacity:0.85, color:'#fff', weight:1.5});
+    m.h = h;
+    m.on('mouseover', ()=>{ m.setStyle({weight:3}); showHCard(p); });
+    m.on('mouseout', ()=>m.setStyle({weight:1.5}));
+    m.on('click', e=>{ L.DomEvent.stopPropagation(e); openHromadaPopup(m, p); });
+    m.addTo(map);
+    MKS.push(m);
+  });
 }
 
 function grantFill(g){
@@ -119,8 +139,8 @@ function showHCard(p){
 }
 
 // Центрувати карту на видимих (відфільтрованих) громадах — за їхніми
-// маркерами (h.lat/h.lng), не межами з geojson: межа є не для всіх 69
-// громад (зокрема нема для Бісковицької), а точка є завжди для кожної.
+// точками (h.lat/h.lng), не межами з geojson: межа є не для всіх громад,
+// а точка є завжди для кожної.
 // Одна громада — просто наближення на неї; кілька — вписати межі.
 function centerMapOnVisible(vis){
   if(!vis.length) return;
@@ -137,22 +157,19 @@ function centerMapOnVisible(vis){
 function applyF(){
   const ob=document.getElementById('f-obl').value;
   const q=document.getElementById('f-q').value.toLowerCase().trim();
-  const vis=[];
+  const isVis=h=>(!ob||h.o===ob)&&(!q||hMatches(h,q));
+  const vis=H.filter(isVis);
   if(boundaryLayer){
     boundaryLayer.eachLayer(layer=>{
-      const p=layer.feature.properties;
-      const h=H.find(x=>x.id===p.id);
-      if(!h) return;
-      const ok=(!ob||h.o===ob)&&(!q||hMatches(h,q));
+      const h=H.find(x=>x.id===layer.feature.properties.id);
+      const ok=h&&isVis(h);
       layer.setStyle({fillOpacity: ok?0.25:0, opacity: ok?0.8:0});
-      if(ok) vis.push(h);
-    });
-  } else {
-    H.forEach(h=>{
-      const ok=(!ob||h.o===ob)&&(!q||hMatches(h,q));
-      if(ok) vis.push(h);
     });
   }
+  MKS.forEach(m=>{
+    const ok=isVis(m.h);
+    m.setStyle({fillOpacity: ok?0.85:0, opacity: ok?1:0});
+  });
   upMS(vis);
   if(ob||q) centerMapOnVisible(vis); // тільки коли справді щось відфільтровано — resetF() сам вертає стартовий вигляд
 }

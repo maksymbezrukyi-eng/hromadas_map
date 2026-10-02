@@ -1,26 +1,26 @@
 const H=[
   {id:1,n:"Чернігівська",o:"Чернігівська",g:"KfW 1",pop:279492,ch:40980,lat:51.498,lng:31.289,us:"pending",sl:"pending"},
   {id:2,n:"Бахматська",o:"Чернігівська",g:"KfW 2",pop:26076,ch:3795,lat:51.178,lng:32.807,us:"pending",sl:"pending"},
-  {id:3,n:"Бобровицька",o:"Чернігівська",g:"KfW 2",pop:21928,ch:3190,lat:51.238,lng:32.162,us:"pending",sl:"pending"},
-  {id:4,n:"Куликівська",o:"Чернігівська",g:"KfW 2",pop:13951,ch:2046,lat:51.527,lng:31.822,us:"pending",sl:"pending"},
+  {id:3,n:"Бобровицька",o:"Чернігівська",g:"KfW 2",pop:21928,ch:3190,lat:50.732,lng:31.453,us:"pending",sl:"pending"},
+  {id:4,n:"Куликівська",o:"Чернігівська",g:"KfW 2",pop:13951,ch:2046,lat:51.360,lng:31.672,us:"pending",sl:"pending"},
   {id:5,n:"Менська",o:"Чернігівська",g:"KfW 2",pop:20683,ch:3023,lat:51.518,lng:32.207,us:"pending",sl:"pending"},
   {id:6,n:"Ніжинська",o:"Чернігівська",g:"KfW 2",pop:60272,ch:8771,lat:51.051,lng:31.891,us:"pending",sl:"pending"},
   {id:7,n:"Криворізька",o:"Дніпропетровська",g:"KfW 2",pop:570154,ch:90126,lat:47.907,lng:33.391,us:"pending",sl:"pending"},
   {id:8,n:"Новомосковська",o:"Дніпропетровська",g:"KfW 2+",pop:77101,ch:11972,lat:48.633,lng:35.252,us:"pending",sl:"pending"},
-  {id:9,n:"Жовтоводська",o:"Дніпропетровська",g:"KfW 2+",pop:46816,ch:7001,lat:48.353,lng:33.880,us:"pending",sl:"pending"},
+  {id:9,n:"Жовтоводська",o:"Дніпропетровська",g:"KfW 2+",pop:46816,ch:7001,lat:48.326,lng:33.530,us:"pending",sl:"pending"},
   {id:10,n:"Верхньодніпровська",o:"Дніпропетровська",g:"KfW 2+",pop:38186,ch:5221,lat:48.657,lng:34.324,us:"pending",sl:"pending"},
   {id:11,n:"Підгородненська",o:"Дніпропетровська",g:"KfW 2+",pop:26915,ch:4142,lat:48.603,lng:35.074,us:"pending",sl:"pending"},
   {id:12,n:"Перещепинська",o:"Дніпропетровська",g:"KfW 2+",pop:22263,ch:3729,lat:48.979,lng:35.355,us:"pending",sl:"pending"},
-  {id:13,n:"Царичанська",o:"Дніпропетровська",g:"KfW 2+",pop:14765,ch:2031,lat:48.992,lng:34.130,us:"pending",sl:"pending"},
+  {id:13,n:"Царичанська",o:"Дніпропетровська",g:"KfW 2+",pop:14765,ch:2031,lat:48.973,lng:34.602,us:"pending",sl:"pending"},
   {id:14,n:"Харківська",o:"Харківська",g:"KfW 1",pop:1070851,ch:107525,lat:49.994,lng:36.230,us:"pending",sl:"pending"},
   {id:15,n:"Балаклійська",o:"Харківська",g:"KfW 2",pop:24952,ch:2459,lat:49.457,lng:36.843,us:"pending",sl:"pending"},
   {id:16,n:"Чугуївська",o:"Харківська",g:"KfW 2",pop:24082,ch:2369,lat:49.833,lng:36.683,us:"pending",sl:"pending"},
-  {id:17,n:"Кегичівська",o:"Харківська",g:"KfW 2",pop:10133,ch:1139,lat:49.357,lng:35.596,us:"pending",sl:"pending"},
+  {id:17,n:"Кегичівська",o:"Харківська",g:"KfW 2",pop:10133,ch:1139,lat:49.308,lng:35.795,us:"pending",sl:"pending"},
   {id:18,n:"Пісочинська",o:"Харківська",g:"KfW 2",pop:24481,ch:2458,lat:49.938,lng:36.109,us:"pending",sl:"pending"},
   {id:19,n:"Валківська",o:"Харківська",g:"KfW 2",pop:17379,ch:1730,lat:49.824,lng:35.645,us:"pending",sl:"pending"},
   {id:20,n:"Лозівська",o:"Харківська",g:"KfW 2+",pop:45801,ch:4772,lat:48.889,lng:36.318,us:"pending",sl:"pending"},
   {id:21,n:"Зміївська",o:"Харківська",g:"KfW 2+",pop:33945,ch:3217,lat:49.683,lng:36.368,us:"pending",sl:"pending"},
-  {id:22,n:"Височанська",o:"Харківська",g:"KfW 2+",pop:30241,ch:2672,lat:49.918,lng:37.068,us:"pending",sl:"pending"},
+  {id:22,n:"Височанська",o:"Харківська",g:"KfW 2+",pop:30241,ch:2672,lat:49.887,lng:36.160,us:"pending",sl:"pending"},
   {id:23,n:"Мерефянська",o:"Харківська",g:"KfW 2+",pop:29941,ch:2836,lat:49.822,lng:36.067,us:"pending",sl:"pending"},
   {id:24,n:"Люботинська",o:"Харківська",g:"KfW 2+",pop:29377,ch:2620,lat:49.948,lng:35.929,us:"pending",sl:"pending"},
   {id:25,n:"Первомайська",o:"Харківська",g:"KfW 2+",pop:19505,ch:2185,lat:49.398,lng:36.240,us:"pending",sl:"pending"},
@@ -30,11 +30,11 @@ const H=[
   {id:29,n:"Ірпінська",o:"Київська",g:"KfW 1",pop:153160,ch:32380,lat:50.523,lng:30.252,us:"pending",sl:"pending"},
   {id:30,n:"Бородянська",o:"Київська",g:"KfW 1",pop:54261,ch:11472,lat:50.651,lng:29.925,us:"pending",sl:"pending"},
   {id:31,n:"Бучанська",o:"Київська",g:"KfW 1",pop:122019,ch:25794,lat:50.549,lng:30.221,us:"pending",sl:"pending"},
-  {id:32,n:"Димерська",o:"Київська",g:"KfW 1",pop:28249,ch:5192,lat:50.753,lng:30.864,us:"pending",sl:"pending"},
+  {id:32,n:"Димерська",o:"Київська",g:"KfW 1",pop:28249,ch:5192,lat:50.874,lng:30.266,us:"pending",sl:"pending"},
   {id:33,n:"Гостомельська",o:"Київська",g:"KfW 1",pop:63443,ch:13410,lat:50.578,lng:30.264,us:"pending",sl:"pending"},
   {id:34,n:"Іванківська",o:"Київська",g:"KfW 1",pop:38460,ch:7067,lat:51.025,lng:29.901,us:"pending",sl:"pending"},
   {id:35,n:"Макарівська",o:"Київська",g:"KfW 1",pop:59009,ch:12476,lat:50.464,lng:29.804,us:"pending",sl:"pending"},
-  {id:36,n:"Великодимерська",o:"Київська",g:"KfW 1",pop:46429,ch:8886,lat:50.699,lng:31.254,us:"pending",sl:"pending"},
+  {id:36,n:"Великодимерська",o:"Київська",g:"KfW 1",pop:46429,ch:8886,lat:50.578,lng:31.031,us:"pending",sl:"pending"},
   {id:37,n:"Вишгородська",o:"Київська",g:"KfW 1",pop:45752,ch:8409,lat:50.592,lng:30.420,us:"pending",sl:"pending"},
   {id:38,n:"Київ",o:"Київська (місто)",g:"KfW 2",pop:3528517,ch:603985,lat:50.450,lng:30.523,us:"pending",sl:"pending"},
   {id:39,n:"Ходорівська",o:"Львівська",g:"KfW 1",pop:20586,ch:3954,lat:49.413,lng:24.310,us:"pending",sl:"pending"},
@@ -60,9 +60,9 @@ const H=[
   {id:59,n:"Мукачівська",o:"Закарпатська",g:"KfW 2",pop:98256,ch:22608,lat:48.441,lng:22.720,us:"pending",sl:"pending"},
   {id:60,n:"Ужгородська",o:"Закарпатська",g:"KfW 2",pop:122427,ch:28181,lat:48.621,lng:22.295,us:"pending",sl:"pending"},
   {id:61,n:"Запорізька",o:"Запорізька",g:"KfW 2",pop:510443,ch:57715,lat:47.838,lng:35.166,us:"pending",sl:"pending"},
-  {id:62,n:"Широківська",o:"Запорізька",g:"KfW 2+",pop:8508,ch:1097,lat:47.679,lng:33.261,us:"pending",sl:"pending"},
+  {id:62,n:"Широківська",o:"Запорізька",g:"KfW 2+",pop:8508,ch:1097,lat:47.980,lng:34.965,us:"pending",sl:"pending"},
   {id:63,n:"Андрушівська",o:"Житомирська",g:"KfW 1",pop:18157,ch:3213,lat:50.016,lng:29.004,us:"pending",sl:"pending"},
-  {id:64,n:"Хорошівська",o:"Житомирська",g:"KfW 1",pop:17240,ch:3167,lat:50.517,lng:28.647,us:"pending",sl:"pending"},
+  {id:64,n:"Хорошівська",o:"Житомирська",g:"KfW 1",pop:17240,ch:3167,lat:50.614,lng:28.437,us:"pending",sl:"pending"},
   {id:65,n:"Коростенська",o:"Житомирська",g:"KfW 1",pop:64667,ch:11554,lat:50.958,lng:28.658,us:"pending",sl:"pending"},
   {id:66,n:"Олевська",o:"Житомирська",g:"KfW 1",pop:30924,ch:5525,lat:51.208,lng:27.649,us:"pending",sl:"pending"},
   {id:67,n:"Житомирська",o:"Житомирська",g:"KfW 1",pop:258239,ch:47452,lat:50.255,lng:28.659,us:"pending",sl:"pending"},
@@ -74,30 +74,23 @@ const H=[
   // id 962, Самбірський район), не з data/hromadas_68.geojson — там цієї
   // громади немає (боундарі на карті поки не буде).
   {id:69,n:"Бісковицька",o:"Львівська",g:"KfW 1",pop:16504,ch:0,lat:49.587,lng:23.124,us:"pending",sl:"pending"},
-  // Додано 2026-09-08, склад вибірки зріс з 69 до 77. pop — з відкритих
-  // джерел (decentralization.gov.ua/Вікіпедія, orientировно, не з анкети —
-  // жодна з цих 8 громад ще не в Excel-воркбуці), ch=0 (застаріле поле).
-  // lat/lng — центроїди полігонів з того самого відкритого репозиторію, що
-  // й для Бісковицької вище (slawomirmatuszak/ukrainian_geodata,
-  // hromady.geojson); межі на карті не буде, поки не оновлять
-  // data/hromadas_68.geojson. Близнюківська — та сама громада, що вже
-  // фігурувала як "Є у воркбуку, немає в H[]" у Відомій проблемі №2
-  // CLAUDE.md — тепер додана, наступна звірка з воркбуком має зняти цю
-  // розбіжність автоматично.
-  {id:70,n:"Оброшинська",o:"Львівська",g:"KfW 1",pop:7948,ch:0,lat:49.787,lng:23.840,us:"pending",sl:"pending"},
-  {id:71,n:"Коростишівська",o:"Житомирська",g:"KfW 1",pop:30422,ch:0,lat:50.253,lng:29.146,us:"pending",sl:"pending"},
-  {id:72,n:"Близнюківська",o:"Харківська",g:"KfW 1",pop:17541,ch:0,lat:48.782,lng:36.475,us:"pending",sl:"pending"},
-  {id:73,n:"Пірнівська",o:"Київська",g:"KfW 1",pop:6152,ch:0,lat:50.806,lng:30.600,us:"pending",sl:"pending"},
-  {id:74,n:"Східницька",o:"Львівська",g:"KfW 1",pop:18841,ch:0,lat:49.199,lng:23.264,us:"pending",sl:"pending"},
-  {id:75,n:"Ізюмська",o:"Харківська",g:"KfW 1",pop:39826,ch:0,lat:49.193,lng:37.203,us:"pending",sl:"pending"},
-  {id:76,n:"Ємільчинська",o:"Житомирська",g:"KfW 1",pop:22058,ch:0,lat:50.861,lng:27.780,us:"pending",sl:"pending"},
-  {id:77,n:"Старосамбірська",o:"Львівська",g:"KfW 1",pop:20414,ch:0,lat:49.429,lng:22.928,us:"pending",sl:"pending"},
-  // Додано 2026-10-02 (77 -> 79) з воркбука v5 (11), де вони вже є з
-  // імпортованими анкетами (workbook_id 70/71). pop — з анкети
-  // (02_ВВЕДЕННЯ_ОПИТУВАЛЬНИКА), lat/lng — центроїди з ukrainian_geodata
-  // (id 1317 / 1150), межі на карті немає.
-  {id:78,n:"Новояворівська",o:"Львівська",g:"KfW 1",pop:47653,ch:0,lat:49.950,lng:23.533,us:"pending",sl:"pending"},
-  {id:79,n:"Горохівська",o:"Волинська",g:"KfW 1",pop:24114,ch:0,lat:50.531,lng:24.793,us:"pending",sl:"pending"},
+  // Додано 2026-10-02 з воркбука v5 (11) з імпортованими анкетами; id = HROM_070/071
+  // з 10_ЖУРНАЛ_ІМПОРТУ. pop — з анкети, lat/lng — центроїди з ukrainian_geodata
+  // (id 1317 / 1150), межі на карті немає (показується точковим маркером).
+  {id:70,n:"Новояворівська",o:"Львівська",g:"KfW 1",pop:47653,ch:0,lat:49.950,lng:23.533,us:"pending",sl:"pending"},
+  {id:71,n:"Горохівська",o:"Волинська",g:"KfW 1",pop:24114,ch:0,lat:50.531,lng:24.793,us:"pending",sl:"pending"},
+  // Додано 2026-09-08 (69 -> 77) за списком КАТОТТГ. У воркбуці (крім Близнюківської)
+  // їх ще немає, HROM-номери не присвоєні — id 72–79 тимчасові, звіряти, коли
+  // з'являться в 10_ЖУРНАЛ_ІМПОРТУ. pop — орієнтовне з decentralization.gov.ua/
+  // Вікіпедії (не з анкети); lat/lng — центроїди з ukrainian_geodata; межі немає.
+  {id:72,n:"Оброшинська",o:"Львівська",g:"KfW 1",pop:7948,ch:0,lat:49.787,lng:23.840,us:"pending",sl:"pending"},
+  {id:73,n:"Коростишівська",o:"Житомирська",g:"KfW 1",pop:30422,ch:0,lat:50.253,lng:29.146,us:"pending",sl:"pending"},
+  {id:74,n:"Близнюківська",o:"Харківська",g:"KfW 1",pop:17541,ch:0,lat:48.782,lng:36.475,us:"pending",sl:"pending"},
+  {id:75,n:"Пірнівська",o:"Київська",g:"KfW 1",pop:6152,ch:0,lat:50.806,lng:30.600,us:"pending",sl:"pending"},
+  {id:76,n:"Східницька",o:"Львівська",g:"KfW 1",pop:18841,ch:0,lat:49.199,lng:23.264,us:"pending",sl:"pending"},
+  {id:77,n:"Ізюмська",o:"Харківська",g:"KfW 1",pop:39826,ch:0,lat:49.193,lng:37.203,us:"pending",sl:"pending"},
+  {id:78,n:"Ємільчинська",o:"Житомирська",g:"KfW 1",pop:22058,ch:0,lat:50.861,lng:27.780,us:"pending",sl:"pending"},
+  {id:79,n:"Старосамбірська",o:"Львівська",g:"KfW 1",pop:20414,ch:0,lat:49.429,lng:22.928,us:"pending",sl:"pending"},
 ];
 
 window.H = H;
