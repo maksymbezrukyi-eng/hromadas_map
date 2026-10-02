@@ -641,12 +641,11 @@
         "note":  "Немає відповідника в 01_СПИСОК_ГРОМАД воркбука"
     },
     {
-        "tool_id":  null,
-        "tool_name":  null,
+        "tool_id":  80,
+        "tool_name":  "Березівська",
         "workbook_id":  45,
         "workbook_name":  "Березівська",
         "oblast":  "Одеська",
-        "matched":  false,
-        "note":  "Є у воркбуку, немає в H[] інструмента"
+        "matched":  true
     }
 ]

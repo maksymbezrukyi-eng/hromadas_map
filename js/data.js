@@ -91,6 +91,10 @@ const H=[
   {id:77,n:"Ізюмська",o:"Харківська",g:"KfW 1",pop:39826,ch:0,lat:49.193,lng:37.203,us:"pending",sl:"pending"},
   {id:78,n:"Ємільчинська",o:"Житомирська",g:"KfW 1",pop:22058,ch:0,lat:50.861,lng:27.780,us:"pending",sl:"pending"},
   {id:79,n:"Старосамбірська",o:"Львівська",g:"KfW 1",pop:20414,ch:0,lat:49.429,lng:22.928,us:"pending",sl:"pending"},
+  // Added 2026-10-02 (79 -> 80): in the workbook registry (seq id 45) but no questionnaire
+  // yet, so no HROM number — id 80 is provisional. pop from Wikipedia (2020); lat/lng —
+  // ukrainian_geodata centroid (id 913); no boundary, shown as a point marker.
+  {id:80,n:"Березівська",o:"Одеська",g:"KfW 1",pop:16659,ch:0,lat:47.194,lng:30.836,us:"pending",sl:"pending"},
 ];
 
 window.H = H;
